@@ -377,11 +377,14 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; margin-right: auto; }
 .brand-mark { width: 40px; height: 40px; flex: none; }
-.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-text { display: flex; flex-direction: column; line-height: 1.08; gap: .12rem; }
+/* As large as the fixed 76px bar can hold; 600 is Newsreader's heaviest real
+   weight — anything above it would be synthesized and smear. Scales down just
+   enough on narrow phones that the full name never ellipsizes. */
 .brand-name {
   font-family: var(--font-display); font-weight: 600;
-  font-size: 1.16rem; color: var(--navy-900);
-  letter-spacing: -.018em; white-space: nowrap;
+  font-size: clamp(1.3rem, 1.02rem + 1.2vw, 1.55rem); color: var(--navy-900);
+  letter-spacing: -.022em; white-space: nowrap;
 }
 .brand-tag {
   font-family: var(--font-sans);
