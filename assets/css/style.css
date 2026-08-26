@@ -336,6 +336,17 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .emergency-bar svg { width: 14px; height: 14px; flex: none; opacity: .85; }
 .emergency-bar .sep { opacity: .4; }
 
+/* On a narrow phone the three items wrap and the separator is left stranded on
+   a line of its own. Drop it, and drop the reception number too — the sticky
+   bar and the contact page both carry it, and the emergency number is what
+   matters at this width. */
+@media (max-width: 620px) {
+  .emergency-bar { font-size: .82rem; }
+  .emergency-bar .wrap { gap: .35rem .9rem; }
+  .emergency-bar .sep,
+  .emergency-bar a.secondary { display: none; }
+}
+
 .pulse-dot {
   width: 7px; height: 7px; border-radius: 50%; background: #fff; flex: none;
   box-shadow: 0 0 0 0 rgba(255,255,255,.7);
@@ -436,121 +447,151 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 /* --------------------------------------------------------------------------
    Hero
+
+   Light, not a dark banner. A dark gradient block reads as a template pasted
+   on top of the page; an ivory hero lets the masthead, hero and page share one
+   ground, which is what makes the composition feel considered rather than
+   assembled. Colour comes from soft brand glows, and weight from the serif.
+
+   Four elements only: place, headline, one sentence, actions. The feature
+   badges that used to sit here repeated the fact band immediately below.
    -------------------------------------------------------------------------- */
 .hero {
-  position: relative; overflow: hidden;
-  background:
-    radial-gradient(52rem 34rem at 88% 8%, rgba(34, 89, 139, .38), transparent 68%),
-    radial-gradient(40rem 30rem at 4% 96%, rgba(201, 151, 31, .12), transparent 62%),
-    linear-gradient(168deg, var(--navy-950) 0%, var(--navy-900) 46%, #0d2e4e 100%);
-  color: #c2d4e6;
-  padding: clamp(3.25rem, 7vw, 6.5rem) 0 clamp(3.5rem, 7vw, 6.5rem);
+  position: relative;
+  background: var(--ground);
+  padding: clamp(2.75rem, 6vw, 5.5rem) 0 clamp(3rem, 6vw, 5.5rem);
+  overflow: hidden;
   isolation: isolate;
 }
 
-/* Fine engraved grid, faded out toward the bottom */
-.hero::before {
-  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
-  background-size: 62px 62px;
-  mask-image: radial-gradient(70% 70% at 60% 30%, #000 35%, transparent 100%);
-  -webkit-mask-image: radial-gradient(70% 70% at 60% 30%, #000 35%, transparent 100%);
+/* Two wide, soft washes of brand colour. Deliberately low opacity: at higher
+   values this reads as a gradient effect rather than as light. */
+.hero-glow {
+  position: absolute; inset: -20% -10% auto -10%; height: 130%;
+  z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(38rem 26rem at 78% 8%,  rgba(34, 89, 139, .13), transparent 62%),
+    radial-gradient(30rem 22rem at 12% 88%, rgba(201, 151, 31, .11), transparent 60%),
+    radial-gradient(24rem 18rem at 96% 78%, rgba(190, 22, 34, .06), transparent 58%);
 }
 
-/* Soft gold hairline where the hero meets the page */
-.hero::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
-  background: linear-gradient(90deg,
-    transparent, rgba(201,151,31,.5) 22%, rgba(190,22,34,.55) 50%,
-    rgba(201,151,31,.5) 78%, transparent);
-}
+.hero-grid { display: grid; gap: clamp(2.5rem, 5vw, 4.5rem); align-items: center; }
+@media (min-width: 1000px) { .hero-grid { grid-template-columns: 1.05fr .95fr; } }
 
-.hero .wrap { position: relative; z-index: 1; }
-.hero-grid { display: grid; gap: clamp(2.5rem, 5vw, 4rem); align-items: center; }
-@media (min-width: 980px) { .hero-grid { grid-template-columns: 1.04fr .96fr; } }
+.hero-copy { max-width: 34rem; }
 
-.hero-eyebrow {
-  display: inline-flex; align-items: center; gap: .6rem;
-  padding: .4rem .9rem .4rem .55rem;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.15);
-  border-radius: 999px;
-  font-size: .78rem; font-weight: 600; letter-spacing: .04em;
-  color: #dbe8f5; margin-bottom: 1.6rem;
+/* Place line — grounds the hospital before the headline speaks. */
+.hero-place {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font-size: .82rem; font-weight: 600; letter-spacing: .01em;
+  color: var(--ink-600); margin-bottom: 1.35rem;
 }
-.hero-eyebrow .dot-wrap {
-  display: grid; place-items: center;
-  width: 20px; height: 20px; border-radius: 50%;
-  background: var(--red-600);
-}
-.hero-eyebrow .pulse-dot { width: 6px; height: 6px; }
+.hero-place svg { width: 15px; height: 15px; color: var(--red-600); flex: none; }
 
-.hero h1 { color: #fff; margin-bottom: .3em; font-weight: 400; }
+.hero h1 {
+  font-size: clamp(2.5rem, 1.55rem + 4.3vw, 4.5rem);
+  line-height: 1.06; letter-spacing: -.03em;
+  font-weight: 400; color: var(--navy-900);
+  margin-bottom: .38em;
+}
 .hero h1 em {
-  font-style: italic; color: var(--gold-400);
-  font-weight: 400;
-}
-
-.hero-tagline {
-  font-family: var(--font-sans);
-  font-size: .8rem; font-weight: 700; letter-spacing: .19em;
-  text-transform: uppercase; color: var(--gold-500);
-  margin-bottom: 1.35rem;
+  font-style: italic; font-weight: 400;
+  color: var(--red-700);
 }
 
 .hero-lede {
-  font-size: var(--step-1); line-height: 1.6;
-  color: #a8bed5; max-width: 34ch; margin-bottom: 2rem;
+  font-size: clamp(1.05rem, 1rem + .3vw, 1.2rem);
+  line-height: 1.6; color: var(--ink-600);
+  max-width: 33rem; margin-bottom: 1.75rem;
 }
 
-/* Trust markers under the hero copy */
-.hero-marks {
-  display: flex; flex-wrap: wrap; gap: .55rem; margin-bottom: 2.1rem;
+/* Quiet proof line under the buttons, in place of the old badge row. */
+.hero-proof {
+  display: flex; flex-wrap: wrap; gap: .5rem 1.5rem;
+  margin: 1.6rem 0 0; padding-top: 1.35rem;
+  border-top: 1px solid var(--rule);
+  font-size: .875rem; color: var(--ink-600);
 }
-.hero-mark {
-  display: inline-flex; align-items: center; gap: .45rem;
-  padding: .42rem .85rem;
-  background: rgba(255,255,255,.055);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 999px;
-  font-size: .82rem; font-weight: 550; color: #cfdeed;
-}
-.hero-mark svg { width: 15px; height: 15px; color: var(--gold-400); flex: none; }
+.hero-proof span { display: inline-flex; align-items: center; gap: .4rem; }
+.hero-proof svg { width: 15px; height: 15px; color: var(--green-600); flex: none; }
 
 /* --------------------------------------------------------------------------
-   Booking card in the hero
+   Hero booking card
    -------------------------------------------------------------------------- */
 .hero-card {
   background: var(--paper);
+  border: 1px solid var(--rule);
   border-radius: var(--r-xl);
-  box-shadow: var(--shadow-xl);
+  padding: clamp(1.35rem, 2.6vw, 1.75rem);
+  box-shadow: var(--shadow-lg);
   color: var(--ink-700);
-  overflow: hidden;
-  position: relative;
-}
-.hero-card::before {
-  content: ''; position: absolute; inset-inline: 0; top: 0; height: 4px;
-  background: linear-gradient(90deg, var(--red-600), var(--gold-500) 60%, var(--green-600));
 }
 
 .hero-card-head {
-  padding: 1.65rem clamp(1.35rem, 3vw, 1.9rem) 1.15rem;
-  border-bottom: 1px solid var(--rule-soft);
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.25rem;
 }
-.hero-card-head h2 { font-size: var(--step-2); margin-bottom: .25em; }
-.hero-card-head p { font-size: .93rem; color: var(--ink-500); margin: 0; }
+.hero-card-head h2 { font-size: 1.28rem; margin-bottom: .1em; }
+.hero-card-head p { font-size: .88rem; color: var(--ink-600); margin: 0; }
 
-.hero-card-body { padding: 1.2rem clamp(1.35rem, 3vw, 1.9rem) 1.6rem; }
+.live-chip {
+  display: inline-flex; align-items: center; gap: .4rem; flex: none;
+  padding: .3rem .68rem; border-radius: 999px;
+  background: var(--green-50); border: 1px solid var(--green-100);
+  color: var(--green-700); font-size: .78rem; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--green-600);
+  box-shadow: 0 0 0 0 rgba(26, 131, 84, .6);
+  animation: live-ping 2.6s cubic-bezier(.66, 0, 0, 1) infinite;
+}
+@keyframes live-ping {
+  0%   { box-shadow: 0 0 0 0 rgba(26, 131, 84, .55); }
+  70%  { box-shadow: 0 0 0 6px rgba(26, 131, 84, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(26, 131, 84, 0); }
+}
 
-.hero-docs { display: grid; gap: .6rem; margin-bottom: 1.2rem; }
+/* The next bookable session, computed server-side. This is the card's reason
+   to exist: it answers "can I be seen, and when" without a click. */
+.next-slot {
+  display: block; text-decoration: none;
+  padding: 1.05rem 1.15rem; margin-bottom: 1.35rem;
+  border-radius: var(--r);
+  background: linear-gradient(158deg, var(--navy-900), var(--navy-800));
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.next-slot:hover { transform: translateY(-2px); box-shadow: var(--shadow); color: #fff; }
+.next-slot-when {
+  display: block; font-family: var(--font-display);
+  font-size: 1.3rem; font-weight: 600; color: #fff; line-height: 1.2;
+}
+.next-slot-time {
+  display: block; font-size: .9rem; color: var(--gold-400);
+  font-weight: 600; margin-top: .12rem;
+}
+.next-slot-meta {
+  display: block; margin-top: .55rem; padding-top: .55rem;
+  border-top: 1px solid rgba(255,255,255,.16);
+  font-size: .82rem; color: #a8bed5;
+}
+.next-slot-meta strong { color: #fff; font-variant-numeric: tabular-nums; }
+
+.hero-card-label {
+  font-size: .72rem; font-weight: 700; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--ink-600);
+  margin: 0 0 .65rem;
+}
+
+.hero-docs { display: grid; gap: .55rem; }
 .hero-doc {
-  display: flex; align-items: center; gap: .85rem;
-  padding: .8rem .9rem;
+  display: flex; align-items: center; gap: .8rem;
+  padding: .7rem .8rem;
   border: 1px solid var(--rule);
   border-radius: var(--r);
-  background: var(--ground);
+  background: var(--paper);
   text-decoration: none;
   transition: border-color .18s ease, background-color .18s ease, transform .18s ease;
 }
@@ -558,23 +599,46 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   border-color: var(--navy-500); background: var(--navy-50);
   transform: translateX(3px);
 }
-.hero-doc .avatar { width: 42px; height: 42px; flex: none; }
+.hero-doc .avatar { width: 38px; height: 38px; flex: none; border-radius: 50%; overflow: hidden; }
 .hero-doc-text { min-width: 0; flex: 1; }
 .hero-doc strong {
-  display: block; font-size: .94rem; color: var(--navy-900);
+  display: block; font-size: .91rem; color: var(--navy-900);
   font-weight: 650; line-height: 1.3;
 }
-.hero-doc span { display: block; font-size: .8rem; color: var(--ink-500); line-height: 1.4; }
+.hero-doc span { display: block; font-size: .785rem; color: var(--ink-600); line-height: 1.4; }
 .hero-doc .chev { width: 16px; height: 16px; color: var(--ink-300); flex: none; }
 .hero-doc:hover .chev { color: var(--navy-600); }
 
 .hero-card-note {
   display: flex; align-items: flex-start; gap: .5rem;
-  margin-top: 1rem; padding-top: 1rem;
+  margin: 1.15rem 0 0; padding-top: 1.05rem;
   border-top: 1px solid var(--rule-soft);
-  font-size: .84rem; color: var(--ink-500);
+  font-size: .82rem; color: var(--ink-600); line-height: 1.5;
 }
 .hero-card-note svg { width: 15px; height: 15px; flex: none; margin-top: 2px; color: var(--red-600); }
+
+@media (max-width: 999px) {
+  .hero-copy { max-width: 100%; }
+  .hero-card { max-width: 34rem; }
+}
+
+/*
+ * On a phone the copy runs full width before the card, which pushed the live
+ * availability panel — the most useful thing here — well below the fold.
+ * Tighten every step of the stack and sit the two buttons side by side.
+ */
+@media (max-width: 620px) {
+  .hero { padding-block: 2.25rem 2.5rem; }
+  .hero-place { margin-bottom: 1rem; font-size: .78rem; }
+  .hero h1 { font-size: clamp(2.15rem, 1.35rem + 3.6vw, 2.6rem); margin-bottom: .32em; }
+  .hero-lede { font-size: 1rem; line-height: 1.55; margin-bottom: 1.4rem; }
+  .hero .btn-row { flex-wrap: nowrap; gap: .55rem; }
+  .hero .btn-row .btn {
+    flex: 1 1 0; min-width: 0; padding-inline: .6rem;
+    font-size: .93rem; min-height: 52px;
+  }
+  .hero-proof { margin-top: 1.25rem; padding-top: 1.1rem; gap: .45rem 1rem; font-size: .84rem; }
+}
 
 /* --------------------------------------------------------------------------
    Fact band — sits directly beneath the hero
@@ -606,6 +670,14 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   .fact { padding: 1.15rem .9rem; }
   .fact:nth-child(2n) { border-right: 0; }
   .fact:nth-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,.07); }
+}
+
+/* Below about 400px two columns leave roughly 70px for the label once the icon
+   and padding are taken out, which is not enough for "Open 24 Hours". */
+@media (max-width: 400px) {
+  .fact-grid { grid-template-columns: 1fr; }
+  .fact { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.07); padding: .95rem .9rem; }
+  .fact:last-child { border-bottom: 0; }
 }
 
 /* --------------------------------------------------------------------------

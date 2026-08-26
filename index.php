@@ -8,77 +8,94 @@ $pageTitle       = '';
 $pageDescription = 'Sarada Nursing Home, Kandukur — 24/7 emergency care, General Medicine, Diabetology and Obstetrics & Gynaecology. ICU, modern laboratory, 2D Echo and A/C rooms. Book an OP token online.';
 $activeNav       = 'home';
 
-$doctors = get_doctors();
+$doctors  = get_doctors();
+$nextSlot = next_available();
 
 require __DIR__ . '/includes/header.php';
 ?>
 
 <section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+
   <div class="wrap">
     <div class="hero-grid">
 
-      <div>
-        <p class="hero-eyebrow">
-          <span class="dot-wrap"><span class="pulse-dot" aria-hidden="true"></span></span>
-          Emergency department open right now
+      <div class="hero-copy">
+        <p class="hero-place">
+          <?= icon('location') ?>
+          Pamuru Road, Kandukur &middot; Prakasam District
         </p>
 
-        <h1>Care your family can <em>reach</em>, at any hour.</h1>
-        <p class="hero-tagline"><?= e(HOSPITAL['tagline']) ?></p>
+        <h1>Your family&rsquo;s hospital,<br><em>open every hour.</em></h1>
 
         <p class="hero-lede">
           General Medicine, Diabetology and Obstetrics &amp; Gynaecology under one
-          roof in Kandukur &mdash; with an ICU, an in-house laboratory and doctors
-          on call through the night.
+          roof &mdash; with an ICU, an in-house laboratory, and a doctor here
+          through the night.
         </p>
-
-        <div class="hero-marks">
-          <span class="hero-mark"><?= icon('emergency') ?> 24&times;7 Emergency</span>
-          <span class="hero-mark"><?= icon('icu') ?> ICU Care</span>
-          <span class="hero-mark"><?= icon('lab') ?> In-house Laboratory</span>
-          <span class="hero-mark"><?= icon('scan') ?> 2D Echo</span>
-        </div>
 
         <div class="btn-row">
           <a class="btn btn-lg btn-emergency" href="tel:<?= e(HOSPITAL['mobile']) ?>">
             <?= icon('phone') ?> <?= e(HOSPITAL['mobile_display']) ?>
           </a>
-          <a class="btn btn-lg btn-ghost-light" href="book.php">
+          <a class="btn btn-lg btn-primary" href="book.php">
             <?= icon('ticket') ?> Book a Token
           </a>
         </div>
+
+        <p class="hero-proof">
+          <span><?= icon('check') ?> Two consultants</span>
+          <span><?= icon('check') ?> Free OP Fridays</span>
+          <span><?= icon('check') ?> Published tariff</span>
+        </p>
       </div>
 
-      <div class="hero-card">
+      <aside class="hero-card">
         <div class="hero-card-head">
-          <h2>Book your OP token</h2>
-          <p>Choose a doctor and a day. Your token number appears straight away.</p>
-        </div>
-
-        <div class="hero-card-body">
-          <div class="hero-docs">
-            <?php foreach ($doctors as $doc): ?>
-              <a class="hero-doc" href="book.php?doctor=<?= (int) $doc['id'] ?>">
-                <?= doctor_avatar() ?>
-                <span class="hero-doc-text">
-                  <strong><?= e($doc['name']) ?></strong>
-                  <span><?= e($doc['speciality']) ?></span>
-                </span>
-                <?= icon('chevron-right', 'chev') ?>
-              </a>
-            <?php endforeach; ?>
+          <div>
+            <h2>Book an OP token</h2>
+            <p>No queueing at the desk.</p>
           </div>
-
-          <a class="btn btn-primary btn-block" href="book.php">
-            <?= icon('calendar') ?> See available tokens
-          </a>
-
-          <p class="hero-card-note">
-            <?= icon('alert') ?>
-            <span>In an emergency please call us instead of booking online.</span>
-          </p>
+          <?php if ($nextSlot !== null): ?>
+            <span class="live-chip">
+              <span class="live-dot" aria-hidden="true"></span>
+              <?= $nextSlot['remaining'] ?> free
+            </span>
+          <?php endif; ?>
         </div>
-      </div>
+
+        <?php if ($nextSlot !== null): ?>
+          <a class="next-slot" href="book.php">
+            <span class="next-slot-when">
+              <?= e($nextSlot['when']) ?> &middot; <?= e($nextSlot['label']) ?>
+            </span>
+            <span class="next-slot-time"><?= e($nextSlot['timing']) ?></span>
+            <span class="next-slot-meta">
+              Next available session &mdash;
+              <strong><?= $nextSlot['remaining'] ?></strong> token<?= $nextSlot['remaining'] === 1 ? '' : 's' ?> left
+            </span>
+          </a>
+        <?php endif; ?>
+
+        <p class="hero-card-label">Choose a doctor</p>
+        <div class="hero-docs">
+          <?php foreach ($doctors as $doc): ?>
+            <a class="hero-doc" href="book.php?doctor=<?= (int) $doc['id'] ?>">
+              <?= doctor_avatar() ?>
+              <span class="hero-doc-text">
+                <strong><?= e($doc['name']) ?></strong>
+                <span><?= e($doc['speciality']) ?></span>
+              </span>
+              <?= icon('chevron-right', 'chev') ?>
+            </a>
+          <?php endforeach; ?>
+        </div>
+
+        <p class="hero-card-note">
+          <?= icon('alert') ?>
+          <span>In an emergency, call us &mdash; do not book online.</span>
+        </p>
+      </aside>
 
     </div>
   </div>
@@ -92,7 +109,7 @@ require __DIR__ . '/includes/header.php';
         <span class="fact-icon"><?= icon('clock') ?></span>
         <span class="fact-text">
           <strong>Open 24 Hours</strong>
-          <span>Every day, including Sundays</span>
+          <span>Including Sundays</span>
         </span>
       </div>
       <div class="fact">

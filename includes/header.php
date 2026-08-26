@@ -105,7 +105,7 @@ $announcement = setting('announcement', '');
       <?= icon('phone') ?> Emergency <?= e(HOSPITAL['mobile_display']) ?>
     </a>
     <span class="sep" aria-hidden="true">&middot;</span>
-    <a href="tel:<?= e(HOSPITAL['landline']) ?>">
+    <a class="secondary" href="tel:<?= e(HOSPITAL['landline']) ?>">
       Reception <?= e(HOSPITAL['landline_display']) ?>
     </a>
   </div>

@@ -160,6 +160,67 @@ function session_availability(int $doctorId, string $date, string $session): ?ar
     return null;
 }
 
+/**
+ * The soonest session a patient could actually book, across all doctors.
+ *
+ * Drives the live status line in the hero: a card that says "Morning session,
+ * 27 tokens left" is doing real work, where a static list of doctors is only
+ * decoration. Returns null when nothing in the booking window is open.
+ *
+ * @return array{date:string, session:string, label:string, timing:string,
+ *                remaining:int, doctor:string, when:string, today:bool}|null
+ */
+function next_available(): ?array
+{
+    $doctors = get_doctors();
+    if (!$doctors) {
+        return null;
+    }
+
+    $today    = date('Y-m-d');
+    $tomorrow = (new DateTimeImmutable('tomorrow'))->format('Y-m-d');
+
+    foreach (bookable_dates() as $date) {
+        $best = null;
+
+        // Within one day, prefer the session that starts soonest, and among
+        // equal sessions the doctor with the most tokens left.
+        foreach ($doctors as $doctor) {
+            foreach (availability((int) $doctor['id'], $date) as $slot) {
+                if (!$slot['available']) {
+                    continue;
+                }
+                $rank = $slot['session'] === 'morning' ? 0 : 1;
+                if ($best === null
+                    || $rank < $best['rank']
+                    || ($rank === $best['rank'] && $slot['remaining'] > $best['slot']['remaining'])) {
+                    $best = ['rank' => $rank, 'slot' => $slot, 'doctor' => $doctor];
+                }
+            }
+        }
+
+        if ($best !== null) {
+            $slot = $best['slot'];
+            return [
+                'date'      => $date,
+                'session'   => $slot['session'],
+                'label'     => $slot['label'],
+                'timing'    => $slot['timing'],
+                'remaining' => $slot['remaining'],
+                'doctor'    => (string) $best['doctor']['name'],
+                'when'      => match ($date) {
+                    $today    => 'Today',
+                    $tomorrow => 'Tomorrow',
+                    default   => (new DateTimeImmutable($date))->format('D j M'),
+                },
+                'today'     => $date === $today,
+            ];
+        }
+    }
+
+    return null;
+}
+
 /** Short, unambiguous booking reference. No vowels, so no accidental words. */
 function generate_reference(): string
 {
