@@ -61,6 +61,23 @@
 
     html += '</div>';
     sessionBox.innerHTML = html;
+    applyPreselect();
+  }
+
+  /*
+   * Restore a session chosen before these radios existed — from the hero's find
+   * bar, or from a submit that bounced back on another field. Consumed once, so
+   * changing doctor or date afterwards does not drag the old choice along.
+   */
+  function applyPreselect() {
+    var wanted = sessionBox.getAttribute('data-preselect');
+    if (!wanted) return;
+    sessionBox.removeAttribute('data-preselect');
+
+    var radio = sessionBox.querySelector(
+      'input[name="session"][value="' + wanted.replace(/"/g, '') + '"]:not([disabled])'
+    );
+    if (radio) radio.checked = true;
   }
 
   function escapeHtml(str) {

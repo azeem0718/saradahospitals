@@ -2,10 +2,51 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/components.php';
+require_once __DIR__ . '/includes/booking.php';
 
 $pageTitle       = 'Our Services';
 $pageDescription = 'Medical services at Sarada Nursing Home, Kandukur — diabetes, blood pressure, heart and kidney problems, fevers, dengue, snake bite, plus complete obstetrics and gynaecology care.';
 $activeNav       = 'services';
+
+/**
+ * Pair each department with the consultant who runs it, so the section can
+ * finish on a booking link rather than a dead end. Matched on speciality
+ * rather than row id, since reception can add doctors from the admin panel.
+ */
+$doctors = get_doctors();
+$consultant = static function (string $needle) use ($doctors): ?array {
+    foreach ($doctors as $doc) {
+        if (stripos((string) $doc['speciality'], $needle) !== false) {
+            return $doc;
+        }
+    }
+    return null;
+};
+
+$departments = [
+    [
+        'eyebrow'  => 'Department 01',
+        'title'    => 'General Medicine',
+        'tone'     => 'navy',
+        'icon'     => 'stethoscope',
+        'lede'     => 'Consultation, diagnosis and treatment for everyday illness '
+                    . 'and for the long-term conditions that need watching year after year.',
+        'items'    => GENERAL_MEDICINE,
+        'noun'     => 'conditions treated',
+        'doctor'   => $consultant('General Medicine'),
+    ],
+    [
+        'eyebrow'  => 'Department 02',
+        'title'    => 'Obstetrics & Gynaecology',
+        'tone'     => 'green',
+        'icon'     => 'maternity',
+        'lede'     => 'Pregnancy, delivery and complete women\'s health care, from the '
+                    . 'first antenatal visit through to menopause.',
+        'items'    => OBG_SERVICES,
+        'noun'     => 'procedures and services',
+        'doctor'   => $consultant('Obstetric'),
+    ],
+];
 
 require __DIR__ . '/includes/header.php';
 page_hero(
@@ -18,36 +59,52 @@ page_hero(
 
 <section class="section">
   <div class="wrap">
-    <div class="grid grid-split">
+    <div class="dept-grid">
+      <?php foreach ($departments as $dep): ?>
+        <article class="dept dept-<?= e($dep['tone']) ?>">
 
-      <div>
-        <span class="card-icon"><?= icon('stethoscope') ?></span>
-        <h2>General Medicine</h2>
-        <p class="lede mb-2">
-          Consultation, diagnosis and treatment for everyday illness and long-term
-          conditions, under Dr. Gundavarapu Venkatesh.
-        </p>
-        <ul class="service-list">
-          <?php foreach (GENERAL_MEDICINE as $s): ?>
-            <li><?= icon('check') ?><span><?= e($s) ?></span></li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
+          <header class="dept-head">
+            <span class="card-icon <?= $dep['tone'] === 'navy' ? '' : e($dep['tone']) ?>">
+              <?= icon($dep['icon']) ?>
+            </span>
+            <span class="eyebrow"><?= e($dep['eyebrow']) ?></span>
+            <h2><?= e($dep['title']) ?></h2>
+            <p class="dept-lede"><?= e($dep['lede']) ?></p>
 
-      <div>
-        <span class="card-icon green"><?= icon('baby') ?></span>
-        <h2>Obstetrics &amp; Gynaecology</h2>
-        <p class="lede mb-2">
-          Pregnancy, delivery and complete women's health care, under
-          Dr. Maddipudi Brahmani.
-        </p>
-        <ul class="service-list">
-          <?php foreach (OBG_SERVICES as $s): ?>
-            <li><?= icon('check') ?><span><?= e($s) ?></span></li>
-          <?php endforeach; ?>
-        </ul>
-      </div>
+            <?php if ($dep['doctor']): ?>
+              <div class="dept-doc">
+                <span class="dept-doc-portrait"><?= doctor_avatar('') ?></span>
+                <span class="dept-doc-text">
+                  <strong><?= e($dep['doctor']['name']) ?></strong>
+                  <span><?= e($dep['doctor']['qualifications']) ?></span>
+                </span>
+              </div>
+            <?php endif; ?>
+          </header>
 
+          <div class="dept-body">
+            <p class="dept-count">
+              <strong><?= count($dep['items']) ?></strong> <?= e($dep['noun']) ?>
+            </p>
+            <ul class="dept-list">
+              <?php foreach ($dep['items'] as $item): ?>
+                <li><span class="dept-mark" aria-hidden="true"></span><span><?= e($item) ?></span></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+
+          <?php if ($dep['doctor']): ?>
+            <footer class="dept-foot">
+              <a class="btn btn-primary btn-sm" href="book.php?doctor=<?= (int) $dep['doctor']['id'] ?>">
+                <?= icon('ticket') ?>
+                Book with <?= e(doctor_short_name($dep['doctor']['name'])) ?>
+              </a>
+              <span class="dept-foot-note">Morning and evening OP, every day</span>
+            </footer>
+          <?php endif; ?>
+
+        </article>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>

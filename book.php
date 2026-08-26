@@ -227,7 +227,10 @@ page_hero(
         <!-- Session -->
         <fieldset>
           <legend class="fieldset-legend step"><span class="num">3</span> Choose a session</legend>
-          <div id="session-options">
+          <!-- The session radios are built by JS once availability is known, so the
+               choice made in the hero's find bar (or lost to a failed submit) is
+               handed over here and applied after that first render. -->
+          <div id="session-options" data-preselect="<?= e($values['session']) ?>">
             <div class="notice notice-info mb-0">
               <p>Choose a doctor and a date to see available sessions.</p>
             </div>

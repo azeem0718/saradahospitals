@@ -23,6 +23,8 @@
   --navy-50:  #eef4fa;
 
   /* Red — emergency and calls to action only. Never decorative. */
+  --flip-time: .62s;
+  --flip-ease: cubic-bezier(.34, .9, .3, 1);
   --red-800: #7f0f14;
   --red-700: #9c1218;
   --red-600: #be1622;
@@ -658,7 +660,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   width: 46px; height: 46px; border-radius: 13px;
   background: var(--navy-50); border: 1px solid var(--navy-100);
   color: var(--navy-700);
-  transition: background-color .18s ease, color .18s ease;
+  transition: transform var(--flip-time) var(--flip-ease),
+              background-color .18s ease, color .18s ease, border-color .18s ease;
 }
 .quick-icon svg { width: 23px; height: 23px; }
 .quick:hover .quick-icon { background: var(--navy-700); color: #fff; border-color: var(--navy-700); }
@@ -724,6 +727,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   display: grid; place-items: center; flex: none;
   width: 40px; height: 40px; border-radius: 10px;
   background: rgba(255,255,255,.07); color: var(--gold-400);
+  transition: transform var(--flip-time) var(--flip-ease),
+              background-color .18s ease, color .18s ease;
 }
 .fact-icon svg { width: 20px; height: 20px; }
 .fact-text strong {
@@ -785,6 +790,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   margin-bottom: 1.25rem;
   background: var(--navy-50); color: var(--navy-700);
   border: 1px solid var(--navy-100);
+  transition: transform var(--flip-time) var(--flip-ease),
+              background-color .18s ease, color .18s ease, border-color .18s ease;
 }
 .card-icon svg { width: 25px; height: 25px; }
 .card-icon.red   { background: var(--red-50);   color: var(--red-600);   border-color: var(--red-100); }
@@ -874,6 +881,109 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .service-list li:hover { border-color: var(--navy-200); transform: translateX(2px); }
 .service-list svg { width: 17px; height: 17px; flex: none; margin-top: 3px; color: var(--green-600); }
 @media (min-width: 680px) { .service-list.two-col { grid-template-columns: 1fr 1fr; } }
+
+/* --------------------------------------------------------------------------
+   Department panels (Services)
+
+   Two long tick-lists side by side read as a spreadsheet and, with 14 items
+   against 12, sat at different heights. Each department is a panel instead: a
+   tinted header carrying the consultant who runs it, the list ruled and dense
+   in the middle, and a booking link at the foot so the section leads somewhere.
+   -------------------------------------------------------------------------- */
+.dept-grid { display: grid; gap: 1.6rem; }
+/* Stretch rather than start-align: the lists differ in length, and letting
+   the panels match height keeps both booking links on the same line. */
+@media (min-width: 940px) { .dept-grid { grid-template-columns: 1fr 1fr; } }
+
+.dept {
+  display: flex; flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .22s ease, border-color .22s ease, transform .22s ease;
+}
+.dept:hover { box-shadow: var(--shadow-lg); border-color: var(--navy-100); transform: translateY(-3px); }
+
+.dept-head {
+  position: relative;
+  padding: clamp(1.5rem, 3vw, 2rem) clamp(1.4rem, 3vw, 2rem) 1.5rem;
+  background: linear-gradient(168deg, var(--navy-50) 0%, var(--paper) 78%);
+}
+/* A hairline of the department's colour along the top edge. */
+.dept-head::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--navy-700), var(--navy-200));
+}
+.dept-green .dept-head { background: linear-gradient(168deg, var(--green-50) 0%, var(--paper) 78%); }
+.dept-green .dept-head::before { background: linear-gradient(90deg, var(--green-700), var(--green-100)); }
+
+.dept-head .card-icon { margin-bottom: 1.1rem; }
+.dept-head .eyebrow { display: block; margin-bottom: .35rem; color: var(--navy-600); }
+.dept-green .dept-head .eyebrow { color: var(--green-700); }
+.dept-head h2 { font-size: var(--step-2); margin-bottom: .55rem; }
+.dept-lede { margin: 0; font-size: .96rem; color: var(--ink-600); max-width: 44ch; }
+
+.dept-doc {
+  display: flex; align-items: center; gap: .8rem;
+  margin-top: 1.35rem; padding-top: 1.2rem;
+  border-top: 1px dashed var(--rule);
+}
+.dept-doc-portrait {
+  width: 46px; height: 46px; flex: none;
+  border-radius: 50%; overflow: hidden;
+  border: 1px solid var(--rule); background: var(--navy-50);
+}
+.dept-doc-portrait svg { display: block; width: 100%; height: 100%; }
+.dept-doc-text strong { display: block; font-size: .95rem; color: var(--navy-900); line-height: 1.3; }
+.dept-doc-text > span { font-size: .82rem; color: var(--ink-600); }
+
+.dept-body { flex: 1; padding: 1.4rem clamp(1.4rem, 3vw, 2rem) 1.5rem; }
+.dept-count {
+  margin: 0 0 .5rem;
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--ink-500);
+}
+.dept-count strong { font-size: .95rem; color: var(--navy-800); letter-spacing: 0; }
+
+.dept-list { list-style: none; margin: 0; padding: 0; }
+.dept-list li {
+  display: flex; align-items: baseline; gap: .75rem;
+  margin: 0; padding: .62rem .6rem .62rem .55rem;
+  border-top: 1px solid var(--rule-soft);
+  border-radius: var(--r-sm);
+  font-size: .94rem; color: var(--ink-700);
+  transition: background-color .16s ease, padding-left .16s ease, color .16s ease;
+}
+.dept-list li:hover { background: var(--navy-50); padding-left: .9rem; color: var(--navy-900); }
+.dept-green .dept-list li:hover { background: var(--green-50); color: var(--green-800); }
+
+.dept-mark {
+  width: 7px; height: 7px; flex: none;
+  border-radius: 50%; background: var(--navy-200);
+  transition: transform .16s ease, background-color .16s ease, box-shadow .16s ease;
+}
+.dept-green .dept-mark { background: var(--green-100); }
+.dept-list li:hover .dept-mark {
+  background: var(--navy-600); box-shadow: 0 0 0 4px var(--navy-100);
+}
+.dept-green .dept-list li:hover .dept-mark {
+  background: var(--green-600); box-shadow: 0 0 0 4px var(--green-100);
+}
+
+.dept-foot {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .9rem;
+  padding: 1.15rem clamp(1.4rem, 3vw, 2rem);
+  border-top: 1px solid var(--rule);
+  background: var(--ground);
+}
+.dept-foot-note { font-size: .83rem; color: var(--ink-600); }
+
+@media (prefers-reduced-motion: reduce) {
+  .dept:hover { transform: none; }
+  .dept-list li:hover { padding-left: .55rem; }
+}
 
 /* --------------------------------------------------------------------------
    Offers
@@ -1448,17 +1558,6 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
  * Hover and focus triggers. Kept as one list so a new component only has to be
  * added here rather than repeated against every icon.
  */
-.quick:hover, .quick:focus-visible,
-.card-link:hover, .card-link:focus-visible,
-.btn:hover, .btn:focus-visible,
-.hero-doc:hover, .hero-doc:focus-visible,
-.doctor-card:hover,
-.fact:hover,
-.contact-list li:hover,
-.offer-item:hover,
-.findbar-field:focus-within,
-.notice:hover { }
-
 :is(.quick, .card-link, .btn, .hero-doc, .fact, .offer-item, .doctor-card,
     .contact-list li, .service-list li, .stat, .token-slip):is(:hover, :focus-within) .ico-duo .ico-anim,
 .findbar-field:focus-within .ico-duo .ico-anim {
@@ -1471,6 +1570,17 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
 /* Card icon wells lift their duotone fill on hover for a little extra depth. */
 .card-link:hover .card-icon .ico-f,
 .quick:hover .quick-icon .ico-f { fill-opacity: .26; }
+
+/*
+ * The well turns over when its card is hovered, so the icon reads as an object
+ * on the card rather than a picture printed on it. A full 360 lands back where
+ * it started, which means it plays the same on the way out as on the way in.
+ */
+:is(.quick, .card-link, .doctor-card, .offer-item, .fact, .stat,
+    .contact-list li, .service-card):is(:hover, :focus-within)
+  :is(.quick-icon, .card-icon, .fact-icon) {
+  transform: perspective(620px) rotateY(360deg);
+}
 
 /* --------------------------------------------------------------------------
    One keyframe per icon. Each is tied to what the icon means: the token stub
@@ -1556,6 +1666,10 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .ico-anim { animation: none !important; }
+  .quick-icon, .card-icon, .fact-icon { transition-duration: .01ms; }
+  :is(.quick, .card-link, .doctor-card, .offer-item, .fact, .stat,
+      .contact-list li, .service-card):is(:hover, :focus-within)
+    :is(.quick-icon, .card-icon, .fact-icon) { transform: none; }
 }
 
 /* ==========================================================================
