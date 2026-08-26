@@ -284,3 +284,6 @@ hr + .form-section { margin-top: 0; }
 .slot-title { font-size: .98rem; margin: 0 0 .7rem; }
 .slot-actions { display: flex; gap: .5rem; margin-top: auto; padding-top: .6rem; }
 .slot input[type=file] { font-size: .82rem; }
+
+/* The admin bar sits on navy, so the brand highlight lifts to the light red. */
+.admin-bar .brand-hl { color: #f0857f; }

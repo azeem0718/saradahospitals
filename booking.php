@@ -92,7 +92,7 @@ require __DIR__ . '/includes/header.php';
     <div class="token-slip">
       <div class="token-slip-head">
         <?= logo_mark() ?>
-        <span class="brand-name"><?= e(HOSPITAL['name']) ?></span>
+        <span class="brand-name"><?= brand_name_html() ?></span>
         <span class="brand-tag"><?= e(HOSPITAL['tagline']) ?></span>
       </div>
 

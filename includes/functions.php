@@ -269,6 +269,21 @@ function asset_url(string $path): string
  * sitemap. Query strings are dropped except the ones that name a distinct
  * page (a doctor's slug), so filters and trackers never become "the" URL.
  */
+/**
+ * The hospital's name with its first word set as the brand highlight —
+ * "Sarada" carries the logo's red wherever the lockup appears.
+ */
+function brand_name_html(): string
+{
+    $name  = HOSPITAL['name'];
+    $space = strpos($name, ' ');
+    if ($space === false) {
+        return '<span class="brand-hl">' . e($name) . '</span>';
+    }
+    return '<span class="brand-hl">' . e(substr($name, 0, $space)) . '</span>'
+         . e(substr($name, $space));
+}
+
 function canonical_url(): string
 {
     $base   = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';

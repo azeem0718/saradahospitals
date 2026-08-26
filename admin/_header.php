@@ -52,7 +52,7 @@ $flash = flash();
     <a class="brand" href="index.php">
       <?= logo_mark('brand-mark', '../') ?>
       <span class="brand-text">
-        <span class="brand-name">Sarada Nursing Home</span>
+        <span class="brand-name"><?= brand_name_html() ?></span>
         <span class="brand-tag">Reception Panel</span>
       </span>
     </a>

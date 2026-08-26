@@ -381,11 +381,16 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 /* As large as the fixed 76px bar can hold; 600 is Newsreader's heaviest real
    weight — anything above it would be synthesized and smear. Scales down just
    enough on narrow phones that the full name never ellipsizes. */
+/* As large and heavy as the fixed 76px bar can hold. The variable font
+   carries real weight up to 800 — fonts.css declares the full range — so
+   this is a true bold, not a synthesized one. "Sarada" takes the logo's red. */
 .brand-name {
-  font-family: var(--font-display); font-weight: 600;
-  font-size: clamp(1.3rem, 1.02rem + 1.2vw, 1.55rem); color: var(--navy-900);
+  font-family: var(--font-display); font-weight: 750;
+  font-size: clamp(1.45rem, 1.02rem + 1.9vw, 1.85rem); color: var(--navy-900);
   letter-spacing: -.022em; white-space: nowrap;
 }
+.brand-hl { color: var(--red-600); }
+.site-footer .brand-hl { color: #f0857f; }
 .brand-tag {
   font-family: var(--font-sans);
   font-size: .655rem; font-weight: 500; color: var(--ink-500);

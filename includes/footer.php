@@ -8,7 +8,7 @@
         <div class="brand">
           <?= logo_mark() ?>
           <span class="brand-text">
-            <span class="brand-name"><?= e(HOSPITAL['name']) ?></span>
+            <span class="brand-name"><?= brand_name_html() ?></span>
             <span class="brand-tag"><?= e(HOSPITAL['tagline']) ?></span>
           </span>
         </div>
