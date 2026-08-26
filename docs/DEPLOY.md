@@ -70,6 +70,12 @@ define('DEBUG_MODE', false);   // keep false on the live site
 `DEBUG_MODE` must stay `false` in production. When true, database errors are
 printed to the page.
 
+Until this file exists the site serves a holding page carrying the hospital's
+phone numbers, so anyone who visits mid-setup still sees how to reach you. The
+setup steps sit behind a collapsed **"Setting up this site?"** toggle on that
+page. The same page appears if the credentials are wrong or the tables have not
+been imported, and it never prints a credential.
+
 ---
 
 ## 5. Create the first login

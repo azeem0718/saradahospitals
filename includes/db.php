@@ -9,12 +9,38 @@ if (!defined('SNH_APP')) {
     define('SNH_APP', true);
 }
 
+require_once __DIR__ . '/not-configured.php';
+
 $configFile = __DIR__ . '/config.php';
 if (!is_file($configFile)) {
-    http_response_code(503);
-    exit('Site not configured. Copy includes/config.example.php to includes/config.php and fill in the database credentials.');
+    render_not_configured(
+        'The file includes/config.php has not been created yet, so the site does not know how to reach its database.'
+    );
 }
 require_once $configFile;
+
+// A half-filled config is as broken as a missing one, and fails much later
+// and less obviously, so check it here.
+foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS', 'SITE_URL'] as $required) {
+    if (!defined($required)) {
+        render_not_configured(
+            'includes/config.php is missing the ' . $required . ' setting.',
+            'Compare it against includes/config.example.php — every define() in that file must be present.'
+        );
+    }
+}
+if (DB_NAME === 'your_database_name' || DB_USER === 'your_database_user') {
+    render_not_configured(
+        'includes/config.php still contains the example placeholder values.',
+        'Replace your_database_name and your_database_user with the real credentials from hPanel.'
+    );
+}
+
+// Optional, and safe to assume off: an older config.php may predate it.
+if (!defined('DEBUG_MODE')) {
+    define('DEBUG_MODE', false);
+}
+
 require_once __DIR__ . '/site.php';
 
 if (DEBUG_MODE) {
@@ -48,10 +74,11 @@ function db(): PDO
         ]);
     } catch (PDOException $e) {
         error_log('DB connection failed: ' . $e->getMessage());
-        http_response_code(503);
-        exit(DEBUG_MODE
-            ? 'Database connection failed: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES)
-            : 'The site is temporarily unavailable. Please call ' . HOSPITAL['mobile_display'] . '.');
+        render_not_configured(
+            'The database could not be reached.',
+            DEBUG_MODE ? $e->getMessage() : '',
+            true
+        );
     }
 
     // Keep MySQL's clock aligned with PHP's so DATE(NOW()) matches "today".
