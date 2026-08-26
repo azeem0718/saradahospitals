@@ -1,0 +1,73 @@
+# Sarada Nursing Home — Apache configuration
+# Hostinger shared hosting runs Apache, so this file applies as-is.
+
+# --- Never serve application internals ------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Block direct access to includes, sql and docs directories.
+  RewriteRule ^(includes|sql|docs)/ - [F,L]
+
+  # Serve the generated sitemap at the conventional address.
+  RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
+  # Block dotfiles and common secret/backup filenames.
+  RewriteRule (^|/)\.(?!well-known/) - [F,L]
+  RewriteRule \.(sql|log|bak|old|ini|sh|yml|yaml)$ - [F,L]
+</IfModule>
+
+<FilesMatch "^(config|config\.example)\.php$">
+  Require all denied
+</FilesMatch>
+
+<FilesMatch "\.(sql|log|md|bak|old)$">
+  Require all denied
+</FilesMatch>
+
+# --- Security headers ------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+
+  # HSTS. Safe here because the site is served over HTTPS only.
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+  # Remove the PHP version banner.
+  Header always unset X-Powered-By
+</IfModule>
+
+# --- Force HTTPS and drop www ---------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+</IfModule>
+
+# --- Caching ---------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css              "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType image/jpeg            "access plus 6 months"
+  ExpiresByType image/png             "access plus 6 months"
+  ExpiresByType image/webp            "access plus 6 months"
+  ExpiresByType image/svg+xml         "access plus 6 months"
+  ExpiresByType font/woff2            "access plus 1 year"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml \
+                                application/javascript application/json image/svg+xml
+</IfModule>
+
+# --- Error pages -----------------------------------------------------------
+ErrorDocument 404 /404.php
+
+# --- Misc ------------------------------------------------------------------
+Options -Indexes
+DirectoryIndex index.php index.html
