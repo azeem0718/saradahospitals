@@ -333,5 +333,5 @@ page_hero(
   </div>
 </section>
 
-<script src="assets/js/booking.js?v=1" defer></script>
+<script src="<?= e(asset('assets/js/booking.js')) ?>" defer></script>
 <?php require __DIR__ . '/includes/footer.php'; ?>

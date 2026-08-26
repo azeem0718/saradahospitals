@@ -161,8 +161,8 @@ $stepLabels = [1 => 'Database', 2 => 'Tables', 3 => 'Your login'];
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Set up | Sarada Nursing Home</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="stylesheet" href="assets/css/fonts.css?v=2">
-<link rel="stylesheet" href="assets/css/style.css?v=2">
+<link rel="stylesheet" href="<?= e(asset('assets/css/fonts.css')) ?>">
+<link rel="stylesheet" href="<?= e(asset('assets/css/style.css')) ?>">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <style>
   body { background: var(--ground); display: grid; place-items: start center; padding: 2.5rem 1.25rem 4rem; }

@@ -42,9 +42,9 @@ if (is_post()) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Staff Login | Sarada Nursing Home</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="stylesheet" href="../assets/css/fonts.css?v=2">
-<link rel="stylesheet" href="../assets/css/style.css?v=2">
-<link rel="stylesheet" href="../assets/css/admin.css?v=2">
+<link rel="stylesheet" href="<?= e(asset('assets/css/fonts.css', '../')) ?>">
+<link rel="stylesheet" href="<?= e(asset('assets/css/style.css', '../')) ?>">
+<link rel="stylesheet" href="<?= e(asset('assets/css/admin.css', '../')) ?>">
 </head>
 <body class="admin">
 <div class="login-wrap">

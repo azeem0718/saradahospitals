@@ -200,6 +200,37 @@ function is_free_op_day(string $sqlDate): bool
 }
 
 // ---------------------------------------------------------------
+// Assets
+// ---------------------------------------------------------------
+
+/**
+ * Cache-busting URL for a static asset.
+ *
+ * .htaccess tells browsers to hold CSS and JS for a month, so a hand-written
+ * "?v=2" has to be remembered and bumped on every change. It was not, and a
+ * deploy went out where the markup was new and the stylesheet a month stale:
+ * the page rendered with unsized icons and unstyled controls. Deriving the
+ * version from the file's own mtime means a changed file is always a changed
+ * URL, with nothing to remember.
+ *
+ * @param string $path   Path from the web root, e.g. "assets/css/style.css".
+ * @param string $prefix Prepended to the returned URL, for pages in admin/.
+ */
+function asset(string $path, string $prefix = ''): string
+{
+    static $cache = [];
+
+    if (!isset($cache[$path])) {
+        $file = dirname(__DIR__) . '/' . ltrim($path, '/');
+        // Fall back to the deploy's own date rather than a constant, so a
+        // missing file still produces a URL that changes between releases.
+        $cache[$path] = is_file($file) ? (string) filemtime($file) : date('Ymd');
+    }
+
+    return $prefix . $path . '?v=' . $cache[$path];
+}
+
+// ---------------------------------------------------------------
 // Bootstrap
 // ---------------------------------------------------------------
 

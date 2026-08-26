@@ -53,7 +53,11 @@ function icon(string $name, string $class = ''): string
     $path = $paths[$name] ?? $paths['info'];
     $cls  = $class !== '' ? ' class="' . htmlspecialchars($class, ENT_QUOTES) . '"' : '';
 
-    return '<svg' . $cls . ' viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+    // width/height are presentation attributes, not styling: they stop the icon
+    // filling its container if the stylesheet ever fails to load, and any CSS
+    // rule still wins over them.
+    return '<svg' . $cls . ' viewBox="0 0 24 24" width="20" height="20"'
+         . ' fill="none" stroke="currentColor"'
          . ' stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"'
          . ' aria-hidden="true" focusable="false">' . $path . '</svg>';
 }
@@ -69,7 +73,7 @@ function icon(string $name, string $class = ''): string
 function logo_mark(string $class = 'brand-mark'): string
 {
     return <<<SVG
-    <svg class="{$class}" viewBox="0 0 64 64" role="img" aria-label="Sarada Nursing Home">
+    <svg class="{$class}" viewBox="0 0 64 64" width="40" height="40" role="img" aria-label="Sarada Nursing Home">
       <circle cx="32" cy="32" r="31" fill="#be1622"/>
       <circle cx="32" cy="32" r="28" fill="none" stroke="#ffffff" stroke-opacity=".2" stroke-width="1"/>
       <path d="M14.8 43.6c0-2.4 1.6-4.2 3.8-4.2 1.2 0 2.3.5 3.1 1.3l5 4.9-2 2.1-4.2-4.1a1.3 1.3 0 0 0-1.8 1.8l5.6 5.6h-7.3c-1.3 0-2.2-1-2.2-2.2z" fill="#ffffff" fill-opacity=".82"/>
@@ -89,7 +93,7 @@ function logo_mark(string $class = 'brand-mark'): string
 function doctor_avatar(string $class = 'avatar'): string
 {
     return <<<SVG
-    <svg class="{$class}" viewBox="0 0 64 64" role="img" aria-label="Portrait placeholder">
+    <svg class="{$class}" viewBox="0 0 64 64" width="40" height="40" role="img" aria-label="Portrait placeholder">
       <rect width="64" height="64" fill="#eef4fa"/>
       <circle cx="32" cy="25" r="10" fill="#3573a9"/>
       <path d="M32 37.5c-10.4 0-18.5 6.6-18.5 16.6V64h37V54.1c0-10-8.1-16.6-18.5-16.6z" fill="#ffffff"/>

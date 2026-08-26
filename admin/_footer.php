@@ -1,5 +1,5 @@
   </div>
 </main>
-<script src="../assets/js/admin.js?v=1" defer></script>
+<script src="<?= e(asset('assets/js/admin.js', '../')) ?>" defer></script>
 </body>
 </html>

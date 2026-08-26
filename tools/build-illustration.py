@@ -156,8 +156,12 @@ _w, _h = (max(_xs) - min(_xs)) + 2*_pad, (max(_ys) - min(_ys)) + 2*_pad
 _vb = "%.0f %.0f %.0f %.0f" % (_x0, _y0, _w, _h)
 print("  viewBox: %s   aspect %.2f" % (_vb, _w / _h))
 
-out = ['    <svg class="draw-art" viewBox="' + _vb + '" role="img"',
-       '         aria-label="Axonometric line drawing of Sarada Nursing Home">']
+# fill/stroke as presentation attributes, so the drawing stays line art even
+# if the stylesheet fails to load. CSS still overrides them per face class.
+out = ['    <svg class="draw-art" viewBox="' + _vb + '" width="560" height="290" role="img"',
+       '         aria-label="Axonometric line drawing of Sarada Nursing Home"',
+       '         fill="none" stroke="currentColor" stroke-width="2"',
+       '         stroke-linecap="round" stroke-linejoin="round">']
 for cls, g, d in items:
     out.append('      <path class="%s g%d" pathLength="1" d="%s"/>' % (cls, g, d))
 out.append('    </svg>')
