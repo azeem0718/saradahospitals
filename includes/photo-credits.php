@@ -35,5 +35,7 @@ function photo_credits(): array
          'https://commons.wikimedia.org/wiki/File:Ambulance_-_Force_Motors_-_Traveller_-_Kolkata_2015-02-06_5788.JPG'],
         ['Laboratory card', 'Checking Blood Sample (9955279835)', 'National Eye Institute', 'CC BY 2.0',
          'https://commons.wikimedia.org/wiki/File:Checking_Blood_Sample_(9955279835).jpg'],
+        ['Tariff card and banner', 'A 2000 rupee note', 'Agastya Chandrakant', 'CC BY-SA 4.0',
+         'https://commons.wikimedia.org/wiki/File:A_2000_rupee_note.jpg'],
     ];
 }

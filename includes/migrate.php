@@ -18,7 +18,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
 /** Bump this when a migration is added below. */
-const SCHEMA_VERSION = 5;
+const SCHEMA_VERSION = 6;
 
 /**
  * Migrations, keyed by the version they bring the database up to.
@@ -134,6 +134,25 @@ function schema_migrations(): array
                 ['card-lab', 'card-lab.jpg', 'A gloved hand holding a blood sample tube'],
             ];
             $dir = dirname(__DIR__) . '/assets/img/site/';
+            foreach ($defaults as [$slot, $file, $alt]) {
+                if (is_file($dir . $file)) {
+                    $stmt->execute([$slot, $file, $alt]);
+                }
+            }
+        },
+
+        // The tariff slots arrived a round later: a hand holding a rupee note,
+        // for the page that says exactly what treatment costs. Same INSERT
+        // IGNORE contract as migration 5.
+        6 => static function (PDO $pdo): void {
+            $stmt = $pdo->prepare(
+                'INSERT IGNORE INTO site_images (slot, file, alt) VALUES (?,?,?)'
+            );
+            $dir = dirname(__DIR__) . '/assets/img/site/';
+            $defaults = [
+                ['card-tariff', 'card-tariff.jpg', 'A hand holding an Indian rupee note'],
+                ['banner-tariff', 'banner-tariff.jpg', 'A hand holding an Indian rupee note'],
+            ];
             foreach ($defaults as [$slot, $file, $alt]) {
                 if (is_file($dir . $file)) {
                     $stmt->execute([$slot, $file, $alt]);
