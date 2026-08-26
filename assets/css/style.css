@@ -1362,6 +1362,18 @@ tbody tr:hover { background: var(--navy-50); }
 .breadcrumb .sep { opacity: .45; }
 
 /* --------------------------------------------------------------------------
+   Photo credits
+   -------------------------------------------------------------------------- */
+.credit-list { list-style: none; margin: 0; padding: 0; }
+.credit-list li {
+  display: grid; gap: .15rem; margin: 0;
+  padding: .85rem 0; border-top: 1px solid var(--rule-soft);
+  font-size: .93rem; color: var(--ink-600);
+}
+.credit-list li:first-child { border-top: 0; }
+.credit-list strong { color: var(--navy-900); font-size: .95rem; }
+
+/* --------------------------------------------------------------------------
    Footer
    -------------------------------------------------------------------------- */
 .site-footer {

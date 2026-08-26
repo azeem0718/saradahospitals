@@ -59,7 +59,11 @@
     </div>
 
     <div class="footer-bottom">
-      <span>&copy; <?= date('Y') ?> <?= e(HOSPITAL['name']) ?>, Kandukur. All rights reserved.</span>
+      <span>
+        &copy; <?= date('Y') ?> <?= e(HOSPITAL['name']) ?>, Kandukur. All rights reserved.<?php
+        require_once __DIR__ . '/photo-credits.php';
+        if (photo_credits()): ?> &middot; <a href="credits.php">Photo credits</a><?php endif; ?>
+      </span>
       <span>Open 24 hours &middot; 7 days a week</span>
     </div>
   </div>
