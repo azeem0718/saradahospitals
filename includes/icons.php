@@ -1,65 +1,208 @@
 <?php
 /**
- * Inline SVG icon set. Inline rather than a sprite file so icons inherit
- * currentColor and never flash unstyled.
+ * Icon set.
+ *
+ * Two tiers. Feature icons — the ones carrying visual weight on cards, quick
+ * links and contact rows — are duotone: a soft fill of currentColor behind a
+ * crisp stroke, which reads far richer than a flat single-weight line. Utility
+ * icons (ticks, chevrons, close) stay plain strokes, because a tick with a
+ * shadow behind it is just noise.
+ *
+ * Feature icons also name one moving part with .ico-anim. The animation is
+ * declared per icon as a custom property and only runs while an ancestor is
+ * hovered or focused, so nothing moves until someone reaches for it. See the
+ * "Animated icons" block in style.css.
  */
 
 declare(strict_types=1);
 
+/**
+ * Feature icons: [custom-property animation name, markup].
+ * `F` marks the duotone fill, `L` the stroke layer, `A` the moving part.
+ */
+function icon_feature_set(): array
+{
+    return [
+        // --- booking and wayfinding -------------------------------------
+        'ticket' => ['ico-ticket',
+            '<path class="ico-f" d="M3 8.5A1.5 1.5 0 0 1 4.5 7h15A1.5 1.5 0 0 1 21 8.5v2a2 2 0 0 0 0 3v2A1.5 1.5 0 0 1 19.5 17h-15A1.5 1.5 0 0 1 3 15.5v-2a2 2 0 0 0 0-3z"/>
+             <path class="ico-l" d="M3 8.5A1.5 1.5 0 0 1 4.5 7h15A1.5 1.5 0 0 1 21 8.5v2a2 2 0 0 0 0 3v2A1.5 1.5 0 0 1 19.5 17h-15A1.5 1.5 0 0 1 3 15.5v-2a2 2 0 0 0 0-3z"/>
+             <path class="ico-l ico-anim" d="M14 7v10" stroke-dasharray="2.4 2.4"/>'],
+
+        'calendar' => ['ico-calendar',
+            '<path class="ico-f" d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+             <rect class="ico-l" x="3" y="5" width="18" height="16" rx="2"/>
+             <path class="ico-l" d="M3 9.5h18M8 3v4M16 3v4"/>
+             <path class="ico-l ico-anim" d="M8.5 14.5h3.5"/>'],
+
+        'clock' => ['ico-clock',
+            '<circle class="ico-f" cx="12" cy="12" r="9"/>
+             <circle class="ico-l" cx="12" cy="12" r="9"/>
+             <path class="ico-l ico-anim" d="M12 7.5V12l3.2 1.9"/>'],
+
+        'location' => ['ico-location',
+            '<path class="ico-f" d="M12 21.5s7.2-6.1 7.2-11.3A7.2 7.2 0 0 0 4.8 10.2C4.8 15.4 12 21.5 12 21.5z"/>
+             <path class="ico-l ico-anim" d="M12 21.5s7.2-6.1 7.2-11.3A7.2 7.2 0 0 0 4.8 10.2C4.8 15.4 12 21.5 12 21.5z"/>
+             <circle class="ico-l" cx="12" cy="10" r="2.6"/>'],
+
+        'search' => ['ico-search',
+            '<circle class="ico-f" cx="10.8" cy="10.8" r="6.8"/>
+             <circle class="ico-l" cx="10.8" cy="10.8" r="6.8"/>
+             <path class="ico-l ico-anim" d="m20 20-4.4-4.4"/>'],
+
+        // --- clinical ---------------------------------------------------
+        'stethoscope' => ['ico-stetho',
+            '<circle class="ico-f" cx="18.5" cy="10.5" r="2.6"/>
+             <path class="ico-l" d="M6 3v5a4.5 4.5 0 0 0 9 0V3"/>
+             <path class="ico-l" d="M4.6 3h2.8M13.6 3h2.8"/>
+             <path class="ico-l" d="M10.5 12.5v3.2a4.3 4.3 0 0 0 8 2"/>
+             <circle class="ico-l ico-anim" cx="18.5" cy="10.5" r="2.6"/>'],
+
+        'heart' => ['ico-heart',
+            '<path class="ico-f ico-anim" d="M12 20.4 4.6 13a4.9 4.9 0 0 1 6.9-7l.5.5.5-.5a4.9 4.9 0 0 1 6.9 7z"/>
+             <path class="ico-l" d="M12 20.4 4.6 13a4.9 4.9 0 0 1 6.9-7l.5.5.5-.5a4.9 4.9 0 0 1 6.9 7z"/>'],
+
+        'icu' => ['ico-icu',
+            '<rect class="ico-f" x="2.5" y="5" width="19" height="14" rx="2.2"/>
+             <rect class="ico-l" x="2.5" y="5" width="19" height="14" rx="2.2"/>
+             <path class="ico-l ico-anim" d="M5.5 12.4h3l1.8-4 2.6 8 1.8-4h3.8"/>'],
+
+        'droplet' => ['ico-droplet',
+            '<path class="ico-f" d="M12 3.2 6.9 9a7.1 7.1 0 1 0 10.2 0z"/>
+             <path class="ico-l" d="M12 3.2 6.9 9a7.1 7.1 0 1 0 10.2 0z"/>
+             <path class="ico-l ico-anim" d="M9.4 13.6a3.2 3.2 0 0 0 2.8 3.1"/>'],
+
+        'lab' => ['ico-lab',
+            '<path class="ico-f" d="M9.6 12.6h4.8l3.9 6.2a1.7 1.7 0 0 1-1.4 2.6H7.1a1.7 1.7 0 0 1-1.4-2.6z"/>
+             <path class="ico-l" d="M9.5 3h5M10 3v7.1L5.7 18.8a1.7 1.7 0 0 0 1.4 2.6h9.8a1.7 1.7 0 0 0 1.4-2.6L14 10.1V3"/>
+             <circle class="ico-l ico-anim" cx="10.4" cy="16.6" r="1.05"/>'],
+
+        'scan' => ['ico-scan',
+            '<path class="ico-f" d="M10.2 20.6h3.6a1.1 1.1 0 0 0 1.1-1.1v-2.6H9.1v2.6a1.1 1.1 0 0 0 1.1 1.1z"/>
+             <path class="ico-l" d="M10.2 20.6h3.6a1.1 1.1 0 0 0 1.1-1.1v-2.6H9.1v2.6a1.1 1.1 0 0 0 1.1 1.1z"/>
+             <g class="ico-anim">
+               <path class="ico-l" d="M8.6 14.4a4.8 4.8 0 0 1 6.8 0"/>
+               <path class="ico-l" d="M6.4 11.2a8.4 8.4 0 0 1 11.2 0"/>
+               <path class="ico-l" d="M4.2 8a12 12 0 0 1 15.6 0"/>
+             </g>'],
+
+        'maternity' => ['ico-maternity',
+            '<path class="ico-f ico-anim" d="M8.7 8.1c-2 0-3 1.4-3 3.1v8.2h5c3.2 0 5.4-2.1 5.4-4.9 0-3-2.4-5.3-5.6-5.6z"/>
+             <circle class="ico-l" cx="8.9" cy="4.3" r="2.5"/>
+             <path class="ico-l" d="M8.7 8.1c-2 0-3 1.4-3 3.1v8.2h5c3.2 0 5.4-2.1 5.4-4.9 0-3-2.4-5.3-5.6-5.6z"/>
+             <path class="ico-l" d="M6.4 19.4v2.3M10.6 19.4v2.3"/>'],
+
+        'baby' => ['ico-baby',
+            '<circle class="ico-f" cx="12" cy="12" r="9"/>
+             <circle class="ico-l" cx="12" cy="12" r="9"/>
+             <path class="ico-l ico-anim" d="M9.2 10.6h.02M14.8 10.6h.02M9.6 15c.7.5 1.5.7 2.4.7s1.7-.2 2.4-.7"/>'],
+
+        'emergency' => ['ico-emergency',
+            '<path class="ico-f" d="M12 2.6 4.4 6v6c0 5.2 3.2 9.6 7.6 10.8 4.4-1.2 7.6-5.6 7.6-10.8V6z"/>
+             <path class="ico-l" d="M12 2.6 4.4 6v6c0 5.2 3.2 9.6 7.6 10.8 4.4-1.2 7.6-5.6 7.6-10.8V6z"/>
+             <path class="ico-l ico-anim" d="M12 8.6v6M9 11.6h6"/>'],
+
+        'shield' => ['ico-shield',
+            '<path class="ico-f" d="M12 2.6 4.4 6v6c0 5.2 3.2 9.6 7.6 10.8 4.4-1.2 7.6-5.6 7.6-10.8V6z"/>
+             <path class="ico-l" d="M12 2.6 4.4 6v6c0 5.2 3.2 9.6 7.6 10.8 4.4-1.2 7.6-5.6 7.6-10.8V6z"/>
+             <path class="ico-l ico-anim" d="m8.8 12.2 2.3 2.3 4.1-4.5"/>'],
+
+        // --- people and admin -------------------------------------------
+        'users' => ['ico-users',
+            '<circle class="ico-f" cx="9.4" cy="7.4" r="3.6"/>
+             <circle class="ico-l" cx="9.4" cy="7.4" r="3.6"/>
+             <path class="ico-l" d="M2.6 20.4v-1.5a4.4 4.4 0 0 1 4.4-4.4h4.8a4.4 4.4 0 0 1 4.4 4.4v1.5"/>
+             <path class="ico-l ico-anim" d="M16.6 4.2a3.6 3.6 0 0 1 0 6.9M18.2 14.8a4.4 4.4 0 0 1 3.2 4.2v1.4"/>'],
+
+        'list' => ['ico-list',
+            '<path class="ico-f" d="M5 2.8h14v16.9l-2.3-1.4-2.4 1.4-2.3-1.4-2.4 1.4-2.3-1.4L5 19.7z"/>
+             <path class="ico-l" d="M5 2.8h14v16.9l-2.3-1.4-2.4 1.4-2.3-1.4-2.4 1.4-2.3-1.4L5 19.7z"/>
+             <path class="ico-l ico-anim" d="M8.4 7.6h7.2M8.4 11.4h7.2M8.4 15.2h4.4"/>'],
+
+        'discount' => ['ico-discount',
+            '<path class="ico-f" d="M11.2 2.6H4.4a1.8 1.8 0 0 0-1.8 1.8v6.8a1.8 1.8 0 0 0 .5 1.3l7.6 7.6a1.8 1.8 0 0 0 2.6 0l6.8-6.8a1.8 1.8 0 0 0 0-2.6l-7.6-7.6a1.8 1.8 0 0 0-1.3-.5z"/>
+             <path class="ico-l" d="M11.2 2.6H4.4a1.8 1.8 0 0 0-1.8 1.8v6.8a1.8 1.8 0 0 0 .5 1.3l7.6 7.6a1.8 1.8 0 0 0 2.6 0l6.8-6.8a1.8 1.8 0 0 0 0-2.6l-7.6-7.6a1.8 1.8 0 0 0-1.3-.5z"/>
+             <circle class="ico-l ico-anim" cx="7.4" cy="7.4" r="1.5"/>'],
+
+        'award' => ['ico-award',
+            '<circle class="ico-f" cx="12" cy="8.6" r="5.8"/>
+             <circle class="ico-l" cx="12" cy="8.6" r="5.8"/>
+             <path class="ico-l ico-anim" d="m8.6 13.6-1.2 8L12 19l4.6 2.6-1.2-8"/>'],
+
+        'building' => ['ico-building',
+            '<rect class="ico-f" x="4" y="2.5" width="16" height="19" rx="2"/>
+             <rect class="ico-l" x="4" y="2.5" width="16" height="19" rx="2"/>
+             <path class="ico-l ico-anim" d="M9.5 21.5v-4h5v4"/>
+             <path class="ico-l" d="M8 6.5h.02M12 6.5h.02M16 6.5h.02M8 10.5h.02M12 10.5h.02M16 10.5h.02M8 14.5h.02M16 14.5h.02"/>'],
+
+        'room' => ['ico-room',
+            '<path class="ico-f" d="M3.4 12.4h17.2v5.4H3.4z"/>
+             <path class="ico-l" d="M3.4 17.8v3M20.6 17.8v3"/>
+             <path class="ico-l" d="M3.4 17.8v-6.2a1 1 0 0 1 1-1h15.2a1 1 0 0 1 1 1v6.2z"/>
+             <path class="ico-l" d="M3.4 14.4h17.2"/>
+             <rect class="ico-l ico-anim" x="5.4" y="6.6" width="5.6" height="3.8" rx="1.3"/>'],
+
+        'phone' => ['ico-phone',
+            '<path class="ico-f" d="M21.5 16.9v2.9a2 2 0 0 1-2.2 2 19.6 19.6 0 0 1-8.5-3A19.3 19.3 0 0 1 4.9 13 19.6 19.6 0 0 1 1.8 4.4a2 2 0 0 1 2-2.2h2.9a2 2 0 0 1 2 1.7c.13.95.36 1.88.7 2.77a2 2 0 0 1-.45 2.1L7.7 10.1a15.8 15.8 0 0 0 6 6l1.3-1.26a2 2 0 0 1 2.1-.45c.9.34 1.82.57 2.77.7a2 2 0 0 1 1.7 2z"/>
+             <path class="ico-l ico-anim" d="M21.5 16.9v2.9a2 2 0 0 1-2.2 2 19.6 19.6 0 0 1-8.5-3A19.3 19.3 0 0 1 4.9 13 19.6 19.6 0 0 1 1.8 4.4a2 2 0 0 1 2-2.2h2.9a2 2 0 0 1 2 1.7c.13.95.36 1.88.7 2.77a2 2 0 0 1-.45 2.1L7.7 10.1a15.8 15.8 0 0 0 6 6l1.3-1.26a2 2 0 0 1 2.1-.45c.9.34 1.82.57 2.77.7a2 2 0 0 1 1.7 2z"/>'],
+    ];
+}
+
+/** Utility icons: single-weight strokes, no fill, no motion. */
+function icon_utility_set(): array
+{
+    return [
+        'check'         => '<path d="M20 6 9 17l-5-5"/>',
+        'check-circle'  => '<circle cx="12" cy="12" r="9"/><path d="m8.6 12.2 2.3 2.3 4.5-4.9"/>',
+        'arrow-right'   => '<path d="M4 12h15M13 6l6 6-6 6"/>',
+        'chevron-right' => '<path d="m9 18 6-6-6-6"/>',
+        'chevron-left'  => '<path d="m15 18-6-6 6-6"/>',
+        'close'         => '<path d="M18 6 6 18M6 6l12 12"/>',
+        'plus'          => '<path d="M12 5v14M5 12h14"/>',
+        'menu'          => '<path d="M3 6h18M3 12h18M3 18h18"/>',
+        'info'          => '<circle cx="12" cy="12" r="9"/><path d="M12 16.5v-5M12 8h.02"/>',
+        'alert'         => '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17.2h.02"/>',
+        'lock'          => '<rect x="3.5" y="10.5" width="17" height="10.5" rx="2"/><path d="M7.5 10.5V7a4.5 4.5 0 0 1 9 0v3.5"/>',
+        'logout'        => '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+        'settings'      => '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6 1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.35.4.64.73.83.3.17.63.26.97.26H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+        'print'         => '<path d="M6.5 9V3h11v6M6.5 18H5a2 2 0 0 1-2-2v-4.5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2V16a2 2 0 0 1-2 2h-1.5"/><rect x="6.5" y="14" width="11" height="7" rx="1"/>',
+        'undo'          => '<path d="M3 7.5v5.5h5.5"/><path d="M3.6 13a9 9 0 1 0 2.1-9.4L3 7.5"/>',
+        'image'         => '<rect x="3" y="3.5" width="18" height="17" rx="2.2"/><circle cx="8.6" cy="9.2" r="1.6"/><path d="m21 15.5-4.8-4.8L6 20.5"/>',
+        'whatsapp'      => '<path d="M12.04 2.5a9.4 9.4 0 0 0-8.1 14.1L2.5 21.5l5-1.4a9.4 9.4 0 1 0 4.54-17.6z"/><path d="M8.6 8c.2-.5.4-.5.7-.5h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2 0 .4-.1.6l-.5.6c-.1.2-.3.3-.1.6a8 8 0 0 0 3.6 3.1c.3.2.5.1.7-.1l.7-.8c.2-.2.4-.2.6-.1l1.9.9c.3.1.4.3.4.5a2 2 0 0 1-1.4 1.6 3.4 3.4 0 0 1-2.4-.2 12 12 0 0 1-6.4-5.7 3.9 3.9 0 0 1-.6-2.4c.1-.7.4-1.1.6-1.4z"/>',
+    ];
+}
+
+/**
+ * Render an icon.
+ *
+ * @param string $name  Icon key. Unknown names fall back to 'info'.
+ * @param string $class Extra classes on the <svg>.
+ */
 function icon(string $name, string $class = ''): string
 {
-    static $paths = [
-        'phone'      => '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/>',
-        'whatsapp'   => '<path d="M17.47 14.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.3-.02-.46.13-.6.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.01-1.04 2.47s1.06 2.86 1.21 3.06c.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.69.63.71.22 1.36.19 1.87.12.57-.09 1.75-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/><path d="M20.52 3.45A11.87 11.87 0 0 0 12.05 0C5.5 0 .18 5.32.18 11.87c0 2.09.55 4.13 1.59 5.93L0 24l6.35-1.66a11.82 11.82 0 0 0 5.7 1.45h.01c6.54 0 11.87-5.32 11.87-11.87 0-3.17-1.24-6.15-3.41-8.47zm-8.47 18.26h-.01a9.86 9.86 0 0 1-5.02-1.38l-.36-.21-3.76.99 1-3.67-.23-.38a9.82 9.82 0 0 1-1.51-5.25c0-5.44 4.43-9.87 9.88-9.87 2.64 0 5.12 1.03 6.98 2.9a9.81 9.81 0 0 1 2.89 6.98c0 5.45-4.43 9.89-9.87 9.89z"/>',
-        'location'   => '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
-        'clock'      => '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
-        'calendar'   => '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
-        'check'      => '<path d="M20 6 9 17l-5-5"/>',
-        'check-circle' => '<circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>',
-        'arrow-right'=> '<path d="M5 12h14M12 5l7 7-7 7"/>',
-        'alert'      => '<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><path d="M12 9v4M12 17h.01"/>',
-        'info'       => '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
-        'emergency'  => '<path d="M12 2 4 6v6c0 5.55 3.42 10.24 8 11.4 4.58-1.16 8-5.85 8-11.4V6l-8-4z"/><path d="M12 8v6M9 11h6"/>',
-        'heart'      => '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>',
-        'stethoscope'=> '<path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.3.3 0 1 0 .2.3"/><path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/>',
-        'baby'       => '<path d="M9 12h.01M15 12h.01M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M12 3a9 9 0 0 0-9 9 9 9 0 0 0 9 9 9 9 0 0 0 9-9 9 9 0 0 0-9-9z"/>',
-        'droplet'    => '<path d="M12 2.7 6.5 8.2a7.8 7.8 0 1 0 11 0L12 2.7z"/>',
-        'lab'        => '<path d="M9 3h6M10 3v6.5L4.6 18a2 2 0 0 0 1.7 3h11.4a2 2 0 0 0 1.7-3L14 9.5V3"/><path d="M7 15h10"/>',
-        'icu'        => '<path d="M3 12h4l2-5 3 10 2.5-5H21"/>',
-        'scan'       => '<path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h2l1.5-3 2 6 1.5-3h3"/>',
-        'room'       => '<path d="M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6M3 18v2M21 18v2M3 14h18"/><path d="M6 10V7a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/>',
-        'maternity'  => '<circle cx="12" cy="5" r="2.5"/><path d="M12 8c-2 0-3.5 1.5-3.5 3.5 0 1.2.4 2 .4 3.5 0 1.2-.9 2-.9 4h8c0-2-.9-2.8-.9-4 0-1.5.4-2.3.4-3.5C15.5 9.5 14 8 12 8z"/>',
-        'discount'   => '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0l-8.2-8.2A2 2 0 0 1 2 11V4a2 2 0 0 1 2-2h7a2 2 0 0 1 1.4.6l8.2 8.2a2 2 0 0 1 0 2.6z"/><circle cx="7" cy="7" r="1.2"/>',
-        'shield'     => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
-        'users'      => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
-        'menu'       => '<path d="M3 6h18M3 12h18M3 18h18"/>',
-        'close'      => '<path d="M18 6 6 18M6 6l12 12"/>',
-        'print'      => '<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/>',
-        'search'     => '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>',
-        'logout'     => '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
-        'lock'       => '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
-        'settings'   => '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6 1.65 1.65 0 0 0 10 3.09V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.35.4.64.73.83.3.17.63.26.97.26H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
-        'list'       => '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
-        'image'      => '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>',
-        'ticket'     => '<path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2 2 2 0 0 0 0 4 2 2 0 0 1-2 2H5a2 2 0 0 1-2-2 2 2 0 0 0 0-4z"/><path d="M13 7v10"/>',
-        'plus'       => '<path d="M12 5v14M5 12h14"/>',
-        'undo'       => '<path d="M3 7v6h6"/><path d="M3.5 13a9 9 0 1 0 2.1-9.4L3 7"/>',
-        'chevron-left' => '<path d="m15 18-6-6 6-6"/>',
-        'chevron-right'=> '<path d="m9 18 6-6-6-6"/>',
-        'award'      => '<circle cx="12" cy="8" r="6"/><path d="M15.5 13.5 17 22l-5-3-5 3 1.5-8.5"/>',
-        'building'   => '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4M8 6h.01M12 6h.01M16 6h.01M8 10h.01M12 10h.01M16 10h.01M8 14h.01M16 14h.01"/>',
-    ];
+    static $feature = null, $utility = null;
+    $feature ??= icon_feature_set();
+    $utility ??= icon_utility_set();
 
-    $path = $paths[$name] ?? $paths['info'];
-    $cls  = $class !== '' ? ' class="' . htmlspecialchars($class, ENT_QUOTES) . '"' : '';
+    if (isset($feature[$name])) {
+        [$anim, $body] = $feature[$name];
+        $cls = trim('ico ico-duo ' . $class);
+        $style = ' style="--ico-anim:' . $anim . '"';
+    } else {
+        $body  = $utility[$name] ?? $utility['info'];
+        $body  = '<g class="ico-l">' . $body . '</g>';
+        $cls   = trim('ico ' . $class);
+        $style = '';
+    }
 
-    // width/height are presentation attributes, not styling: they stop the icon
-    // filling its container if the stylesheet ever fails to load, and any CSS
-    // rule still wins over them.
-    return '<svg' . $cls . ' viewBox="0 0 24 24" width="20" height="20"'
-         . ' fill="none" stroke="currentColor"'
-         . ' stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"'
-         . ' aria-hidden="true" focusable="false">' . $path . '</svg>';
+    // width/height are presentation attributes, not styling: without them an
+    // SVG with only a viewBox expands to fill its container if the stylesheet
+    // fails to load. Any CSS rule still wins over them.
+    return '<svg class="' . htmlspecialchars($cls, ENT_QUOTES) . '"' . $style
+         . ' viewBox="0 0 24 24" width="20" height="20"'
+         . ' fill="none" stroke="currentColor" stroke-width="1.7"'
+         . ' stroke-linecap="round" stroke-linejoin="round"'
+         . ' aria-hidden="true" focusable="false">' . $body . '</svg>';
 }
 
 /**

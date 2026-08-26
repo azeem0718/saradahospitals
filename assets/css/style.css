@@ -1376,3 +1376,139 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
   .token-slip-head .brand-name, .token-slip-head .brand-tag { color: #000 !important; }
   .token-slip-head::after { display: none; }
 }
+
+/* ==========================================================================
+   Icons
+
+   Two tiers, matching includes/icons.php. Feature icons are duotone: a soft
+   fill of currentColor behind a crisp stroke. Utility icons stay plain lines.
+
+   Each feature icon names one moving part and declares its animation as
+   --ico-anim. The animation only runs while an ancestor is hovered or focused,
+   so the page is still until someone reaches for something — a hospital site
+   with permanently wiggling icons reads as a toy.
+   ========================================================================== */
+
+.ico { flex: none; }
+.ico-l { fill: none; stroke: currentColor; }
+.ico-f { fill: currentColor; fill-opacity: .15; stroke: none; }
+
+/* The moving part rotates and scales about its own centre, not the viewBox's. */
+.ico-anim { transform-box: fill-box; transform-origin: center; }
+/* The ultrasound waves radiate from the probe at the bottom, so they scale
+   about that point rather than their own middle. */
+.ico-scan-origin, .ico-duo[style*="ico-scan"] .ico-anim { transform-origin: 50% 100%; }
+
+/*
+ * Hover and focus triggers. Kept as one list so a new component only has to be
+ * added here rather than repeated against every icon.
+ */
+.quick:hover, .quick:focus-visible,
+.card-link:hover, .card-link:focus-visible,
+.btn:hover, .btn:focus-visible,
+.hero-doc:hover, .hero-doc:focus-visible,
+.doctor-card:hover,
+.fact:hover,
+.contact-list li:hover,
+.offer-item:hover,
+.findbar-field:focus-within,
+.notice:hover { }
+
+:is(.quick, .card-link, .btn, .hero-doc, .fact, .offer-item, .doctor-card,
+    .contact-list li, .service-list li, .stat, .token-slip):is(:hover, :focus-within) .ico-duo .ico-anim,
+.findbar-field:focus-within .ico-duo .ico-anim {
+  animation-name: var(--ico-anim);
+  animation-duration: .75s;
+  animation-timing-function: cubic-bezier(.34, 1.4, .64, 1);
+  animation-fill-mode: both;
+}
+
+/* Card icon wells lift their duotone fill on hover for a little extra depth. */
+.card-link:hover .card-icon .ico-f,
+.quick:hover .quick-icon .ico-f { fill-opacity: .26; }
+
+/* --------------------------------------------------------------------------
+   One keyframe per icon. Each is tied to what the icon means: the token stub
+   tears, the clock hand sweeps, the pin drops, the heart beats.
+   -------------------------------------------------------------------------- */
+@keyframes ico-ticket   { 0% { transform: translateX(0); opacity: 1; }
+                          45% { transform: translateX(2.5px); opacity: .35; }
+                          100% { transform: translateX(0); opacity: 1; } }
+
+@keyframes ico-calendar { 0% { transform: scaleX(0); opacity: 0; }
+                          100% { transform: scaleX(1); opacity: 1; } }
+
+@keyframes ico-clock    { from { transform: rotate(-35deg); }
+                          to   { transform: rotate(0deg); } }
+
+@keyframes ico-location { 0% { transform: translateY(-3px); }
+                          60% { transform: translateY(1px); }
+                          100% { transform: translateY(0); } }
+
+@keyframes ico-search   { 0% { transform: translate(-2px, -2px); }
+                          100% { transform: translate(0, 0); } }
+
+@keyframes ico-stetho   { 0%, 100% { transform: scale(1); }
+                          40% { transform: scale(1.28); } }
+
+@keyframes ico-heart    { 0%, 100% { transform: scale(1); }
+                          25% { transform: scale(1.14); }
+                          45% { transform: scale(.97); }
+                          65% { transform: scale(1.08); } }
+
+@keyframes ico-icu      { from { stroke-dasharray: 26; stroke-dashoffset: 26; }
+                          to   { stroke-dasharray: 26; stroke-dashoffset: 0; } }
+
+@keyframes ico-droplet  { 0% { transform: rotate(0deg); }
+                          100% { transform: rotate(-120deg); } }
+
+@keyframes ico-lab      { 0% { transform: translateY(3px); opacity: 0; }
+                          60% { opacity: 1; }
+                          100% { transform: translateY(-4px); opacity: 0; } }
+
+/* Waves pulse outward from the probe. */
+@keyframes ico-scan     { 0% { transform: scale(.7); opacity: .25; }
+                          55% { opacity: 1; }
+                          100% { transform: scale(1.05); opacity: .55; } }
+
+@keyframes ico-maternity{ 0%, 100% { transform: scale(1); }
+                          50% { transform: scale(1.06); } }
+
+@keyframes ico-baby     { 0%, 100% { transform: translateY(0); }
+                          50% { transform: translateY(1.2px); } }
+
+@keyframes ico-emergency{ 0% { transform: scale(.5); opacity: 0; }
+                          100% { transform: scale(1); opacity: 1; } }
+
+@keyframes ico-shield   { from { stroke-dasharray: 12; stroke-dashoffset: 12; }
+                          to   { stroke-dasharray: 12; stroke-dashoffset: 0; } }
+
+@keyframes ico-users    { 0% { transform: translateX(3px); opacity: 0; }
+                          100% { transform: translateX(0); opacity: 1; } }
+
+@keyframes ico-list     { from { stroke-dasharray: 30; stroke-dashoffset: 30; }
+                          to   { stroke-dasharray: 30; stroke-dashoffset: 0; } }
+
+@keyframes ico-discount { 0%, 100% { transform: scale(1); }
+                          50% { transform: scale(1.45); } }
+
+@keyframes ico-award    { 0% { transform: translateY(-2.5px) scaleY(.7); opacity: 0; }
+                          100% { transform: translateY(0) scaleY(1); opacity: 1; } }
+
+@keyframes ico-building { 0% { transform: scaleY(0); }
+                          100% { transform: scaleY(1); } }
+
+@keyframes ico-room     { 0% { transform: translateY(3px); opacity: 0; }
+                          100% { transform: translateY(0); opacity: 1; } }
+
+/* The handset rings rather than merely moving. */
+@keyframes ico-phone    { 0%, 100% { transform: rotate(0deg); }
+                          15% { transform: rotate(-12deg); }
+                          30% { transform: rotate(10deg); }
+                          45% { transform: rotate(-7deg); }
+                          60% { transform: rotate(5deg); }
+                          75% { transform: rotate(-2deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ico-anim { animation: none !important; }
+}
