@@ -44,8 +44,10 @@ $announcement = setting('announcement', '');
 <title><?= e($fullTitle) ?></title>
 <meta name="description" content="<?= e($pageDescription) ?>">
 <meta name="theme-color" content="#0b2545">
+<link rel="canonical" href="<?= e(canonical_url()) ?>">
 
 <meta property="og:type" content="website">
+<meta property="og:url" content="<?= e(canonical_url()) ?>">
 <meta property="og:site_name" content="<?= e(HOSPITAL['name']) ?>">
 <meta property="og:title" content="<?= e($fullTitle) ?>">
 <meta property="og:description" content="<?= e($pageDescription) ?>">

@@ -87,7 +87,7 @@ define('DB_HOST', 'localhost');
 define('DB_NAME', 'u123456_sarada');
 define('DB_USER', 'u123456_sarada');
 define('DB_PASS', 'the password you set');
-define('SITE_URL', 'https://saradahospitals.highflyers.io');
+define('SITE_URL', 'https://saradahospitals.com');
 define('DEBUG_MODE', false);   // keep false on the live site
 ```
 
@@ -116,7 +116,7 @@ been imported, and it never prints a credential.
 
 ## Day-to-day use
 
-**Reception panel:** `https://saradahospitals.highflyers.io/admin/`
+**Reception panel:** `https://saradahospitals.com/admin/`
 
 | Page | What it does |
 |---|---|

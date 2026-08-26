@@ -5,4 +5,4 @@ Disallow: /setup.php
 Disallow: /availability.php
 Disallow: /booking.php
 
-Sitemap: https://saradahospitals.highflyers.io/sitemap.xml
+Sitemap: https://saradahospitals.com/sitemap.xml

@@ -261,6 +261,31 @@ function asset_url(string $path): string
     return asset($path, base_url());
 }
 
+/**
+ * The page's canonical address on the configured domain.
+ *
+ * Built from SITE_URL rather than the Host header, so a stray alias domain
+ * or a spoofed header cannot inject itself into canonical tags or the
+ * sitemap. Query strings are dropped except the ones that name a distinct
+ * page (a doctor's slug), so filters and trackers never become "the" URL.
+ */
+function canonical_url(): string
+{
+    $base   = defined('SITE_URL') ? rtrim(SITE_URL, '/') : '';
+    $script = basename($_SERVER['SCRIPT_NAME'] ?? 'index.php');
+
+    $url = $base . '/' . ($script === 'index.php' ? '' : $script);
+
+    if ($script === 'doctor.php') {
+        $slug = query('slug');
+        if ($slug !== '' && preg_match('/^[a-z0-9-]{1,60}$/', $slug) === 1) {
+            $url .= '?slug=' . $slug;
+        }
+    }
+
+    return $url;
+}
+
 // ---------------------------------------------------------------
 // Bootstrap
 // ---------------------------------------------------------------

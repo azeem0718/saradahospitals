@@ -14,7 +14,7 @@ define('DB_USER', 'your_database_user');
 define('DB_PASS', 'your_database_password');
 
 // --- Site ---
-define('SITE_URL', 'https://saradahospitals.highflyers.io');
+define('SITE_URL', 'https://saradahospitals.com');
 
 // Set to true only while debugging. Never leave true on a live site.
 define('DEBUG_MODE', false);

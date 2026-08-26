@@ -3,7 +3,7 @@
 Website and OP token-booking system for **Sarada Nursing Home**, Kandukur,
 Prakasam District, Andhra Pradesh.
 
-Live at **https://saradahospitals.highflyers.io**
+Live at **https://saradahospitals.com**
 
 ---
 
