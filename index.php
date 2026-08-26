@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/components.php';
 require_once __DIR__ . '/includes/booking.php';
+require_once __DIR__ . '/includes/illustration.php';
 
 $pageTitle       = '';
 $pageDescription = 'Sarada Nursing Home, Kandukur — 24/7 emergency care, General Medicine, Diabetology and Obstetrics & Gynaecology. ICU, modern laboratory, 2D Echo and A/C rooms. Book an OP token online.';
@@ -15,8 +16,6 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <section class="hero">
-  <div class="hero-glow" aria-hidden="true"></div>
-
   <div class="wrap">
     <div class="hero-grid">
 
@@ -26,77 +25,108 @@ require __DIR__ . '/includes/header.php';
           Pamuru Road, Kandukur &middot; Prakasam District
         </p>
 
-        <h1>Your family&rsquo;s hospital,<br><em>open every hour.</em></h1>
+        <h1>Let&rsquo;s find you<br>a doctor.</h1>
 
         <p class="hero-lede">
           General Medicine, Diabetology and Obstetrics &amp; Gynaecology under one
-          roof &mdash; with an ICU, an in-house laboratory, and a doctor here
-          through the night.
+          roof &mdash; open every hour of every day.
         </p>
 
-        <div class="btn-row">
-          <a class="btn btn-lg btn-emergency" href="tel:<?= e(HOSPITAL['mobile']) ?>">
-            <?= icon('phone') ?> <?= e(HOSPITAL['mobile_display']) ?>
-          </a>
-          <a class="btn btn-lg btn-primary" href="book.php">
-            <?= icon('ticket') ?> Book a Token
-          </a>
-        </div>
-
-        <p class="hero-proof">
-          <span><?= icon('check') ?> Two consultants</span>
-          <span><?= icon('check') ?> Free OP Fridays</span>
-          <span><?= icon('check') ?> Published tariff</span>
-        </p>
-      </div>
-
-      <aside class="hero-card">
-        <div class="hero-card-head">
-          <div>
-            <h2>Book an OP token</h2>
-            <p>No queueing at the desk.</p>
+        <!-- Segmented booking bar. Doctor, day and session rather than the
+             location/department pairing a multi-site chain needs: there is one
+             hospital and two consultants here. Submits to book.php with
+             everything already chosen. -->
+        <form class="findbar" method="get" action="book.php">
+          <div class="findbar-field">
+            <label for="fb-doctor"><?= icon('stethoscope') ?> Doctor</label>
+            <select id="fb-doctor" name="doctor">
+              <?php foreach ($doctors as $doc): ?>
+                <option value="<?= (int) $doc['id'] ?>"><?= e(doctor_short_name($doc['name'])) ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
-          <?php if ($nextSlot !== null): ?>
-            <span class="live-chip">
-              <span class="live-dot" aria-hidden="true"></span>
-              <?= $nextSlot['remaining'] ?> free
-            </span>
-          <?php endif; ?>
-        </div>
+
+          <span class="findbar-sep" aria-hidden="true"></span>
+
+          <div class="findbar-field">
+            <label for="fb-date"><?= icon('calendar') ?> Day</label>
+            <select id="fb-date" name="date">
+              <?php foreach (bookable_dates() as $i => $d):
+                $dt = new DateTimeImmutable($d);
+                $lbl = $i === 0 ? 'Today' : ($i === 1 ? 'Tomorrow' : $dt->format('D, j M'));
+              ?>
+                <option value="<?= e($d) ?>"<?= ($nextSlot && $nextSlot['date'] === $d) ? ' selected' : '' ?>>
+                  <?= e($lbl) ?><?= is_free_op_day($d) ? ' — Free OP' : '' ?>
+                </option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+
+          <span class="findbar-sep" aria-hidden="true"></span>
+
+          <div class="findbar-field">
+            <label for="fb-session"><?= icon('clock') ?> Session</label>
+            <select id="fb-session" name="session">
+              <option value="morning"<?= ($nextSlot && $nextSlot['session'] === 'morning') ? ' selected' : '' ?>>Morning</option>
+              <option value="evening"<?= ($nextSlot && $nextSlot['session'] === 'evening') ? ' selected' : '' ?>>Evening</option>
+            </select>
+          </div>
+
+          <button class="findbar-go" type="submit">
+            <?= icon('search') ?><span>Search</span>
+          </button>
+        </form>
 
         <?php if ($nextSlot !== null): ?>
-          <a class="next-slot" href="book.php">
-            <span class="next-slot-when">
-              <?= e($nextSlot['when']) ?> &middot; <?= e($nextSlot['label']) ?>
-            </span>
-            <span class="next-slot-time"><?= e($nextSlot['timing']) ?></span>
-            <span class="next-slot-meta">
-              Next available session &mdash;
-              <strong><?= $nextSlot['remaining'] ?></strong> token<?= $nextSlot['remaining'] === 1 ? '' : 's' ?> left
-            </span>
-          </a>
+          <p class="hero-live">
+            <span class="live-dot" aria-hidden="true"></span>
+            <strong><?= e($nextSlot['when']) ?> &middot; <?= e($nextSlot['label']) ?></strong>
+            session open &mdash; <?= $nextSlot['remaining'] ?> token<?= $nextSlot['remaining'] === 1 ? '' : 's' ?> left
+          </p>
         <?php endif; ?>
+      </div>
 
-        <p class="hero-card-label">Choose a doctor</p>
-        <div class="hero-docs">
-          <?php foreach ($doctors as $doc): ?>
-            <a class="hero-doc" href="book.php?doctor=<?= (int) $doc['id'] ?>">
-              <?= doctor_avatar() ?>
-              <span class="hero-doc-text">
-                <strong><?= e($doc['name']) ?></strong>
-                <span><?= e($doc['speciality']) ?></span>
-              </span>
-              <?= icon('chevron-right', 'chev') ?>
-            </a>
-          <?php endforeach; ?>
-        </div>
+      <div class="hero-art" aria-hidden="false">
+        <span class="hero-art-disc" aria-hidden="true"></span>
+        <?= hospital_illustration() ?>
+      </div>
 
-        <p class="hero-card-note">
-          <?= icon('alert') ?>
-          <span>In an emergency, call us &mdash; do not book online.</span>
-        </p>
-      </aside>
+    </div>
+  </div>
+</section>
 
+<!-- Quick links ------------------------------------------------------- -->
+<section class="quicklinks">
+  <div class="wrap">
+    <div class="quick-rail">
+      <a class="quick" href="book.php">
+        <span class="quick-icon"><?= icon('ticket') ?></span>
+        <span>Book a Token</span>
+      </a>
+      <a class="quick" href="doctors.php">
+        <span class="quick-icon"><?= icon('users') ?></span>
+        <span>Our Doctors</span>
+      </a>
+      <a class="quick" href="services.php">
+        <span class="quick-icon"><?= icon('stethoscope') ?></span>
+        <span>Services</span>
+      </a>
+      <a class="quick" href="diabetic-centre.php">
+        <span class="quick-icon"><?= icon('droplet') ?></span>
+        <span>Diabetic Centre</span>
+      </a>
+      <a class="quick" href="maternity.php">
+        <span class="quick-icon"><?= icon('maternity') ?></span>
+        <span>Maternity</span>
+      </a>
+      <a class="quick" href="tariff.php">
+        <span class="quick-icon"><?= icon('list') ?></span>
+        <span>Tariff</span>
+      </a>
+      <a class="quick" href="emergency.php">
+        <span class="quick-icon"><?= icon('emergency') ?></span>
+        <span>Emergency</span>
+      </a>
     </div>
   </div>
 </section>

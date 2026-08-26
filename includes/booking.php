@@ -161,6 +161,21 @@ function session_availability(int $doctorId, string $date, string $session): ?ar
 }
 
 /**
+ * "Dr. Gundavarapu Venkatesh" becomes "Dr. Venkatesh" — the form patients use
+ * anyway, and short enough for a compact control like the hero's find bar.
+ */
+function doctor_short_name(string $full): string
+{
+    $parts = preg_split('/\s+/', trim($full)) ?: [];
+    if (count($parts) < 2) {
+        return $full;
+    }
+    $title = str_ends_with($parts[0], '.') ? $parts[0] : '';
+    $last  = end($parts);
+    return $title !== '' ? $title . ' ' . $last : $last;
+}
+
+/**
  * The soonest session a patient could actually book, across all doctors.
  *
  * Drives the live status line in the hero: a card that says "Morning session,

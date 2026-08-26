@@ -21,10 +21,15 @@ $dates   = bookable_dates();
 $errors  = [];
 
 // Sticky form values.
+// The hero's find bar links here with a doctor, date and session already
+// chosen, so the patient lands on a form that is largely filled in.
+$prefillDate    = query('date');
+$prefillSession = query('session');
+
 $values = [
     'doctor_id'    => (string) (filter_input(INPUT_GET, 'doctor', FILTER_VALIDATE_INT) ?: ''),
-    'booking_date' => '',
-    'session'      => '',
+    'booking_date' => date_in_window($prefillDate) ? $prefillDate : '',
+    'session'      => in_array($prefillSession, SESSIONS, true) ? $prefillSession : '',
     'patient_name' => '',
     'patient_age'  => '',
     'patient_sex'  => '',
