@@ -1669,8 +1669,8 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
 /* ==========================================================================
    Icons
 
-   Two tiers, matching includes/icons.php. Feature icons are duotone: a soft
-   fill of currentColor behind a crisp stroke. Utility icons stay plain lines.
+   Two tiers, matching includes/icons.php. Path data is Lucide, vendored by
+   tools/build-icons.py; everything below is how it behaves here.
 
    Each feature icon names one moving part and declares its animation as
    --ico-anim. The animation only runs while an ancestor is hovered or focused,
@@ -1680,30 +1680,26 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
 
 .ico { flex: none; }
 .ico-l { fill: none; stroke: currentColor; }
-.ico-f { fill: currentColor; fill-opacity: .15; stroke: none; }
 
 /* The moving part rotates and scales about its own centre, not the viewBox's. */
 .ico-anim { transform-box: fill-box; transform-origin: center; }
 /* The ultrasound waves radiate from the probe at the bottom, so they scale
    about that point rather than their own middle. */
-.ico-scan-origin, .ico-duo[style*="ico-scan"] .ico-anim { transform-origin: 50% 100%; }
+.ico-feature[style*="ico-scan"] .ico-anim { transform-origin: 50% 50%; }
 
 /*
  * Hover and focus triggers. Kept as one list so a new component only has to be
  * added here rather than repeated against every icon.
  */
 :is(.quick, .card-link, .btn, .hero-doc, .fact, .offer-item, .doctor-card,
-    .contact-list li, .service-list li, .stat, .token-slip):is(:hover, :focus-within) .ico-duo .ico-anim,
-.findbar-field:focus-within .ico-duo .ico-anim {
+    .contact-list li, .service-list li, .stat, .token-slip):is(:hover, :focus-within) .ico-feature .ico-anim,
+.findbar-field:focus-within .ico-feature .ico-anim {
   animation-name: var(--ico-anim);
   animation-duration: .75s;
   animation-timing-function: cubic-bezier(.34, 1.4, .64, 1);
   animation-fill-mode: both;
 }
 
-/* Card icon wells lift their duotone fill on hover for a little extra depth. */
-.card-link:hover .card-icon .ico-f,
-.quick:hover .quick-icon .ico-f { fill-opacity: .26; }
 
 /*
  * The well turns over when its card is hovered, so the icon reads as an object
@@ -1748,8 +1744,9 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
 @keyframes ico-icu      { from { stroke-dasharray: 26; stroke-dashoffset: 26; }
                           to   { stroke-dasharray: 26; stroke-dashoffset: 0; } }
 
-@keyframes ico-droplet  { 0% { transform: rotate(0deg); }
-                          100% { transform: rotate(-120deg); } }
+@keyframes ico-droplet  { 0% { transform: translateY(-3px); opacity: .3; }
+                          65% { transform: translateY(1px); opacity: 1; }
+                          100% { transform: translateY(0); opacity: 1; } }
 
 @keyframes ico-lab      { 0% { transform: translateY(3px); opacity: 0; }
                           60% { opacity: 1; }
@@ -1763,8 +1760,6 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
 @keyframes ico-maternity{ 0%, 100% { transform: scale(1); }
                           50% { transform: scale(1.06); } }
 
-@keyframes ico-baby     { 0%, 100% { transform: translateY(0); }
-                          50% { transform: translateY(1.2px); } }
 
 @keyframes ico-emergency{ 0% { transform: scale(.5); opacity: 0; }
                           100% { transform: scale(1); opacity: 1; } }

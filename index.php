@@ -202,7 +202,7 @@ require __DIR__ . '/includes/header.php';
       </a>
 
       <a class="card card-link" href="maternity.php">
-        <span class="card-icon green"><?= icon('baby') ?></span>
+        <span class="card-icon green"><?= icon('maternity') ?></span>
         <h3>Maternity &amp; Gynaecology</h3>
         <p>
           Normal and caesarean delivery, high-risk pregnancy, maternity scans,
