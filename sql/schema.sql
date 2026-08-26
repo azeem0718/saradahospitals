@@ -31,7 +31,17 @@ CREATE TABLE IF NOT EXISTS `doctors` (
   `name`          VARCHAR(120) NOT NULL,
   `qualifications` VARCHAR(200) NOT NULL,
   `speciality`    VARCHAR(120) NOT NULL,
+  `designation`   VARCHAR(160) NOT NULL DEFAULT '',
+  `experience_years` SMALLINT UNSIGNED DEFAULT NULL,
+  `languages`     VARCHAR(160) NOT NULL DEFAULT '',
+  `reg_no`        VARCHAR(60)  NOT NULL DEFAULT '',
+  `location`      VARCHAR(160) NOT NULL DEFAULT '',
+  `opd_timings`   VARCHAR(200) NOT NULL DEFAULT '',
   `bio`           TEXT,
+  -- One entry per line. Kept as text so reception edits them in a textarea
+  -- rather than through a second screen.
+  `education`     TEXT,
+  `services`      TEXT,
   `photo`         VARCHAR(160) DEFAULT NULL,
   `sort_order`    SMALLINT     NOT NULL DEFAULT 0,
   `is_active`     TINYINT(1)   NOT NULL DEFAULT 1,

@@ -51,5 +51,8 @@ INSERT INTO `settings` (`setting_key`,`setting_value`) VALUES
   ('free_op_weekday',       '5'),
   ('free_op_label',         'Free OP Consultation'),
   ('bookings_enabled',      '1'),
-  ('announcement',          '')
+  ('announcement',          ''),
+  -- schema.sql already carries every column, so a fresh install starts current.
+  -- includes/migrate.php compares against this.
+  ('schema_version',        '3')
 ON DUPLICATE KEY UPDATE `setting_value` = `setting_value`;

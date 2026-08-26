@@ -159,6 +159,7 @@ function icon_utility_set(): array
         'chevron-left'  => '<path d="m15 18-6-6 6-6"/>',
         'close'         => '<path d="M18 6 6 18M6 6l12 12"/>',
         'plus'          => '<path d="M12 5v14M5 12h14"/>',
+        'edit'          => '<path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.4 2.6a2 2 0 0 1 2.8 2.8L12 14.6l-3.8.8.8-3.8z"/>',
         'menu'          => '<path d="M3 6h18M3 12h18M3 18h18"/>',
         'info'          => '<circle cx="12" cy="12" r="9"/><path d="M12 16.5v-5M12 8h.02"/>',
         'alert'         => '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4M12 17.2h.02"/>',

@@ -219,3 +219,35 @@ body.admin { background: var(--ground); padding-bottom: 0; }
   .admin-bar-inner { min-height: 54px; }
   .admin-user .role { display: none; }
 }
+
+/* --------------------------------------------------------------------------
+   Long content forms (doctor profiles)
+   -------------------------------------------------------------------------- */
+.form-section {
+  font-family: var(--font-sans);
+  font-size: .74rem; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--ink-500);
+  margin: 0 0 1.1rem;
+}
+hr + .form-section { margin-top: 0; }
+
+.form-actions {
+  display: flex; flex-wrap: wrap; gap: .7rem;
+  margin-top: 1.6rem; padding-top: 1.35rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* The portrait already on file, beside the control that clears it. */
+.photo-current {
+  display: flex; align-items: center; gap: .9rem;
+  margin-bottom: .8rem;
+}
+.photo-current img {
+  width: 72px; height: 72px; flex: none;
+  border-radius: 50%; object-fit: cover;
+  border: 1px solid var(--rule); background: var(--navy-50);
+}
+
+.panel-head { gap: .9rem; }
+.panel-head .btn { margin-left: auto; }

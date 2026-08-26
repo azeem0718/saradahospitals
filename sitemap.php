@@ -7,6 +7,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/db.php';
+require_once __DIR__ . '/includes/booking.php';
 
 header('Content-Type: application/xml; charset=utf-8');
 
@@ -24,6 +25,11 @@ $pages = [
     ['contact.php',         '0.7', 'monthly'],
     ['gallery.php',         '0.5', 'monthly'],
 ];
+
+// Each doctor has their own profile page, so list them too.
+foreach (get_doctors() as $doc) {
+    $pages[] = ['doctor.php?slug=' . rawurlencode($doc['slug']), '0.7', 'monthly'];
+}
 
 $today = date('Y-m-d');
 $base  = rtrim(SITE_URL, '/');

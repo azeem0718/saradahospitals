@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/migrate.php';
 
 // ---------------------------------------------------------------
 // Output escaping
@@ -274,3 +275,12 @@ function asset_url(string $path): string
  * this file before printing anything — keeps that from happening.
  */
 start_session();
+
+/*
+ * Apply any pending schema change.
+ *
+ * Deploys arrive over git with no console attached, so there is nowhere else
+ * to run one from. Costs a single integer comparison against settings that are
+ * already loaded, unless the database is genuinely behind.
+ */
+run_migrations();

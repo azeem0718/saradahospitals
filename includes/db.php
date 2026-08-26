@@ -111,8 +111,15 @@ function db(): PDO
  */
 function setting(string $key, string $default = ''): string
 {
+    return settings_all()[$key] ?? $default;
+}
+
+/** All settings, read once per request. */
+function settings_all(bool $reload = false): array
+{
     static $cache = null;
-    if ($cache === null) {
+
+    if ($cache === null || $reload) {
         $cache = [];
         try {
             foreach (db()->query('SELECT setting_key, setting_value FROM settings') as $row) {
@@ -122,7 +129,14 @@ function setting(string $key, string $default = ''): string
             error_log('Settings load failed: ' . $e->getMessage());
         }
     }
-    return $cache[$key] ?? $default;
+
+    return $cache;
+}
+
+/** Drop the cached settings so the next read sees what was just written. */
+function setting_forget(): void
+{
+    settings_all(true);
 }
 
 function setting_int(string $key, int $default = 0): int

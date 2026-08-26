@@ -27,6 +27,97 @@ function get_doctor(int $id): ?array
     return $stmt->fetch() ?: null;
 }
 
+function get_doctor_by_slug(string $slug): ?array
+{
+    $stmt = db()->prepare('SELECT * FROM doctors WHERE slug = ? AND is_active = 1');
+    $stmt->execute([$slug]);
+    return $stmt->fetch() ?: null;
+}
+
+/**
+ * Split a one-per-line profile field into a list, dropping blank lines.
+ *
+ * @return list<string>
+ */
+function profile_lines(?string $text): array
+{
+    if ($text === null || trim($text) === '') {
+        return [];
+    }
+    $lines = preg_split('/\R/', $text) ?: [];
+    return array_values(array_filter(array_map('trim', $lines), static fn ($l) => $l !== ''));
+}
+
+/**
+ * The doctor's standing OP timings, read from the schedule rather than typed
+ * out again, so they cannot drift from what the booking page actually offers.
+ * Days sharing the same times are collapsed into one line.
+ *
+ * A doctor whose hours do not fit that shape can have opd_timings filled in on
+ * their profile, and that wins.
+ *
+ * @return list<string>
+ */
+function doctor_opd_summary(int $doctorId): array
+{
+    $stmt = db()->prepare(
+        'SELECT weekday, session, start_time, end_time
+           FROM doctor_sessions
+          WHERE doctor_id = ? AND is_active = 1
+          ORDER BY session, weekday'
+    );
+    $stmt->execute([$doctorId]);
+
+    // Group weekdays by session and times, so "the same every day" says so once.
+    $groups = [];
+    foreach ($stmt as $row) {
+        $key = $row['session'] . '|' . $row['start_time'] . '|' . $row['end_time'];
+        $groups[$key][] = (int) $row['weekday'];
+    }
+
+    $out = [];
+    foreach ($groups as $key => $days) {
+        [$session, $start, $end] = explode('|', $key);
+        $out[] = session_label($session) . ' · ' . format_time($start) . ' – ' . format_time($end)
+               . ' · ' . weekday_phrase($days);
+    }
+
+    return $out;
+}
+
+/**
+ * Describe a set of weekday numbers: "Every day", "Mon – Sat", or a plain list.
+ *
+ * @param list<int> $days 0 = Sunday ... 6 = Saturday
+ */
+function weekday_phrase(array $days): string
+{
+    $days = array_values(array_unique($days));
+    sort($days);
+
+    if (count($days) === 7) {
+        return 'Every day';
+    }
+
+    $short = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    // Contiguous runs read better as a range. Sunday-first ordering means a
+    // Mon–Sat week is contiguous but a Sat–Sun weekend is not, which is fine:
+    // the two-day case falls through to the list below.
+    $contiguous = true;
+    for ($i = 1, $n = count($days); $i < $n; $i++) {
+        if ($days[$i] !== $days[$i - 1] + 1) {
+            $contiguous = false;
+            break;
+        }
+    }
+    if ($contiguous && count($days) > 2) {
+        return $short[$days[0]] . ' – ' . $short[end($days)];
+    }
+
+    return implode(', ', array_map(static fn (int $d) => $short[$d], $days));
+}
+
 /**
  * Dates a patient may book, from today to the booking window.
  * Returns Y-m-d strings.

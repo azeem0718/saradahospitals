@@ -21,59 +21,65 @@ page_hero(
 
 <section class="section">
   <div class="wrap">
-    <?php foreach ($doctors as $i => $doc): ?>
-      <article class="card" style="margin-bottom:1.5rem">
-        <div class="grid" style="grid-template-columns:minmax(0,1fr);gap:1.5rem">
-          <div style="display:flex;gap:1.25rem;align-items:flex-start;flex-wrap:wrap">
-            <div class="doctor-portrait" style="width:96px;height:96px"><?= doctor_avatar('') ?></div>
-            <div style="flex:1;min-width:240px">
-              <h2 style="font-size:1.5rem;margin-bottom:.15rem"><?= e($doc['name']) ?></h2>
-              <p class="doctor-quals" style="font-size:.95rem"><?= e($doc['qualifications']) ?></p>
-              <p class="doctor-spec" style="margin-bottom:.9rem"><?= e($doc['speciality']) ?></p>
-              <a class="btn btn-primary btn-sm" href="book.php?doctor=<?= (int) $doc['id'] ?>">
-                <?= icon('ticket') ?> Book with <?= e(explode(' ', $doc['name'])[0] . ' ' . (explode(' ', $doc['name'])[2] ?? '')) ?>
-              </a>
-            </div>
+    <div class="section-head">
+      <span class="eyebrow">Consultants</span>
+      <h2>Select your preferred doctor</h2>
+      <p>Open a profile to see qualifications and the conditions each doctor
+         treats, or book a token straight away.</p>
+    </div>
+
+    <div class="doc-cards">
+      <?php foreach ($doctors as $doc): ?>
+        <?php
+          $short   = doctor_short_name($doc['name']);
+          $timings = trim((string) ($doc['opd_timings'] ?? '')) !== ''
+              ? profile_lines($doc['opd_timings'])
+              : doctor_opd_summary((int) $doc['id']);
+        ?>
+        <article class="doc-card">
+          <div class="doc-card-portrait">
+            <?php if (!empty($doc['photo'])): ?>
+              <img src="<?= e(asset('assets/img/doctors/' . $doc['photo'])) ?>"
+                   alt="<?= e($doc['name']) ?>" loading="lazy" width="200" height="200">
+            <?php else: ?>
+              <?= doctor_avatar('') ?>
+            <?php endif; ?>
           </div>
 
-          <?php if (!empty($doc['bio'])): ?>
-            <p style="margin:0"><?= e($doc['bio']) ?></p>
-          <?php endif; ?>
+          <div class="doc-card-body">
+            <h3><a href="doctor.php?slug=<?= e($doc['slug']) ?>"><?= e($doc['name']) ?></a></h3>
+            <p class="doc-card-quals"><?= e($doc['qualifications']) ?></p>
+            <p class="doc-card-role">
+              <?= e($doc['designation'] !== '' ? $doc['designation'] : $doc['speciality']) ?>
+            </p>
 
-          <?php if ($doc['slug'] === 'dr-gundavarapu-venkatesh'): ?>
-            <div class="notice notice-warn mb-0">
-              <?= icon('award') ?>
-              <p>
-                <strong>Certified in Type 2 Diabetes Management</strong>
-                Completed the <em>Changing the Paradigm in Type 2 Diabetes Mellitus
-                Management</em> self-study programme — a multidisciplinary diabetes
-                programme developed by Medical Trends and based on official resources
-                of the American Diabetes Association (ADA).
-              </p>
-            </div>
-            <div>
-              <h3 style="font-size:1.05rem">Consults for</h3>
-              <ul class="service-list two-col">
-                <?php foreach (GENERAL_MEDICINE as $s): ?>
-                  <li><?= icon('check') ?><span><?= e($s) ?></span></li>
-                <?php endforeach; ?>
-              </ul>
-            </div>
-          <?php else: ?>
-            <div>
-              <h3 style="font-size:1.05rem">Consults for</h3>
-              <ul class="service-list two-col">
-                <?php foreach (OBG_SERVICES as $s): ?>
-                  <li><?= icon('check') ?><span><?= e($s) ?></span></li>
-                <?php endforeach; ?>
-              </ul>
-            </div>
-          <?php endif; ?>
-        </div>
-      </article>
-    <?php endforeach; ?>
+            <ul class="doc-card-meta">
+              <?php if (!empty($doc['experience_years'])): ?>
+                <li><?= icon('award') ?><?= (int) $doc['experience_years'] ?> years</li>
+              <?php endif; ?>
+              <?php if ($timings): ?>
+                <li><?= icon('clock') ?><?= e(count($timings) > 1 ? 'Morning & evening OP' : $timings[0]) ?></li>
+              <?php endif; ?>
+              <li>
+                <?= icon('location') ?>
+                <?= e($doc['location'] !== '' ? $doc['location'] : HOSPITAL['address']['line2']) ?>
+              </li>
+            </ul>
+          </div>
 
-    <div class="notice notice-info">
+          <div class="doc-card-actions">
+            <a class="btn btn-outline btn-block" href="doctor.php?slug=<?= e($doc['slug']) ?>">
+              View Profile
+            </a>
+            <a class="btn btn-primary btn-block" href="book.php?doctor=<?= (int) $doc['id'] ?>">
+              <?= icon('ticket') ?> Book a Token
+            </a>
+          </div>
+        </article>
+      <?php endforeach; ?>
+    </div>
+
+    <div class="notice notice-info mt-3 mb-0">
       <?= icon('clock') ?>
       <p>
         <strong>OP consultation timings</strong>
