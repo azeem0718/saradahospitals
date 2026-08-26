@@ -1,0 +1,148 @@
+<?php
+/**
+ * Photographs reception uploads for the banners and the department cards.
+ *
+ * Every slot is optional. Where a photograph exists it is used; where one does
+ * not, the page falls back to the drawn artwork or the icon it already had, so
+ * a site with no photographs still looks finished and one photograph can be
+ * added at a time without anything looking half-done in between.
+ *
+ * There are deliberately no stock photographs bundled here. A picture of some
+ * other hospital's ward under a heading that says "Our Facilities" tells the
+ * patient something untrue, and everything else on this site was held to what
+ * the hospital's own signage and brochure actually say.
+ */
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/functions.php';
+
+const SITE_IMAGE_STORE = 'site';
+
+/**
+ * Every slot the admin panel offers, grouped for the screen that edits them.
+ *
+ * @return array<string, array{label: string, slots: array<string, string>}>
+ */
+function site_image_groups(): array
+{
+    return [
+        'banners' => [
+            'label' => 'Page banners',
+            'hint'  => 'The wide strip at the top of each page. Landscape photographs '
+                     . 'work best — roughly three times wider than tall. Without one, '
+                     . 'the page keeps its drawn artwork.',
+            'slots' => [
+                'banner-about'      => 'About',
+                'banner-services'   => 'Services',
+                'banner-doctors'    => 'Doctors',
+                'banner-diabetes'   => 'Diabetic Centre',
+                'banner-maternity'  => 'Maternity',
+                'banner-emergency'  => 'Emergency',
+                'banner-facilities' => 'Facilities',
+                'banner-tariff'     => 'Tariff',
+                'banner-gallery'    => 'Gallery',
+                'banner-contact'    => 'Contact',
+                'banner-book'       => 'Book a Token',
+            ],
+        ],
+        'cards' => [
+            'label' => 'Home page department cards',
+            'hint'  => 'The six cards under "What we do" on the home page. Roughly '
+                     . 'landscape again. Without one, the card keeps its icon.',
+            'slots' => [
+                'card-medicine'  => 'General Medicine',
+                'card-diabetes'  => 'Good Health Diabetic Centre',
+                'card-maternity' => 'Maternity & Gynaecology',
+                'card-emergency' => 'Emergency & ICU',
+                'card-lab'       => 'Laboratory & Diagnostics',
+                'card-tariff'    => 'Transparent Tariff',
+            ],
+        ],
+    ];
+}
+
+/** Flat slot => label map, for validating what a form submitted. */
+function site_image_slots(): array
+{
+    static $flat = null;
+    if ($flat === null) {
+        $flat = [];
+        foreach (site_image_groups() as $group) {
+            $flat += $group['slots'];
+        }
+    }
+    return $flat;
+}
+
+/**
+ * Every stored image, keyed by slot. Read once per request.
+ *
+ * @return array<string, array{file: string, alt: string}>
+ */
+function site_images(bool $reload = false): array
+{
+    static $cache = null;
+
+    if ($cache === null || $reload) {
+        $cache = [];
+        try {
+            foreach (db()->query('SELECT slot, file, alt FROM site_images') as $row) {
+                $cache[$row['slot']] = ['file' => $row['file'], 'alt' => $row['alt']];
+            }
+        } catch (PDOException $e) {
+            // The table arrives with a migration. A site that has not run it yet
+            // should fall back to the drawn artwork, not stop serving.
+            error_log('Site images unavailable: ' . $e->getMessage());
+        }
+    }
+
+    return $cache;
+}
+
+/** Drop the cache so the next read sees what was just written. */
+function site_images_forget(): void
+{
+    site_images(true);
+}
+
+/** The stored record for one slot, or null. */
+function site_image(string $slot): ?array
+{
+    return site_images()[$slot] ?? null;
+}
+
+/**
+ * Document-relative URL for a slot's image, or null when the slot is empty.
+ *
+ * @param string $prefix Prepended to the path, for pages in admin/.
+ */
+function site_image_url(string $slot, string $prefix = ''): ?string
+{
+    $image = site_image($slot);
+    if ($image === null) {
+        return null;
+    }
+    return asset('assets/img/' . SITE_IMAGE_STORE . '/' . $image['file'], $prefix);
+}
+
+/** Site-rooted URL, for use inside a CSS custom property. See asset_url(). */
+function site_image_css_url(string $slot): ?string
+{
+    $image = site_image($slot);
+    if ($image === null) {
+        return null;
+    }
+    return asset_url('assets/img/' . SITE_IMAGE_STORE . '/' . $image['file']);
+}
+
+/** Alt text for a slot, falling back to the slot's own label. */
+function site_image_alt(string $slot): string
+{
+    $image = site_image($slot);
+    if ($image !== null && trim($image['alt']) !== '') {
+        return $image['alt'];
+    }
+    return site_image_slots()[$slot] ?? '';
+}

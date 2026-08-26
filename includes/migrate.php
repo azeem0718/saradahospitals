@@ -18,7 +18,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
 /** Bump this when a migration is added below. */
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 /**
  * Migrations, keyed by the version they bring the database up to.
@@ -95,6 +95,22 @@ function schema_migrations(): array
                     $slug,
                 ]);
             }
+        },
+
+        // Photographs reception uploads for the page banners and the department
+        // cards. One row per slot; a slot with no row falls back to the drawn
+        // artwork, so the site is never waiting on a photo to look finished.
+        4 => static function (PDO $pdo): void {
+            $pdo->exec(
+                'CREATE TABLE IF NOT EXISTS `site_images` (
+                   `slot`       VARCHAR(60)  NOT NULL,
+                   `file`       VARCHAR(160) NOT NULL,
+                   `alt`        VARCHAR(200) NOT NULL DEFAULT \'\',
+                   `updated_at` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                             ON UPDATE CURRENT_TIMESTAMP,
+                   PRIMARY KEY (`slot`)
+                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
+            );
         },
     ];
 }

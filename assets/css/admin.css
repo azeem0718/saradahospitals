@@ -251,3 +251,36 @@ hr + .form-section { margin-top: 0; }
 
 .panel-head { gap: .9rem; }
 .panel-head .btn { margin-left: auto; }
+
+/* --------------------------------------------------------------------------
+   Picture slots
+
+   One card per slot, each its own form, so saving one photograph never risks
+   anything else on the screen.
+   -------------------------------------------------------------------------- */
+.slot-grid { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); }
+
+.slot {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--rule); border-radius: var(--r);
+  padding: .9rem; background: var(--paper);
+}
+.slot .field { margin-bottom: .7rem; }
+.slot .field:last-of-type { margin-bottom: .35rem; }
+
+.slot-preview {
+  display: grid; place-items: center;
+  aspect-ratio: 16 / 9; margin-bottom: .8rem;
+  border-radius: 10px; overflow: hidden;
+  background: var(--navy-50); border: 1px solid var(--navy-100);
+}
+.slot-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.slot-empty {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .8rem; color: var(--ink-500);
+}
+.slot-empty svg { width: 17px; height: 17px; }
+
+.slot-title { font-size: .98rem; margin: 0 0 .7rem; }
+.slot-actions { display: flex; gap: .5rem; margin-top: auto; padding-top: .6rem; }
+.slot input[type=file] { font-size: .82rem; }

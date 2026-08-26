@@ -12,9 +12,14 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <?php
-$emArt = asset_url('assets/img/hero/emergency.svg');
+// A photograph reception uploaded wins over the drawn artwork, as on every
+// other banner; this page keeps its own markup only for the call buttons.
+$emArt   = site_image_css_url('banner-emergency');
+$emPhoto = $emArt !== null;
+$emArt ??= asset_url('assets/img/hero/emergency.svg');
 ?>
-<section class="page-hero page-hero-red has-art" style="--hero-art:url('<?= e($emArt) ?>')">
+<section class="page-hero page-hero-red has-art<?= $emPhoto ? ' has-photo' : '' ?>"
+         style="--hero-art:url('<?= e($emArt) ?>')">
   <div class="wrap">
     <p class="breadcrumb">
       <a href="index.php">Home</a>

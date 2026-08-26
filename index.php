@@ -180,9 +180,25 @@ require __DIR__ . '/includes/header.php';
       </p>
     </div>
 
+<?php
+/**
+ * A department card's opener: the photograph reception uploaded for this slot,
+ * or the icon it has always had. Rendering both would be noise, so it is one or
+ * the other.
+ */
+$cardOpener = static function (string $slot, string $iconName, string $tone = ''): string {
+    $url = site_image_url($slot);
+    if ($url !== null) {
+        return '<span class="card-photo"><img src="' . e($url) . '" alt="'
+             . e(site_image_alt($slot)) . '" loading="lazy" width="640" height="360"></span>';
+    }
+    return '<span class="card-icon' . ($tone !== '' ? ' ' . e($tone) : '') . '">'
+         . icon($iconName) . '</span>';
+};
+?>
     <div class="grid grid-3">
       <a class="card card-link" href="services.php">
-        <span class="card-icon"><?= icon('stethoscope') ?></span>
+        <?= $cardOpener('card-medicine', 'stethoscope') ?>
         <h3>General Medicine</h3>
         <p>
           Diabetes and blood pressure, heart and kidney problems, all types of fever,
@@ -192,7 +208,7 @@ require __DIR__ . '/includes/header.php';
       </a>
 
       <a class="card card-link" href="diabetic-centre.php">
-        <span class="card-icon gold"><?= icon('droplet') ?></span>
+        <?= $cardOpener('card-diabetes', 'droplet', 'gold') ?>
         <h3>Good Health Diabetic Centre</h3>
         <p>
           Dedicated diabetes care led by a doctor with a Diploma in Endocrinology
@@ -202,7 +218,7 @@ require __DIR__ . '/includes/header.php';
       </a>
 
       <a class="card card-link" href="maternity.php">
-        <span class="card-icon green"><?= icon('maternity') ?></span>
+        <?= $cardOpener('card-maternity', 'maternity', 'green') ?>
         <h3>Maternity &amp; Gynaecology</h3>
         <p>
           Normal and caesarean delivery, high-risk pregnancy, maternity scans,
@@ -212,7 +228,7 @@ require __DIR__ . '/includes/header.php';
       </a>
 
       <a class="card card-link" href="emergency.php">
-        <span class="card-icon red"><?= icon('emergency') ?></span>
+        <?= $cardOpener('card-emergency', 'emergency', 'red') ?>
         <h3>Emergency &amp; ICU</h3>
         <p>
           Open 24 hours for accidents, chest pain, breathlessness, snake bite,
@@ -222,7 +238,7 @@ require __DIR__ . '/includes/header.php';
       </a>
 
       <a class="card card-link" href="facilities.php">
-        <span class="card-icon"><?= icon('lab') ?></span>
+        <?= $cardOpener('card-lab', 'lab') ?>
         <h3>Laboratory &amp; Diagnostics</h3>
         <p>
           In-house laboratory for blood investigations, plus 2D Echo scanning
@@ -232,7 +248,7 @@ require __DIR__ . '/includes/header.php';
       </a>
 
       <a class="card card-link" href="tariff.php">
-        <span class="card-icon"><?= icon('list') ?></span>
+        <?= $cardOpener('card-tariff', 'list') ?>
         <h3>Transparent Tariff</h3>
         <p>
           Consultation fees and room charges published openly, so you know what

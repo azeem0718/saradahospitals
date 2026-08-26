@@ -1,0 +1,4 @@
+# Pictures are uploaded through the admin panel, not committed.
+*
+!.gitignore
+!.htaccess

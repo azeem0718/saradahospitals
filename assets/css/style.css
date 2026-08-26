@@ -798,6 +798,28 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .card-icon.gold  { background: var(--gold-50);  color: var(--gold-600);  border-color: var(--gold-100); }
 .card-icon.green { background: var(--green-50); color: var(--green-700); border-color: var(--green-100); }
 
+/* A card carrying a photograph instead of an icon. The image runs the full
+   width of the card and is cropped to a fixed ratio, so six cards line up
+   whatever shape the photographs happen to be. */
+.card-photo {
+  display: block;
+  /* Pull out to the card's edges — matches .card's own padding. */
+  --card-pad: clamp(1.4rem, 2.5vw, 1.85rem);
+  margin: calc(-1 * var(--card-pad)) calc(-1 * var(--card-pad)) 1.35rem;
+  overflow: hidden;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  background: var(--navy-50);
+}
+.card-photo img {
+  display: block; width: 100%; height: auto;
+  aspect-ratio: 16 / 9; object-fit: cover;
+  transition: transform .45s cubic-bezier(.22,.85,.3,1);
+}
+.card-link:hover .card-photo img { transform: scale(1.045); }
+@media (prefers-reduced-motion: reduce) {
+  .card-link:hover .card-photo img { transform: none; }
+}
+
 .card-more { display: inline-flex; align-items: center; gap: .4rem; margin-top: 1.15rem;
   font-weight: 600; font-size: .92rem; color: var(--navy-700); }
 .card-more svg { width: 16px; height: 16px; transition: transform .2s ease; }
@@ -1269,6 +1291,28 @@ tbody tr:hover { background: var(--navy-50); }
       rgba(156,21,30,.32) 100%),
     var(--hero-art);
 }
+/* A photograph needs a heavier, more even wash than line art does: its
+   midtones sit right where the headline does, and they move about from one
+   photo to the next. */
+.page-hero.has-photo::before {
+  background-image:
+    linear-gradient(100deg,
+      rgba(6,22,38,.95) 0%,
+      rgba(6,22,38,.84) 36%,
+      rgba(6,22,38,.58) 70%,
+      rgba(6,22,38,.42) 100%),
+    var(--hero-art);
+}
+.page-hero-red.has-photo::before {
+  background-image:
+    linear-gradient(100deg,
+      rgba(88,10,14,.95) 0%,
+      rgba(103,13,17,.85) 36%,
+      rgba(124,16,21,.60) 70%,
+      rgba(140,18,24,.44) 100%),
+    var(--hero-art);
+}
+
 .page-hero.page-hero-red p { color: #f7dcdd; }
 .page-hero-red .breadcrumb { color: #edbcbe; }
 .page-hero-red .breadcrumb a { color: #f7dcdd; }
@@ -1293,6 +1337,18 @@ tbody tr:hover { background: var(--navy-50); }
   .page-hero-red.has-art::before {
     background-image:
       linear-gradient(180deg, rgba(107,14,18,.95) 0%, rgba(130,17,21,.91) 55%, rgba(150,20,28,.87) 100%),
+      var(--hero-art);
+  }
+  /* Photographs keep more of themselves on small screens than the line art
+     does — there is no fine detail to lose, and the crop is the whole point. */
+  .page-hero.has-photo::before {
+    background-image:
+      linear-gradient(180deg, rgba(6,22,38,.90) 0%, rgba(6,22,38,.78) 55%, rgba(6,22,38,.70) 100%),
+      var(--hero-art);
+  }
+  .page-hero-red.has-photo::before {
+    background-image:
+      linear-gradient(180deg, rgba(88,10,14,.90) 0%, rgba(110,13,18,.79) 55%, rgba(128,16,22,.71) 100%),
       var(--hero-art);
   }
 }

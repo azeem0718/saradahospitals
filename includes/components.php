@@ -7,6 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/icons.php';
+require_once __DIR__ . '/site-images.php';
 
 /** Google Maps embed centred on the hospital, plus a directions link. */
 function map_block(): void
@@ -186,7 +187,15 @@ function page_hero(string $title, string $subtitle = '', string $crumb = '', str
 {
     $classes = 'page-hero';
     $style   = '';
-    if ($art !== '') {
+
+    // A photograph reception uploaded wins over the drawn artwork. Both are
+    // optional; with neither, the banner is its plain gradient.
+    $photo = $art !== '' ? site_image_css_url('banner-' . $art) : null;
+
+    if ($photo !== null) {
+        $classes .= ' has-art has-photo';
+        $style = ' style="--hero-art:url(\'' . e($photo) . '\')"';
+    } elseif ($art !== '') {
         $file = 'assets/img/hero/' . $art . '.svg';
         if (is_file(__DIR__ . '/../' . $file)) {
             $classes .= ' has-art';
