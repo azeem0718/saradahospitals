@@ -412,8 +412,6 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   height: 2px; background: var(--red-600); border-radius: 2px;
 }
 
-.header-cta { display: flex; align-items: center; gap: .5rem; }
-
 .nav-ico { display: none; }
 
 .nav-toggle {
@@ -433,7 +431,15 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .nav-toggle[aria-expanded="true"] .icon-open  { opacity: 0; transform: rotate(90deg) scale(.7); }
 .nav-toggle[aria-expanded="true"] .icon-close { opacity: 1; transform: none; }
 
-@media (max-width: 1180px) {
+/* Between 950 and 1200 the links stay inline but tighten up, and the brand
+   yields a step of its size, so nine sections and the lockup share the bar. */
+@media (min-width: 950px) and (max-width: 1199px) {
+  .brand-name { font-size: 1.42rem; }
+  .nav a { font-size: .815rem; padding: .45rem .42rem; }
+  .header-inner { gap: .6rem; }
+}
+
+@media (max-width: 949px) {
   .nav-toggle { display: inline-flex; }
 
   /* The menu hangs off the sticky header itself (top: 100%), so it stays
@@ -511,8 +517,6 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 }
 
 @media (max-width: 760px) {
-  /* The sticky bottom bar already carries Call, WhatsApp and Token. */
-  .header-cta { display: none; }
   .brand { min-width: 0; }
   .brand-name, .brand-tag { overflow: hidden; text-overflow: ellipsis; }
 }
@@ -1510,11 +1514,10 @@ tbody tr:hover { background: var(--navy-50); }
 .fab-wa    { background: #1da851; }
 .fab-token { width: auto; padding: 0 1.05rem 0 .9rem; background: var(--navy-800); }
 
-@media (max-width: 760px) {
-  .mobile-bar { display: flex; }
-  /* Only enough clearance that the last line of the footer stays readable. */
-  body { padding-bottom: 30px; }
-}
+/* The cluster serves every width — with the masthead carrying only the
+   brand and the sections, this is where Call, WhatsApp and Token live. */
+.mobile-bar { display: flex; }
+body { padding-bottom: 30px; }
 
 /* --------------------------------------------------------------------------
    Pills and utilities

@@ -37,7 +37,7 @@
 
     // Growing past the breakpoint with the menu open would leave the page
     // scroll-locked behind a menu that no longer exists.
-    var wide = window.matchMedia('(min-width: 1181px)');
+    var wide = window.matchMedia('(min-width: 950px)');
     var onWide = function (m) { if (m.matches) setNav(false); };
     if (wide.addEventListener) { wide.addEventListener('change', onWide); }
     else if (wide.addListener) { wide.addListener(onWide); }

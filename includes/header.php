@@ -143,14 +143,6 @@ $announcement = setting('announcement', '');
       <?php endforeach; ?>
     </nav>
 
-    <div class="header-cta">
-      <a class="btn btn-emergency btn-sm" href="tel:<?= e(HOSPITAL['mobile']) ?>">
-        <?= icon('phone') ?><span>Call</span>
-      </a>
-      <a class="btn btn-primary btn-sm" href="book.php">
-        <?= icon('ticket') ?><span>Book Token</span>
-      </a>
-    </div>
   </div>
 </header>
 
