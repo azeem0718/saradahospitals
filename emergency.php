@@ -11,16 +11,23 @@ $bodyClass       = 'page-emergency';
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="page-hero" style="background:linear-gradient(160deg,#7d1114,#a4161a)">
+<?php
+$emArt = asset_url('assets/img/hero/emergency.svg');
+?>
+<section class="page-hero page-hero-red has-art" style="--hero-art:url('<?= e($emArt) ?>')">
   <div class="wrap">
-    <p class="breadcrumb"><a href="index.php">Home</a><span>/</span>Emergency</p>
+    <p class="breadcrumb">
+      <a href="index.php">Home</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span>Emergency</span>
+    </p>
     <h1>24/7 Emergency Care</h1>
-    <p style="color:#f6d7d8">
+    <p>
       Our emergency department is open every hour of every day, including Sundays
       and festival days.
     </p>
     <div class="btn-row mt-2">
-      <a class="btn btn-lg" style="background:#fff;color:#a4161a" href="tel:<?= e(HOSPITAL['mobile']) ?>">
+      <a class="btn btn-lg btn-on-red" href="tel:<?= e(HOSPITAL['mobile']) ?>">
         <?= icon('phone') ?> Call <?= e(HOSPITAL['mobile_display']) ?>
       </a>
       <a class="btn btn-lg btn-ghost-light" href="tel:<?= e(HOSPITAL['landline']) ?>">

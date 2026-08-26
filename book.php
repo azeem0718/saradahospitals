@@ -132,7 +132,8 @@ require __DIR__ . '/includes/header.php';
 page_hero(
     'Book an OP Token',
     'Pick your doctor, day and session. You will get a token number to show at reception.',
-    'Book a Token'
+    'Book a Token',
+    'book'
 );
 ?>
 

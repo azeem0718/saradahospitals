@@ -182,10 +182,22 @@ function cta_band(string $heading = 'Need to see a doctor?', string $text = ''):
 }
 
 /** Compact page hero used by every inner page. */
-function page_hero(string $title, string $subtitle = '', string $crumb = ''): void
+function page_hero(string $title, string $subtitle = '', string $crumb = '', string $art = '', string $tone = ''): void
 {
+    $classes = 'page-hero';
+    $style   = '';
+    if ($art !== '') {
+        $file = 'assets/img/hero/' . $art . '.svg';
+        if (is_file(__DIR__ . '/../' . $file)) {
+            $classes .= ' has-art';
+            $style = ' style="--hero-art:url(\'' . e(asset_url($file)) . '\')"';
+        }
+    }
+    if ($tone !== '') {
+        $classes .= ' page-hero-' . $tone;
+    }
     ?>
-    <section class="page-hero">
+    <section class="<?= e($classes) ?>"<?= $style ?>>
       <div class="wrap">
         <?php if ($crumb !== ''): ?>
           <p class="breadcrumb">

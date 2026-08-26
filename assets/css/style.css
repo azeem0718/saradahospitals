@@ -987,19 +987,71 @@ tbody tr:hover { background: var(--navy-50); }
    Page hero (inner pages)
    -------------------------------------------------------------------------- */
 .page-hero {
-  position: relative; overflow: hidden;
-  background:
-    radial-gradient(40rem 24rem at 82% 0%, rgba(34,89,139,.34), transparent 70%),
-    linear-gradient(165deg, var(--navy-950), var(--navy-800));
+  position: relative; overflow: hidden; isolation: isolate;
+  background: var(--navy-950);
   color: #a8bed5;
   padding: clamp(2.75rem, 6vw, 4.75rem) 0;
 }
+/* The tint. Without artwork it carries the banner on its own; with artwork
+   behind it, it drops to a scrim so the drawing still reads through. */
+.page-hero::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background-image:
+    radial-gradient(40rem 24rem at 82% 0%, rgba(34,89,139,.34), transparent 70%),
+    linear-gradient(165deg, var(--navy-950), var(--navy-800));
+  background-size: cover; background-position: center;
+}
+.page-hero.has-art::before {
+  background-image:
+    linear-gradient(100deg,
+      rgba(9,26,44,.94) 0%,
+      rgba(9,26,44,.82) 32%,
+      rgba(11,34,58,.52) 62%,
+      rgba(13,42,70,.30) 100%),
+    var(--hero-art);
+}
+.page-hero-red { background: var(--red-800); }
+.page-hero-red::before {
+  background-image:
+    radial-gradient(40rem 24rem at 82% 0%, rgba(226,86,79,.30), transparent 70%),
+    linear-gradient(160deg, #7d1114, #a4161a);
+}
+.page-hero-red.has-art::before {
+  background-image:
+    linear-gradient(100deg,
+      rgba(107,14,18,.94) 0%,
+      rgba(118,15,19,.83) 32%,
+      rgba(138,18,24,.54) 62%,
+      rgba(156,21,30,.32) 100%),
+    var(--hero-art);
+}
+.page-hero.page-hero-red p { color: #f7dcdd; }
+.page-hero-red .breadcrumb { color: #edbcbe; }
+.page-hero-red .breadcrumb a { color: #f7dcdd; }
+.btn-on-red { background: #fff; color: var(--red-700); }
+.btn-on-red:hover { background: #fff; color: var(--red-800); }
+
 .page-hero::after {
   content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
   background: linear-gradient(90deg, transparent, rgba(201,151,31,.45) 30%, rgba(190,22,34,.45) 70%, transparent);
 }
 .page-hero h1 { color: #fff; margin-bottom: .3em; font-size: var(--step-4); font-weight: 400; }
 .page-hero p { color: #9fb6cd; font-size: var(--step-1); max-width: 56ch; margin: 0; }
+
+/* Narrow screens crop the artwork hard, so pull the scrim back to a plain
+   top-to-bottom wash and let the motif sit behind the text as texture. */
+@media (max-width: 760px) {
+  .page-hero.has-art::before {
+    background-image:
+      linear-gradient(180deg, rgba(9,26,44,.95) 0%, rgba(9,26,44,.91) 55%, rgba(12,38,64,.87) 100%),
+      var(--hero-art);
+  }
+  .page-hero-red.has-art::before {
+    background-image:
+      linear-gradient(180deg, rgba(107,14,18,.95) 0%, rgba(130,17,21,.91) 55%, rgba(150,20,28,.87) 100%),
+      var(--hero-art);
+  }
+}
 
 .breadcrumb {
   font-size: .82rem; color: #7f95ad; margin-bottom: 1rem;

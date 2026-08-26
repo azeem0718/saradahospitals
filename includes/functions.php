@@ -230,6 +230,36 @@ function asset(string $path, string $prefix = ''): string
     return $prefix . $path . '?v=' . $cache[$path];
 }
 
+/**
+ * The site's URL prefix, worked out from the running script.
+ *
+ * Everything is normally served from the domain root, but this keeps a
+ * subdirectory deploy working too.
+ */
+function base_url(): string
+{
+    static $base;
+
+    if ($base === null) {
+        $dir  = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+        $base = ($dir === '/' || $dir === '.') ? '/' : rtrim($dir, '/') . '/';
+    }
+
+    return $base;
+}
+
+/**
+ * Like asset(), but rooted at the site rather than the current document.
+ *
+ * Needed for URLs that end up inside a CSS custom property: the browser
+ * resolves those against the stylesheet's own location, not the page's, so a
+ * plain relative path lands in assets/css/ and 404s.
+ */
+function asset_url(string $path): string
+{
+    return asset($path, base_url());
+}
+
 // ---------------------------------------------------------------
 // Bootstrap
 // ---------------------------------------------------------------

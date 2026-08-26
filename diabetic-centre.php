@@ -11,7 +11,8 @@ require __DIR__ . '/includes/header.php';
 page_hero(
     'Good Health Diabetic Centre',
     'Hope for Better Life — dedicated diabetes care at Sarada Nursing Home.',
-    'Diabetic Centre'
+    'Diabetic Centre',
+    'diabetes'
 );
 ?>
 

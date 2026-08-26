@@ -14,7 +14,8 @@ require __DIR__ . '/includes/header.php';
 page_hero(
     'About Sarada Nursing Home',
     'A neighbourhood nursing home on Pamuru Road, Kandukur, caring for families across Prakasam district.',
-    'About'
+    'About',
+    'about'
 );
 ?>
 

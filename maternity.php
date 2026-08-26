@@ -11,7 +11,8 @@ require __DIR__ . '/includes/header.php';
 page_hero(
     'Maternity & Women\'s Health',
     'Care through pregnancy, delivery and beyond, under Dr. Maddipudi Brahmani, MBBS, MS (OBG).',
-    'Maternity'
+    'Maternity',
+    'maternity'
 );
 ?>
 

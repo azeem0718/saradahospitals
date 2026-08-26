@@ -11,7 +11,8 @@ require __DIR__ . '/includes/header.php';
 page_hero(
     'Tariff & Charges',
     'Our fees are displayed at reception and published here, so you know what to expect before you arrive.',
-    'Tariff'
+    'Tariff',
+    'tariff'
 );
 ?>
 

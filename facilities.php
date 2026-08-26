@@ -11,7 +11,8 @@ require __DIR__ . '/includes/header.php';
 page_hero(
     'Our Facilities',
     'Everything on this page is available inside the building, so patients are not sent elsewhere mid-treatment.',
-    'Facilities'
+    'Facilities',
+    'facilities'
 );
 ?>
 

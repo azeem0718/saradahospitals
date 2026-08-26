@@ -14,7 +14,8 @@ require __DIR__ . '/includes/header.php';
 page_hero(
     'Our Doctors',
     'Two resident consultants covering general medicine, diabetes care and women\'s health.',
-    'Doctors'
+    'Doctors',
+    'doctors'
 );
 ?>
 

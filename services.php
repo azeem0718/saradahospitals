@@ -11,7 +11,8 @@ require __DIR__ . '/includes/header.php';
 page_hero(
     'Our Services',
     'General medicine and women\'s health, delivered by resident consultants with laboratory and ICU support on site.',
-    'Services'
+    'Services',
+    'services'
 );
 ?>
 

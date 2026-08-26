@@ -11,7 +11,8 @@ require __DIR__ . '/includes/header.php';
 page_hero(
     'Contact Us',
     'Call us any time, or come and see us on Pamuru Road, Kandukur.',
-    'Contact'
+    'Contact',
+    'contact'
 );
 ?>
 
