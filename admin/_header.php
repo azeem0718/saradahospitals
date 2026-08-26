@@ -42,14 +42,15 @@ $flash = flash();
 <link rel="stylesheet" href="<?= e(asset('assets/css/fonts.css', '../')) ?>">
 <link rel="stylesheet" href="<?= e(asset('assets/css/style.css', '../')) ?>">
 <link rel="stylesheet" href="<?= e(asset('assets/css/admin.css', '../')) ?>">
-<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../assets/img/logo/badge-48.png" type="image/png" sizes="48x48">
+<link rel="apple-touch-icon" href="../assets/img/logo/apple-touch-icon.png">
 </head>
 <body class="admin">
 
 <div class="admin-bar">
   <div class="wrap admin-bar-inner">
     <a class="brand" href="index.php">
-      <?= logo_mark() ?>
+      <?= logo_mark('brand-mark', '../') ?>
       <span class="brand-text">
         <span class="brand-name">Sarada Nursing Home</span>
         <span class="brand-tag">Reception Panel</span>

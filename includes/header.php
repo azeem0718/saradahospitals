@@ -22,16 +22,17 @@ $fullTitle = $pageTitle !== ''
     ? $pageTitle . ' | ' . HOSPITAL['name']
     : HOSPITAL['name'] . ' — ' . HOSPITAL['tagline'] . ', Kandukur';
 
+// label, href, and the icon the mobile menu shows beside each row
 $navItems = [
-    'home'      => ['Home',           'index.php'],
-    'about'     => ['About',          'about.php'],
-    'doctors'   => ['Doctors',        'doctors.php'],
-    'services'  => ['Services',       'services.php'],
-    'diabetic'  => ['Diabetes',       'diabetic-centre.php'],
-    'maternity' => ['Maternity',      'maternity.php'],
-    'emergency' => ['Emergency',      'emergency.php'],
-    'tariff'    => ['Tariff',         'tariff.php'],
-    'contact'   => ['Contact',        'contact.php'],
+    'home'      => ['Home',      'index.php',           'home'],
+    'about'     => ['About',     'about.php',           'building'],
+    'doctors'   => ['Doctors',   'doctors.php',         'users'],
+    'services'  => ['Services',  'services.php',        'stethoscope'],
+    'diabetic'  => ['Diabetes',  'diabetic-centre.php', 'droplet'],
+    'maternity' => ['Maternity', 'maternity.php',       'maternity'],
+    'emergency' => ['Emergency', 'emergency.php',       'emergency'],
+    'tariff'    => ['Tariff',    'tariff.php',          'list'],
+    'contact'   => ['Contact',   'contact.php',         'phone'],
 ];
 
 $announcement = setting('announcement', '');
@@ -52,6 +53,8 @@ $announcement = setting('announcement', '');
 <meta property="og:title" content="<?= e($fullTitle) ?>">
 <meta property="og:description" content="<?= e($pageDescription) ?>">
 <meta property="og:locale" content="en_IN">
+<meta property="og:image" content="<?= e(rtrim(SITE_URL, '/')) ?>/assets/img/logo/badge-512.png">
+<meta name="twitter:card" content="summary">
 
 <!-- No ?v= on these: the stylesheet references the bare filename, and a
      preload under a different URL is a second download of the same font. -->
@@ -59,7 +62,9 @@ $announcement = setting('announcement', '');
 <link rel="preload" href="assets/fonts/newsreader-normal-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= e(asset('assets/css/fonts.css')) ?>">
 <link rel="stylesheet" href="<?= e(asset('assets/css/style.css')) ?>">
-<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/logo/badge-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="assets/img/logo/badge-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
 
 <script type="application/ld+json">
 <?= json_encode([
@@ -131,8 +136,10 @@ $announcement = setting('announcement', '');
     </button>
 
     <nav class="nav" id="primary-nav" aria-label="Primary">
-      <?php foreach ($navItems as $key => [$label, $href]): ?>
-        <a href="<?= e($href) ?>"<?= $activeNav === $key ? ' aria-current="page"' : '' ?>><?= e($label) ?></a>
+      <?php foreach ($navItems as $key => [$label, $href, $ico]): ?>
+        <a href="<?= e($href) ?>"<?= $activeNav === $key ? ' aria-current="page"' : '' ?>>
+          <span class="nav-ico" aria-hidden="true"><?= icon($ico) ?></span><span><?= e($label) ?></span>
+        </a>
       <?php endforeach; ?>
     </nav>
 

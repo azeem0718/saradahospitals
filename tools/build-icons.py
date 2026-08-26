@@ -52,6 +52,7 @@ FEATURE = {
 }
 
 UTILITY = {
+    "home":          "house",
     "check":         "check",
     "check-circle":  "circle-check",
     "arrow-right":   "arrow-right",

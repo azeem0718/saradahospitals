@@ -53,25 +53,21 @@ function icon(string $name, string $class = ''): string
 }
 
 /**
- * The heart-and-caring-hands mark, redrawn from the hospital's own logo:
- * two hands cupping a heart with a medical cross.
+ * The hospital's own mark — a heart held by two hands — on a white disc.
  *
- * Drawn with flat fills and no <defs>. The mark is rendered several times on
- * a page (masthead, footer, token slip), and duplicated gradient or clipPath
- * ids would be invalid markup.
+ * Served as a raster badge (tools/make-logo.php) rather than traced: the
+ * artwork's hands open out of the heart, so their white is the page's white,
+ * and the disc is what lets the exact artwork sit on ivory, navy and red
+ * grounds alike.
+ *
+ * @param string $prefix Path prefix for pages in admin/.
  */
-function logo_mark(string $class = 'brand-mark'): string
+function logo_mark(string $class = 'brand-mark', string $prefix = ''): string
 {
-    return <<<SVG
-    <svg class="{$class}" viewBox="0 0 64 64" width="40" height="40" role="img" aria-label="Sarada Nursing Home">
-      <circle cx="32" cy="32" r="31" fill="#be1622"/>
-      <circle cx="32" cy="32" r="28" fill="none" stroke="#ffffff" stroke-opacity=".2" stroke-width="1"/>
-      <path d="M14.8 43.6c0-2.4 1.6-4.2 3.8-4.2 1.2 0 2.3.5 3.1 1.3l5 4.9-2 2.1-4.2-4.1a1.3 1.3 0 0 0-1.8 1.8l5.6 5.6h-7.3c-1.3 0-2.2-1-2.2-2.2z" fill="#ffffff" fill-opacity=".82"/>
-      <path d="M49.2 43.6c0-2.4-1.6-4.2-3.8-4.2-1.2 0-2.3.5-3.1 1.3l-5 4.9 2 2.1 4.2-4.1a1.3 1.3 0 0 1 1.8 1.8l-5.6 5.6h7.3c1.3 0 2.2-1 2.2-2.2z" fill="#ffffff" fill-opacity=".82"/>
-      <path d="M32 45.2c-8.2-5.8-13.7-10.7-13.7-16.4 0-4.1 3.1-7.2 7-7.2 2.5 0 4.7 1.3 6.1 3.3l.6.9.6-.9a7.2 7.2 0 0 1 6.1-3.3c3.9 0 7 3.1 7 7.2 0 5.7-5.5 10.6-13.7 16.4z" fill="#ffffff"/>
-      <path d="M32 26v9.2M27.4 30.6h9.2" stroke="#be1622" stroke-width="3" stroke-linecap="round"/>
-    </svg>
-    SVG;
+    return '<img class="' . htmlspecialchars($class, ENT_QUOTES) . '"'
+         . ' src="' . htmlspecialchars(asset('assets/img/logo/badge-96.png', $prefix), ENT_QUOTES) . '"'
+         . ' srcset="' . htmlspecialchars(asset('assets/img/logo/badge-192.png', $prefix), ENT_QUOTES) . ' 2x"'
+         . ' alt="" width="40" height="40" decoding="async">';
 }
 
 /**

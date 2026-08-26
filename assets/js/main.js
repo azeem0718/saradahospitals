@@ -7,27 +7,40 @@
   var nav = document.getElementById('primary-nav');
 
   if (toggle && nav) {
+    var setNav = function (open) {
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.classList.toggle('open', open);
+      // Drives the backdrop and the scroll lock.
+      document.documentElement.classList.toggle('nav-open', open);
+    };
+
     toggle.addEventListener('click', function () {
-      var open = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!open));
-      nav.classList.toggle('open', !open);
+      setNav(toggle.getAttribute('aria-expanded') !== 'true');
     });
 
-    // Close when a link is followed or focus leaves the menu entirely.
+    // Following a link closes it; so does tapping the dimmed page behind it.
     nav.addEventListener('click', function (ev) {
-      if (ev.target.closest('a')) {
-        toggle.setAttribute('aria-expanded', 'false');
-        nav.classList.remove('open');
-      }
+      if (ev.target.closest('a')) setNav(false);
+    });
+    document.addEventListener('click', function (ev) {
+      if (!nav.classList.contains('open')) return;
+      if (ev.target.closest('.nav, .nav-toggle')) return;
+      setNav(false);
     });
 
     document.addEventListener('keydown', function (ev) {
       if (ev.key === 'Escape' && nav.classList.contains('open')) {
-        toggle.setAttribute('aria-expanded', 'false');
-        nav.classList.remove('open');
+        setNav(false);
         toggle.focus();
       }
     });
+
+    // Growing past the breakpoint with the menu open would leave the page
+    // scroll-locked behind a menu that no longer exists.
+    var wide = window.matchMedia('(min-width: 1181px)');
+    var onWide = function (m) { if (m.matches) setNav(false); };
+    if (wide.addEventListener) { wide.addEventListener('change', onWide); }
+    else if (wide.addListener) { wide.addListener(onWide); }
   }
 
   /* Pause the hero illustration when it is scrolled out of view --------

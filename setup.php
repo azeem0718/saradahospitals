@@ -163,7 +163,9 @@ $stepLabels = [1 => 'Database', 2 => 'Tables', 3 => 'Your login'];
 <meta name="robots" content="noindex, nofollow">
 <link rel="stylesheet" href="<?= e(asset('assets/css/fonts.css')) ?>">
 <link rel="stylesheet" href="<?= e(asset('assets/css/style.css')) ?>">
-<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/logo/badge-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="assets/img/logo/badge-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="assets/img/logo/apple-touch-icon.png">
 <style>
   body { background: var(--ground); display: grid; place-items: start center; padding: 2.5rem 1.25rem 4rem; }
   .setup { width: 100%; max-width: 560px; }

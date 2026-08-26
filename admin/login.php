@@ -51,7 +51,7 @@ if (is_post()) {
   <div class="login-card">
 
     <div class="text-center mb-3">
-      <?= logo_mark('brand-mark') ?>
+      <?= logo_mark('brand-mark', '../') ?>
       <h1 style="font-size:1.5rem;margin-top:.9rem;margin-bottom:.2rem">Sarada Nursing Home</h1>
       <p class="muted">Reception &amp; Admin Panel</p>
     </div>

@@ -406,38 +406,100 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 .header-cta { display: flex; align-items: center; gap: .5rem; }
 
+.nav-ico { display: none; }
+
 .nav-toggle {
+  position: relative;
   display: none; width: 46px; height: 46px; flex: none;
   align-items: center; justify-content: center;
   background: var(--paper); border: 1.5px solid var(--rule);
   border-radius: var(--r-sm); cursor: pointer; color: var(--navy-800);
 }
-.nav-toggle svg { width: 22px; height: 22px; }
-.nav-toggle .icon-close { display: none; }
-.nav-toggle[aria-expanded="true"] .icon-open { display: none; }
-.nav-toggle[aria-expanded="true"] .icon-close { display: block; }
+/* The two glyphs sit stacked and cross-fade with a quarter turn, so the
+   button morphs instead of flicking. */
+.nav-toggle svg {
+  position: absolute; width: 22px; height: 22px;
+  transition: opacity .18s ease, transform .26s cubic-bezier(.22, .85, .3, 1);
+}
+.nav-toggle .icon-close { opacity: 0; transform: rotate(-90deg) scale(.7); }
+.nav-toggle[aria-expanded="true"] .icon-open  { opacity: 0; transform: rotate(90deg) scale(.7); }
+.nav-toggle[aria-expanded="true"] .icon-close { opacity: 1; transform: none; }
 
 @media (max-width: 1180px) {
   .nav-toggle { display: inline-flex; }
+
+  /* The menu hangs off the sticky header itself (top: 100%), so it stays
+     attached wherever the page has scrolled to — the old fixed position
+     assumed the 33px top bar was still on screen and floated once it wasn't. */
   .nav {
-    position: fixed; left: 0; right: 0;
-    top: calc(var(--header-h) + 33px);
-    flex-direction: column; align-items: stretch; gap: 0;
+    position: absolute; top: 100%; left: 0; right: 0;
+    display: flex; flex-direction: column; align-items: stretch; gap: 2px;
     background: var(--paper);
-    border-block: 1px solid var(--rule);
-    padding: .5rem clamp(18px, 4vw, 40px) 1.25rem;
+    border-bottom: 1px solid var(--rule);
+    padding: .65rem clamp(12px, 3vw, 40px) .9rem;
     box-shadow: var(--shadow-lg);
-    max-height: calc(100dvh - var(--header-h) - 33px);
+    max-height: calc(100dvh - var(--header-h, 72px) - 8px);
     overflow-y: auto;
-    display: none;
+    overscroll-behavior: contain;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    translate: 0 -10px;
+    transition: opacity .2s ease, translate .26s cubic-bezier(.22, .85, .3, 1),
+                visibility 0s linear .26s;
   }
-  .nav.open { display: flex; }
+  .nav.open {
+    opacity: 1; visibility: visible; pointer-events: auto; translate: 0 0;
+    transition: opacity .2s ease, translate .26s cubic-bezier(.22, .85, .3, 1);
+  }
+
+  /* Rows sized for thumbs: an icon well, a label, a full-width touch target. */
   .nav a {
-    padding: .95rem .4rem; font-size: 1.02rem; border-radius: 0;
-    border-bottom: 1px solid var(--rule-soft);
+    display: flex; align-items: center; gap: .9rem;
+    padding: .62rem .7rem; border-radius: 12px;
+    font-size: 1.02rem; color: var(--ink-700);
   }
-  .nav a:last-child { border-bottom: 0; }
-  .nav a[aria-current="page"]::after { left: .4rem; right: auto; width: 18px; bottom: .55rem; }
+  .nav a:active { background: var(--navy-50); }
+  .nav a[aria-current="page"] { background: var(--navy-50); color: var(--navy-900); }
+  .nav a[aria-current="page"]::after { content: none; }
+
+  .nav-ico {
+    display: grid; place-items: center; flex: none;
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--navy-50); color: var(--navy-700);
+    border: 1px solid var(--navy-100);
+  }
+  .nav-ico svg { width: 19px; height: 19px; }
+  .nav a[aria-current="page"] .nav-ico {
+    background: var(--navy-700); color: #fff; border-color: var(--navy-700);
+  }
+
+  /* Rows cascade in behind the panel; on close they simply go with it. */
+  .nav a { opacity: 0; translate: 0 -6px;
+           transition: opacity .22s ease, translate .28s cubic-bezier(.22, .85, .3, 1),
+                       background-color .15s ease; }
+  .nav.open a { opacity: 1; translate: 0 0; }
+  .nav.open a:nth-child(2)  { transition-delay: 25ms; }
+  .nav.open a:nth-child(3)  { transition-delay: 50ms; }
+  .nav.open a:nth-child(4)  { transition-delay: 75ms; }
+  .nav.open a:nth-child(5)  { transition-delay: 100ms; }
+  .nav.open a:nth-child(6)  { transition-delay: 125ms; }
+  .nav.open a:nth-child(7)  { transition-delay: 150ms; }
+  .nav.open a:nth-child(8)  { transition-delay: 175ms; }
+  .nav.open a:nth-child(9)  { transition-delay: 200ms; }
+  .nav.open a:nth-child(n+10) { transition-delay: 220ms; }
+
+  /* The page dims behind the open menu and stops scrolling under it. */
+  html.nav-open { overflow: hidden; }
+  html.nav-open body::before {
+    content: ''; position: fixed; inset: 0; z-index: 99;
+    background: rgba(6, 22, 38, .45);
+    animation: nav-dim .25s ease both;
+  }
+  @keyframes nav-dim { from { opacity: 0; } to { opacity: 1; } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav, .nav a, .nav-toggle svg { transition: none; }
+  html.nav-open body::before { animation: none; }
 }
 
 @media (max-width: 760px) {
