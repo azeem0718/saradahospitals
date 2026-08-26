@@ -1,11 +1,16 @@
 <?php
 /**
- * Line-art illustration of the nursing home, drawn for this site.
+ * Axonometric line drawing of the nursing home.
  *
- * Every stroked shape carries pathLength="1", which normalises the dash maths:
- * the draw-on animation then uses a dasharray and dashoffset of 1 whatever the
- * real path length is, so no line outruns another. The d1–d5 groups stagger
- * the reveal: ground, then massing, then windows, then the details.
+ * GENERATED — do not hand-edit. The geometry is defined in 3D and projected by
+ * tools/build-illustration.py; that is the only way parallel edges stay
+ * parallel and the window grids stay aligned on the receding face. Re-run that
+ * script and paste the result here to change the building.
+ *
+ * Faces are emitted back-to-front and carry a tonal fill, so nearer surfaces
+ * occlude the lines behind them rather than the whole thing reading as a
+ * wireframe. Every path carries pathLength="1", which lets one dash length
+ * drive the draw-on animation regardless of the real path length.
  */
 
 declare(strict_types=1);
@@ -13,76 +18,83 @@ declare(strict_types=1);
 function hospital_illustration(): string
 {
     return <<<'SVG'
-    <svg class="draw-art" viewBox="0 0 620 420" role="img"
-         aria-label="Line illustration of Sarada Nursing Home">
-      <g fill="none" stroke="currentColor" stroke-width="2.4"
-         stroke-linecap="round" stroke-linejoin="round">
-
-        <!-- ground ------------------------------------------------------ -->
-        <g class="d1">
-          <path pathLength="1" d="M26 372h568"/>
-        </g>
-
-        <!-- massing ----------------------------------------------------- -->
-        <g class="d1">
-          <!-- tower -->
-          <path pathLength="1" d="M310 372V112h160v260"/>
-          <path pathLength="1" d="M302 112h176"/>
-          <!-- front block -->
-          <path pathLength="1" d="M110 372V200h200"/>
-          <path pathLength="1" d="M102 200h216"/>
-        </g>
-
-        <!-- roof sign + floor lines ------------------------------------- -->
-        <g class="d2">
-          <path pathLength="1" d="M352 112V80h56v32"/>
-          <path pathLength="1" d="M344 80h72"/>
-          <path pathLength="1" d="M310 164h160M310 216h160M310 268h160M310 320h160"/>
-          <path pathLength="1" d="M110 252h200M110 304h200"/>
-        </g>
-
-        <!-- windows ----------------------------------------------------- -->
-        <g class="d3">
-          <path pathLength="1" d="M330 128h30v24h-30zM375 128h30v24h-30zM420 128h30v24h-30z"/>
-          <path pathLength="1" d="M330 180h30v24h-30zM375 180h30v24h-30zM420 180h30v24h-30z"/>
-          <path pathLength="1" d="M330 232h30v24h-30zM375 232h30v24h-30zM420 232h30v24h-30z"/>
-          <path pathLength="1" d="M330 284h30v24h-30zM375 284h30v24h-30zM420 284h30v24h-30z"/>
-          <path pathLength="1" d="M130 216h34v24h-34zM184 216h34v24h-34zM238 216h34v24h-34z"/>
-          <path pathLength="1" d="M130 268h34v24h-34zM238 268h34v24h-34z"/>
-        </g>
-
-        <!-- entrance ---------------------------------------------------- -->
-        <g class="d4">
-          <path pathLength="1" d="M178 372v-56h64v56"/>
-          <path pathLength="1" d="M210 316v56"/>
-          <path pathLength="1" d="M166 316h88"/>
-          <path pathLength="1" d="M170 302h80l-8 14h-64z"/>
-          <path pathLength="1" d="M156 372h108"/>
-        </g>
-
-        <!-- cross sign on the roof box ---------------------------------- -->
-        <g class="d4">
-          <path pathLength="1" d="M380 88v16M372 96h16" stroke-width="3.4"/>
-        </g>
-
-        <!-- ambulance, clear of the buildings on the right --------------- -->
-        <g class="d5">
-          <path pathLength="1" d="M496 372v-46h62v46"/>
-          <path pathLength="1" d="M558 344h20l14 18v10h-34"/>
-          <path pathLength="1" d="M562 348h14l9 12h-23z"/>
-          <circle pathLength="1" cx="518" cy="372" r="10"/>
-          <circle pathLength="1" cx="570" cy="372" r="10"/>
-          <path pathLength="1" d="M520 338v14M513 345h14"/>
-        </g>
-
-        <!-- planting ----------------------------------------------------- -->
-        <g class="d5">
-          <path pathLength="1" d="M62 372v-40"/>
-          <circle pathLength="1" cx="62" cy="316" r="22"/>
-          <path pathLength="1" d="M604 372v-26"/>
-          <circle pathLength="1" cx="604" cy="334" r="15"/>
-        </g>
-      </g>
+    <svg class="draw-art" viewBox="-4 98 594 308" role="img"
+         aria-label="Axonometric line drawing of Sarada Nursing Home">
+      <path class="ln-ground g1" pathLength="1" d="M12.0 372.0 L574.0 372.0"/>
+      <path class="ln-thin g1" pathLength="1" d="M59.7 359.5 L59.7 305.5"/>
+      <path class="ln-thin g1" pathLength="1" d="M32.7 283.5a27 27 0 1 0 54 0a27 27 0 1 0 -54 0"/>
+      <path class="f-top g1" pathLength="1" d="M92.0 196.0 L336.0 196.0 L386.2 167.0 L142.2 167.0Z"/>
+      <path class="f-front g1" pathLength="1" d="M92.0 372.0 L336.0 372.0 L336.0 196.0 L92.0 196.0Z"/>
+      <path class="ln-thin g2" pathLength="1" d="M92.0 328.0 L336.0 328.0"/>
+      <path class="ln-thin g2" pathLength="1" d="M92.0 284.0 L336.0 284.0"/>
+      <path class="ln-thin g2" pathLength="1" d="M92.0 240.0 L336.0 240.0"/>
+      <path class="ln-win g3" pathLength="1" d="M110.4 360.0 L148.4 360.0 L148.4 338.0 L110.4 338.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M166.8 360.0 L204.8 360.0 L204.8 338.0 L166.8 338.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M223.2 360.0 L261.2 360.0 L261.2 338.0 L223.2 338.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M279.6 360.0 L317.6 360.0 L317.6 338.0 L279.6 338.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M110.4 316.0 L148.4 316.0 L148.4 294.0 L110.4 294.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M166.8 316.0 L204.8 316.0 L204.8 294.0 L166.8 294.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M223.2 316.0 L261.2 316.0 L261.2 294.0 L223.2 294.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M279.6 316.0 L317.6 316.0 L317.6 294.0 L279.6 294.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M110.4 272.0 L148.4 272.0 L148.4 250.0 L110.4 250.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M166.8 272.0 L204.8 272.0 L204.8 250.0 L166.8 250.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M223.2 272.0 L261.2 272.0 L261.2 250.0 L223.2 250.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M279.6 272.0 L317.6 272.0 L317.6 250.0 L279.6 250.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M110.4 228.0 L148.4 228.0 L148.4 206.0 L110.4 206.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M166.8 228.0 L204.8 228.0 L204.8 206.0 L166.8 206.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M223.2 228.0 L261.2 228.0 L261.2 206.0 L223.2 206.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M279.6 228.0 L317.6 228.0 L317.6 206.0 L279.6 206.0Z"/>
+      <path class="f-top g2" pathLength="1" d="M83.4 185.5 L333.4 185.5 L388.8 153.5 L138.8 153.5Z"/>
+      <path class="f-front g2" pathLength="1" d="M83.4 197.5 L333.4 197.5 L333.4 185.5 L83.4 185.5Z"/>
+      <path class="f-top g2" pathLength="1" d="M336.0 156.0 L416.0 156.0 L466.2 127.0 L386.2 127.0Z"/>
+      <path class="f-side g2" pathLength="1" d="M416.0 372.0 L466.2 343.0 L466.2 127.0 L416.0 156.0Z"/>
+      <path class="f-front g2" pathLength="1" d="M336.0 372.0 L416.0 372.0 L416.0 156.0 L336.0 156.0Z"/>
+      <path class="ln-thin g2" pathLength="1" d="M336.0 328.0 L416.0 328.0"/>
+      <path class="ln-thin g2" pathLength="1" d="M416.0 328.0 L466.2 299.0"/>
+      <path class="ln-thin g2" pathLength="1" d="M336.0 284.0 L416.0 284.0"/>
+      <path class="ln-thin g2" pathLength="1" d="M416.0 284.0 L466.2 255.0"/>
+      <path class="ln-thin g2" pathLength="1" d="M336.0 240.0 L416.0 240.0"/>
+      <path class="ln-thin g2" pathLength="1" d="M416.0 240.0 L466.2 211.0"/>
+      <path class="ln-thin g2" pathLength="1" d="M336.0 196.0 L416.0 196.0"/>
+      <path class="ln-thin g2" pathLength="1" d="M416.0 196.0 L466.2 167.0"/>
+      <path class="ln-win g3" pathLength="1" d="M345.3 362.0 L371.3 362.0 L371.3 338.0 L345.3 338.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M380.7 362.0 L406.7 362.0 L406.7 338.0 L380.7 338.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M424.1 357.3 L437.1 349.8 L437.1 325.8 L424.1 333.3Z"/>
+      <path class="ln-win g3" pathLength="1" d="M445.2 345.2 L458.1 337.7 L458.1 313.7 L445.2 321.2Z"/>
+      <path class="ln-win g3" pathLength="1" d="M345.3 318.0 L371.3 318.0 L371.3 294.0 L345.3 294.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M380.7 318.0 L406.7 318.0 L406.7 294.0 L380.7 294.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M424.1 313.3 L437.1 305.8 L437.1 281.8 L424.1 289.3Z"/>
+      <path class="ln-win g3" pathLength="1" d="M445.2 301.2 L458.1 293.7 L458.1 269.7 L445.2 277.2Z"/>
+      <path class="ln-win g3" pathLength="1" d="M345.3 274.0 L371.3 274.0 L371.3 250.0 L345.3 250.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M380.7 274.0 L406.7 274.0 L406.7 250.0 L380.7 250.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M424.1 269.3 L437.1 261.8 L437.1 237.8 L424.1 245.3Z"/>
+      <path class="ln-win g3" pathLength="1" d="M445.2 257.2 L458.1 249.7 L458.1 225.7 L445.2 233.2Z"/>
+      <path class="ln-win g3" pathLength="1" d="M345.3 230.0 L371.3 230.0 L371.3 206.0 L345.3 206.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M380.7 230.0 L406.7 230.0 L406.7 206.0 L380.7 206.0Z"/>
+      <path class="ln-win g3" pathLength="1" d="M424.1 225.3 L437.1 217.8 L437.1 193.8 L424.1 201.3Z"/>
+      <path class="ln-win g3" pathLength="1" d="M445.2 213.2 L458.1 205.7 L458.1 181.7 L445.2 189.2Z"/>
+      <path class="f-top g4" pathLength="1" d="M333.4 145.5 L421.4 145.5 L476.8 113.5 L388.8 113.5Z"/>
+      <path class="f-side g4" pathLength="1" d="M421.4 157.5 L476.8 125.5 L476.8 113.5 L421.4 145.5Z"/>
+      <path class="f-front g4" pathLength="1" d="M333.4 157.5 L421.4 157.5 L421.4 145.5 L333.4 145.5Z"/>
+      <path class="ln-mark g4" pathLength="1" d="M373.4 151.5 L373.4 142.5"/>
+      <path class="ln-mark g4" pathLength="1" d="M368.9 147.0 L377.9 147.0"/>
+      <path class="ln-win g4" pathLength="1" d="M148.0 372.0 L204.0 372.0 L204.0 338.0 L148.0 338.0Z"/>
+      <path class="ln-thin g4" pathLength="1" d="M176.0 372.0 L176.0 338.0"/>
+      <path class="f-top g4" pathLength="1" d="M94.6 334.5 L202.6 334.5 L226.0 321.0 L118.0 321.0Z"/>
+      <path class="f-side g4" pathLength="1" d="M202.6 345.5 L226.0 332.0 L226.0 321.0 L202.6 334.5Z"/>
+      <path class="f-front g4" pathLength="1" d="M94.6 345.5 L202.6 345.5 L202.6 334.5 L94.6 334.5Z"/>
+      <path class="ln-thin g4" pathLength="1" d="M101.6 385.5 L101.6 345.5"/>
+      <path class="ln-thin g4" pathLength="1" d="M195.6 385.5 L195.6 345.5"/>
+      <path class="f-front g4" pathLength="1" d="M78.6 389.0 L206.6 389.0 L212.6 385.5 L84.6 385.5Z"/>
+      <path class="f-top g5" pathLength="1" d="M456.7 336.5 L534.7 336.5 L549.5 328.0 L471.5 328.0Z"/>
+      <path class="f-side g5" pathLength="1" d="M534.7 378.5 L549.5 370.0 L549.5 328.0 L534.7 336.5Z"/>
+      <path class="f-front g5" pathLength="1" d="M456.7 378.5 L534.7 378.5 L534.7 336.5 L456.7 336.5Z"/>
+      <path class="ln-thin g5" pathLength="1" d="M504.7 378.5 L504.7 336.5"/>
+      <path class="ln-win g5" pathLength="1" d="M508.7 360.5 L528.7 360.5 L528.7 344.5 L508.7 344.5Z"/>
+      <path class="ln-thin g5" pathLength="1" d="M463.7 372.5a8 8 0 1 0 16 0a8 8 0 1 0 -16 0"/>
+      <path class="ln-thin g5" pathLength="1" d="M510.70000000000005 372.5a8 8 0 1 0 16 0a8 8 0 1 0 -16 0"/>
+      <path class="ln-mark g5" pathLength="1" d="M476.7 354.5 L476.7 344.5"/>
+      <path class="ln-mark g5" pathLength="1" d="M471.7 349.5 L481.7 349.5"/>
     </svg>
     SVG;
 }

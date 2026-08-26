@@ -559,19 +559,25 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 /* --------------------------------------------------------------------------
    Illustration
+
+   An axonometric drawing of the building that draws itself in, holds, fades
+   and repeats. The loop is split in two so the timing stays sane: each path
+   owns its own draw-on and fill-in, staggered by stage, while the parent owns
+   the global fade — otherwise every path would need its own fade keyframes to
+   disappear together.
    -------------------------------------------------------------------------- */
 .hero-art {
   position: relative;
   display: grid; place-items: center;
-  padding: clamp(1rem, 3vw, 2.25rem);
+  padding: clamp(.25rem, 1vw, .75rem);
 }
 .hero-art-disc {
   position: absolute; z-index: 0;
-  width: min(92%, 27rem); aspect-ratio: 1;
+  width: min(80%, 23rem); aspect-ratio: 1;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 42% 34%, rgba(255,255,255,.85), transparent 58%),
-    linear-gradient(158deg, rgba(34,89,139,.13), rgba(34,89,139,.05));
+    radial-gradient(circle at 40% 32%, rgba(255,255,255,.9), transparent 60%),
+    linear-gradient(158deg, rgba(34,89,139,.14), rgba(34,89,139,.04));
 }
 .hero-art-disc::after {
   content: ''; position: absolute; inset: -6%;
@@ -580,33 +586,56 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 .draw-art {
   position: relative; z-index: 1;
-  width: min(100%, 31rem); height: auto;
+  /* Wider than the disc on purpose — the building breaking the circle reads
+     as deliberate, where a drawing floating inside it reads as undersized. */
+  width: min(100%, 36rem); height: auto;
   color: var(--navy-700);
   overflow: visible;
+  animation: art-cycle 11s ease-in-out infinite;
 }
 
-/*
- * Draw-on. Every path carries pathLength="1", so one dash length works for
- * every path regardless of its real length and nothing outruns anything else.
- */
-.draw-art [pathLength] {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: draw-on 1.1s ease-out forwards;
+.draw-art path {
+  fill: none;
+  stroke: currentColor; stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: draw-line 11s ease-out infinite, fill-in 11s ease-out infinite;
 }
-.draw-art .d1, .draw-art .d1 [pathLength] { animation-delay: .05s; }
-.draw-art .d2, .draw-art .d2 [pathLength] { animation-delay: .55s; }
-.draw-art .d3, .draw-art .d3 [pathLength] { animation-delay: 1.0s; }
-.draw-art .d4, .draw-art .d4 [pathLength] { animation-delay: 1.45s; }
-.draw-art .d5, .draw-art .d5 [pathLength] { animation-delay: 1.85s; }
 
-@keyframes draw-on { to { stroke-dashoffset: 0; } }
+/* Tonal faces: top lightest, front mid, receding side darkest. --fo is the
+   fill opacity the fill-in keyframes animate up to. */
+.draw-art .f-top   { fill: #ffffff; --fo: .95; }
+.draw-art .f-front { fill: #e9eff7; --fo: 1;   }
+.draw-art .f-side  { fill: #d2dfee; --fo: 1;   }
+.draw-art .ln-win  { fill: #ffffff; --fo: .8; stroke-width: 1.7; }
+.draw-art .ln-thin { stroke-width: 1.6; }
+.draw-art .ln-mark { stroke: var(--red-600); stroke-width: 3; }
 
-/* The cross fills in once its box has been drawn. */
-.draw-art .d5 { animation: none; }
+/* Stage stagger. Same duration everywhere, so the phases stay locked. */
+.draw-art .g1 { animation-delay: 0s,    0s;    }
+.draw-art .g2 { animation-delay: .35s,  .35s;  }
+.draw-art .g3 { animation-delay: .7s,   .7s;   }
+.draw-art .g4 { animation-delay: 1.05s, 1.05s; }
+.draw-art .g5 { animation-delay: 1.4s,  1.4s;  }
+
+@keyframes draw-line {
+  0%          { stroke-dashoffset: 1; }
+  24%, 100%   { stroke-dashoffset: 0; }
+}
+@keyframes fill-in {
+  0%, 16%     { fill-opacity: 0; }
+  34%, 100%   { fill-opacity: var(--fo, 0); }
+}
+@keyframes art-cycle {
+  0%          { opacity: 0; }
+  5%, 86%     { opacity: 1; }
+  96%, 100%   { opacity: 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .draw-art [pathLength] { animation: none; stroke-dashoffset: 0; }
+  .draw-art,
+  .draw-art path { animation: none; }
+  .draw-art path { stroke-dashoffset: 0; fill-opacity: var(--fo, 0); }
   .live-dot { animation: none; }
 }
 
