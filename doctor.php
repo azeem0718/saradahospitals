@@ -35,13 +35,8 @@ $activeNav       = 'doctors';
 require __DIR__ . '/includes/header.php';
 ?>
 
-<?php
-$docArt   = site_image_css_url('banner-doctors');
-$docPhoto = $docArt !== null;
-$docArt ??= asset_url('assets/img/hero/doctors.svg');
-?>
-<section class="page-hero has-art<?= $docPhoto ? ' has-photo' : '' ?>"
-         style="--hero-art:url('<?= e($docArt) ?>')">
+<?php [$docClass, $docStyle] = hero_art_attrs('doctors', 'doctors'); ?>
+<section class="page-hero<?= $docClass ?>"<?= $docStyle ?>>
   <div class="wrap">
     <p class="breadcrumb">
       <a href="index.php">Home</a>

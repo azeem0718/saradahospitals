@@ -51,8 +51,10 @@ $announcement = setting('announcement', '');
 <meta property="og:description" content="<?= e($pageDescription) ?>">
 <meta property="og:locale" content="en_IN">
 
-<link rel="preload" href="<?= e(asset('assets/fonts/inter-normal-400-latin.woff2')) ?>" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="<?= e(asset('assets/fonts/newsreader-normal-400-latin.woff2')) ?>" as="font" type="font/woff2" crossorigin>
+<!-- No ?v= on these: the stylesheet references the bare filename, and a
+     preload under a different URL is a second download of the same font. -->
+<link rel="preload" href="assets/fonts/inter-normal-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/newsreader-normal-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="<?= e(asset('assets/css/fonts.css')) ?>">
 <link rel="stylesheet" href="<?= e(asset('assets/css/style.css')) ?>">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">

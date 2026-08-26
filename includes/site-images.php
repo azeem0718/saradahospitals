@@ -137,6 +137,74 @@ function site_image_css_url(string $slot): ?string
     return asset_url('assets/img/' . SITE_IMAGE_STORE . '/' . $image['file']);
 }
 
+/**
+ * The -sm phone variant's URL for a slot, or null when none exists.
+ * Variants are made by tools/make-small-images.php for the shipped images and
+ * by includes/uploads.php for reception's own uploads.
+ */
+function site_image_sm_url(string $slot, bool $forCss = false): ?string
+{
+    $image = site_image($slot);
+    if ($image === null) {
+        return null;
+    }
+    $dot = strrpos($image['file'], '.');
+    $sm  = substr($image['file'], 0, $dot === false ? strlen($image['file']) : $dot) . '-sm.jpg';
+    $rel = 'assets/img/' . SITE_IMAGE_STORE . '/' . $sm;
+    if (!is_file(dirname(__DIR__) . '/' . $rel)) {
+        return null;
+    }
+    return $forCss ? asset_url($rel) : asset($rel);
+}
+
+/**
+ * srcset/sizes attributes for a slot's <img>, when a phone variant exists.
+ * Returns '' otherwise, so callers can print it unconditionally.
+ */
+function site_image_srcset(string $slot, string $sizes): string
+{
+    $sm = site_image_sm_url($slot);
+    if ($sm === null) {
+        return '';
+    }
+    return ' srcset="' . e($sm) . ' 768w, ' . e(site_image_url($slot)) . ' 1200w"'
+         . ' sizes="' . e($sizes) . '"';
+}
+
+/**
+ * Class suffix and style attribute for a banner that may carry artwork.
+ *
+ * One place instead of three: page_hero(), the emergency page and the doctor
+ * profile all put artwork behind their hero. A photograph wins over the drawn
+ * fallback, and its phone variant rides along as --hero-art-sm for the
+ * narrow-screen stylesheet to pick up.
+ *
+ * @return array{0: string, 1: string} [' has-art has-photo'-style class
+ *                                      suffix, ' style="…"' attribute]
+ */
+function hero_art_attrs(string $slot, string $fallbackSvg = ''): array
+{
+    $photo = site_image_css_url('banner-' . $slot);
+
+    if ($photo !== null) {
+        $style = "--hero-art:url('" . e($photo) . "')";
+        $sm    = site_image_sm_url('banner-' . $slot, true);
+        if ($sm !== null) {
+            $style .= ";--hero-art-sm:url('" . e($sm) . "')";
+        }
+        return [' has-art has-photo', ' style="' . $style . '"'];
+    }
+
+    if ($fallbackSvg !== '') {
+        $file = 'assets/img/hero/' . $fallbackSvg . '.svg';
+        if (is_file(dirname(__DIR__) . '/' . $file)) {
+            return [' has-art', ' style="--hero-art:url(\'' . e(asset_url($file)) . '\')"'];
+        }
+    }
+
+    return ['', ''];
+}
+
 /** Alt text for a slot, falling back to the slot's own label. */
 function site_image_alt(string $slot): string
 {

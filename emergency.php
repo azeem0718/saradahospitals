@@ -12,14 +12,11 @@ require __DIR__ . '/includes/header.php';
 ?>
 
 <?php
-// A photograph reception uploaded wins over the drawn artwork, as on every
-// other banner; this page keeps its own markup only for the call buttons.
-$emArt   = site_image_css_url('banner-emergency');
-$emPhoto = $emArt !== null;
-$emArt ??= asset_url('assets/img/hero/emergency.svg');
+// This page keeps its own hero markup only for the call buttons; the artwork
+// behind it follows the same photograph-over-drawing rule as every banner.
+[$emClass, $emStyle] = hero_art_attrs('emergency', 'emergency');
 ?>
-<section class="page-hero page-hero-red has-art<?= $emPhoto ? ' has-photo' : '' ?>"
-         style="--hero-art:url('<?= e($emArt) ?>')">
+<section class="page-hero page-hero-red<?= $emClass ?>"<?= $emStyle ?>>
   <div class="wrap">
     <p class="breadcrumb">
       <a href="index.php">Home</a>

@@ -189,8 +189,10 @@ require __DIR__ . '/includes/header.php';
 $cardOpener = static function (string $slot, string $iconName, string $tone = ''): string {
     $url = site_image_url($slot);
     if ($url !== null) {
-        return '<span class="card-photo"><img src="' . e($url) . '" alt="'
-             . e(site_image_alt($slot)) . '" loading="lazy" width="640" height="360"></span>';
+        return '<span class="card-photo"><img src="' . e($url) . '"'
+             . site_image_srcset($slot, '(max-width: 520px) 94vw, (max-width: 940px) 46vw, 400px')
+             . ' alt="' . e(site_image_alt($slot))
+             . '" loading="lazy" decoding="async" width="640" height="360"></span>';
     }
     return '<span class="card-icon' . ($tone !== '' ? ' ' . e($tone) : '') . '">'
          . icon($iconName) . '</span>';

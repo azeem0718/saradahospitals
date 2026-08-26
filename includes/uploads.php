@@ -79,7 +79,45 @@ function store_upload(array $file, string $store, string $stem): array
         return [null, 'The image could not be saved on the server.'];
     }
 
+    make_small_variant($dir . '/' . $name);
+
     return [$name, null];
+}
+
+/**
+ * Write a 720px-wide "-sm" sibling next to a stored image, for phones.
+ *
+ * Best-effort: a failure here (exotic file, GD limit) just means the full
+ * image serves everywhere, which is exactly what happened before this
+ * existed. Never an error the person uploading has to see.
+ */
+function make_small_variant(string $path, int $width = 768, int $quality = 74): void
+{
+    try {
+        $src = match (strtolower(pathinfo($path, PATHINFO_EXTENSION))) {
+            'jpg', 'jpeg' => @imagecreatefromjpeg($path),
+            'png'         => @imagecreatefrompng($path),
+            'webp'        => @imagecreatefromwebp($path),
+            default       => false,
+        };
+        if ($src === false || imagesx($src) <= $width) {
+            return;
+        }
+
+        $nh  = (int) round(imagesy($src) * $width / imagesx($src));
+        $dst = imagecreatetruecolor($width, $nh);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $width, $nh, imagesx($src), imagesy($src));
+        imagejpeg($dst, small_variant_path($path), $quality);
+    } catch (Throwable $e) {
+        error_log('Small variant failed for ' . basename($path) . ': ' . $e->getMessage());
+    }
+}
+
+/** The -sm sibling's path for a stored image, whatever its extension. */
+function small_variant_path(string $path): string
+{
+    $dot = strrpos($path, '.');
+    return substr($path, 0, $dot === false ? strlen($path) : $dot) . '-sm.jpg';
 }
 
 /**
@@ -96,5 +134,9 @@ function delete_upload(?string $name, string $store): void
     $path = upload_dir($store) . '/' . $name;
     if (is_file($path)) {
         @unlink($path);
+    }
+    $sm = small_variant_path($path);
+    if (is_file($sm)) {
+        @unlink($sm);
     }
 }

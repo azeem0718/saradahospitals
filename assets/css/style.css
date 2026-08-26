@@ -603,7 +603,9 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .draw-art .f-front { fill: #e9eff7; --fo: 1;   }
 .draw-art .f-side  { fill: #d2dfee; --fo: 1;   }
 .draw-art .ln-win  { fill: #ffffff; --fo: .8; stroke-width: 1.7; }
+.draw-art .ln-win-lit { fill: var(--gold-100); --fo: .95; stroke-width: 1.7; }
 .draw-art .ln-thin { stroke-width: 1.6; }
+.draw-art .ln-hatch { stroke-width: 1.1; opacity: .55; }
 .draw-art .ln-mark { stroke: var(--red-600); stroke-width: 3; }
 
 /* Stage stagger. Same duration everywhere, so the phases stay locked. */
@@ -612,6 +614,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .draw-art .g3 { animation-delay: .7s,   .7s;   }
 .draw-art .g4 { animation-delay: 1.05s, 1.05s; }
 .draw-art .g5 { animation-delay: 1.4s,  1.4s;  }
+.draw-art .g6 { animation-delay: 1.75s, 1.75s; }
 
 @keyframes draw-line {
   0%          { stroke-dashoffset: 1; }
@@ -686,9 +689,12 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
    -------------------------------------------------------------------------- */
 @media (max-width: 999px) {
   .hero-copy { max-width: 100%; }
-  .hero-art { order: -1; padding-block: 0; }
-  .draw-art { width: min(100%, 24rem); }
-  .hero-art-disc { width: min(100%, 22rem); }
+  /* On one column the headline and the booking bar come first — finding a
+     doctor is what the visit is for — and the drawing follows as a flourish
+     instead of pushing the form below the fold. */
+  .hero-art { order: 1; padding-block: .25rem 0; margin-top: 1.5rem; }
+  .draw-art { width: min(100%, 26rem); }
+  .hero-art-disc { width: min(88%, 21rem); }
 }
 
 @media (max-width: 760px) {
@@ -1341,15 +1347,17 @@ tbody tr:hover { background: var(--navy-50); }
   }
   /* Photographs keep more of themselves on small screens than the line art
      does — there is no fine detail to lose, and the crop is the whole point. */
+  /* Phones fetch the 720px -sm rendition when one exists — a third of the
+     bytes, indistinguishable at this size. */
   .page-hero.has-photo::before {
     background-image:
       linear-gradient(180deg, rgba(6,22,38,.90) 0%, rgba(6,22,38,.78) 55%, rgba(6,22,38,.70) 100%),
-      var(--hero-art);
+      var(--hero-art-sm, var(--hero-art));
   }
   .page-hero-red.has-photo::before {
     background-image:
       linear-gradient(180deg, rgba(88,10,14,.90) 0%, rgba(110,13,18,.79) 55%, rgba(128,16,22,.71) 100%),
-      var(--hero-art);
+      var(--hero-art-sm, var(--hero-art));
   }
 }
 

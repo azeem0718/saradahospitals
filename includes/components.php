@@ -190,17 +190,9 @@ function page_hero(string $title, string $subtitle = '', string $crumb = '', str
 
     // A photograph reception uploaded wins over the drawn artwork. Both are
     // optional; with neither, the banner is its plain gradient.
-    $photo = $art !== '' ? site_image_css_url('banner-' . $art) : null;
-
-    if ($photo !== null) {
-        $classes .= ' has-art has-photo';
-        $style = ' style="--hero-art:url(\'' . e($photo) . '\')"';
-    } elseif ($art !== '') {
-        $file = 'assets/img/hero/' . $art . '.svg';
-        if (is_file(__DIR__ . '/../' . $file)) {
-            $classes .= ' has-art';
-            $style = ' style="--hero-art:url(\'' . e(asset_url($file)) . '\')"';
-        }
+    if ($art !== '') {
+        [$suffix, $style] = hero_art_attrs($art, $art);
+        $classes .= $suffix;
     }
     if ($tone !== '') {
         $classes .= ' page-hero-' . $tone;
