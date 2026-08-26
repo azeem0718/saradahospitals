@@ -1479,20 +1479,33 @@ tbody tr:hover { background: var(--navy-50); }
 /* --------------------------------------------------------------------------
    Mobile action bar
    -------------------------------------------------------------------------- */
+/* A compact floating cluster at the bottom right — round Call and WhatsApp
+   buttons and a labelled Token pill — instead of a bar across the screen.
+   Content shows through beside it, so the page keeps its full height. */
 .mobile-bar {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 95;
-  display: none; gap: .5rem;
-  padding: .6rem 12px calc(.6rem + env(safe-area-inset-bottom));
-  background: rgba(255,255,255,.97);
-  backdrop-filter: blur(12px);
-  border-top: 1px solid var(--rule);
-  box-shadow: 0 -4px 20px rgba(10,37,64,.1);
+  position: fixed; right: 12px; z-index: 95;
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  display: none; align-items: center; gap: .55rem;
 }
-.mobile-bar .btn { flex: 1; font-size: .89rem; padding-inline: .4rem; min-height: 46px; gap: .4rem; }
-.mobile-bar .btn svg { width: 16px; height: 16px; }
+.fab {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: .45rem;
+  width: 48px; height: 48px; border-radius: 999px;
+  color: #fff; text-decoration: none;
+  font-size: .89rem; font-weight: 650;
+  box-shadow: 0 3px 6px rgba(10, 37, 64, .18), 0 10px 26px -8px rgba(10, 37, 64, .38);
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.fab svg { width: 20px; height: 20px; }
+.fab:active { transform: scale(.94); }
+.fab-call  { background: var(--red-600); }
+.fab-wa    { background: #1da851; }
+.fab-token { width: auto; padding: 0 1.05rem 0 .9rem; background: var(--navy-800); }
+
 @media (max-width: 760px) {
   .mobile-bar { display: flex; }
-  body { padding-bottom: 70px; }
+  /* Only enough clearance that the last line of the footer stays readable. */
+  body { padding-bottom: 30px; }
 }
 
 /* --------------------------------------------------------------------------

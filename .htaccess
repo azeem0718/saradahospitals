@@ -5,6 +5,10 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # The site moved to saradahospitals.com; the old subdomain forwards for good.
+  RewriteCond %{HTTP_HOST} ^saradahospitals\.highflyers\.io$ [NC]
+  RewriteRule ^(.*)$ https://saradahospitals.com/$1 [R=301,L]
+
   # Block direct access to includes, sql and docs directories.
   RewriteRule ^(includes|sql|docs)/ - [F,L]
 

@@ -69,17 +69,17 @@
   </div>
 </footer>
 
-<div class="mobile-bar">
-  <a class="btn btn-emergency" href="tel:<?= e(HOSPITAL['mobile']) ?>">
-    <?= icon('phone') ?> Call
+<div class="mobile-bar" aria-label="Quick actions">
+  <a class="fab fab-call" href="tel:<?= e(HOSPITAL['mobile']) ?>" aria-label="Call the hospital">
+    <?= icon('phone') ?>
   </a>
-  <a class="btn btn-whatsapp"
+  <a class="fab fab-wa"
      href="https://wa.me/<?= e(HOSPITAL['whatsapp']) ?>?text=<?= rawurlencode('Hello, I would like to enquire about an appointment at Sarada Nursing Home.') ?>"
-     target="_blank" rel="noopener">
-    <?= icon('whatsapp') ?> WhatsApp
+     target="_blank" rel="noopener" aria-label="Message us on WhatsApp">
+    <?= icon('whatsapp') ?>
   </a>
-  <a class="btn btn-primary" href="book.php">
-    <?= icon('ticket') ?> Token
+  <a class="fab fab-token" href="book.php">
+    <?= icon('ticket') ?><span>Token</span>
   </a>
 </div>
 
