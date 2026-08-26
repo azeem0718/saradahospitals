@@ -1,4 +1,15 @@
-# Pictures are uploaded through the admin panel, not committed.
+# Pictures reception uploads through the admin panel are not committed; the
+# curated openly-licensed defaults below are (see credits.php).
 *
 !.gitignore
 !.htaccess
+!banner-about.jpg
+!banner-services.jpg
+!banner-diabetes.jpg
+!banner-maternity.jpg
+!banner-emergency.jpg
+!card-medicine.jpg
+!card-diabetes.jpg
+!card-maternity.jpg
+!card-emergency.jpg
+!card-lab.jpg

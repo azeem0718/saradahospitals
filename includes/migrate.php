@@ -18,7 +18,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
 /** Bump this when a migration is added below. */
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 
 /**
  * Migrations, keyed by the version they bring the database up to.
@@ -111,6 +111,34 @@ function schema_migrations(): array
                    PRIMARY KEY (`slot`)
                  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci'
             );
+        },
+
+        // Openly licensed default photographs for the banners and cards, shipped
+        // in the repository (credits.php lists their authors and licences).
+        // INSERT IGNORE: a slot reception has already filled — or has since
+        // emptied and refilled — is theirs, and this never overwrites it.
+        5 => static function (PDO $pdo): void {
+            $stmt = $pdo->prepare(
+                'INSERT IGNORE INTO site_images (slot, file, alt) VALUES (?,?,?)'
+            );
+            $defaults = [
+                ['banner-about', 'banner-about.jpg', 'A stethoscope resting on a wooden heart'],
+                ['banner-services', 'banner-services.jpg', 'A stethoscope laid out on a table'],
+                ['banner-diabetes', 'banner-diabetes.jpg', 'A glucometer showing a blood sugar reading'],
+                ['banner-maternity', 'banner-maternity.jpg', 'A newborn baby sleeping'],
+                ['banner-emergency', 'banner-emergency.jpg', 'An ambulance outside a hospital'],
+                ['card-medicine', 'card-medicine.jpg', 'A doctor holding the chest piece of a stethoscope'],
+                ['card-diabetes', 'card-diabetes.jpg', 'A glucometer showing a blood sugar reading'],
+                ['card-maternity', 'card-maternity.jpg', 'A newborn baby sleeping in a basket'],
+                ['card-emergency', 'card-emergency.jpg', 'A Force Traveller ambulance'],
+                ['card-lab', 'card-lab.jpg', 'A gloved hand holding a blood sample tube'],
+            ];
+            $dir = dirname(__DIR__) . '/assets/img/site/';
+            foreach ($defaults as [$slot, $file, $alt]) {
+                if (is_file($dir . $file)) {
+                    $stmt->execute([$slot, $file, $alt]);
+                }
+            }
         },
     ];
 }
