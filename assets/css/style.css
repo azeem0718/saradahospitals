@@ -1965,3 +1965,78 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
   .cs-menu { animation: none; }
   .cs-arrow { transition: none; }
 }
+
+/* ==========================================================================
+   Scroll reveals and scroll-linked parallax
+
+   assets/js/reveal.js tags elements with data-reveal and toggles .is-in as
+   they enter and leave the viewport — both ways, so scrolling back replays
+   the entrance in either direction. Reveals are keyframe animations on the
+   `translate`/`scale` properties, deliberately not `transform` and not
+   `transition`: the cards' hover lifts own `transform` and their own
+   transition shorthand, and this way the two systems cannot collide.
+
+   The parallax is scroll-driven CSS where the browser supports it — the
+   scrubbing follows the scroll position exactly, so it reverses for free.
+   Browsers without it just get the reveals.
+   ========================================================================== */
+
+.js-reveal [data-reveal] { opacity: 0; }
+.js-reveal [data-reveal].is-in {
+  opacity: 1;
+  animation: rv-up .65s cubic-bezier(.22, .85, .3, 1) both;
+  animation-delay: var(--rv-d, 0ms);
+}
+.js-reveal [data-reveal="fade"].is-in { animation-name: rv-fade; }
+.js-reveal [data-reveal="zoom"].is-in { animation-name: rv-zoom; }
+.js-reveal [data-reveal="left"].is-in { animation-name: rv-left; }
+.js-reveal [data-reveal="right"].is-in { animation-name: rv-right; }
+
+@keyframes rv-up   { from { opacity: 0; translate: 0 26px; }  to { opacity: 1; translate: 0 0; } }
+@keyframes rv-fade { from { opacity: 0; }                     to { opacity: 1; } }
+@keyframes rv-zoom { from { opacity: 0; scale: .93; }         to { opacity: 1; scale: 1; } }
+@keyframes rv-left { from { opacity: 0; translate: -30px 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes rv-right{ from { opacity: 0; translate: 30px 0; }  to { opacity: 1; translate: 0 0; } }
+
+/* Whatever the script believes, paper and reduced motion get a still page. */
+@media print {
+  [data-reveal] { opacity: 1 !important; animation: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal [data-reveal] { opacity: 1; animation: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Card photographs drift against their crop as the card crosses the
+       viewport. The scale provides the headroom the travel spends.
+
+       The timelines are named and declared on the clipping ancestors: view()
+       on the child would resolve against the nearest scroll container, and an
+       overflow: hidden box *is* one, so the child would be tracked against its
+       own clip box and never move. The named timeline tracks the ancestor
+       against the real viewport, and descendants can consume it. */
+    .card-photo { view-timeline: --rv-card block; }
+    .card-photo img {
+      scale: 1.12;
+      animation: rv-drift linear both;
+      animation-timeline: --rv-card;
+    }
+    @keyframes rv-drift {
+      from { translate: 0 3.2%; }
+      to   { translate: 0 -3.2%; }
+    }
+
+    /* Banner photographs slide slower than the page. With background-size
+       cover, position percentages can never expose an edge. */
+    .page-hero { view-timeline: --rv-hero block; }
+    .page-hero.has-photo::before {
+      animation: rv-hero-drift linear both;
+      animation-timeline: --rv-hero;
+    }
+    @keyframes rv-hero-drift {
+      from { background-position: center, 50% 30%; }
+      to   { background-position: center, 50% 70%; }
+    }
+  }
+}
