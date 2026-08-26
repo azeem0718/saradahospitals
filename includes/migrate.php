@@ -138,6 +138,13 @@ function run_migrations(): void
     }
     $done = true;
 
+    // The installer loads this file for its helpers while there is deliberately
+    // no config and no database yet. Trying to migrate there takes the setup
+    // page down with it, which is the one page that has to work.
+    if (!SNH_CONFIGURED) {
+        return;
+    }
+
     $from = setting_int('schema_version', 1);
     if ($from >= SCHEMA_VERSION) {
         return;

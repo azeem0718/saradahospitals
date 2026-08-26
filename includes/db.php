@@ -33,6 +33,16 @@ if (!defined('DEBUG_MODE')) {
     define('DEBUG_MODE', false);
 }
 
+/**
+ * True only when this request can actually reach a database: real credentials
+ * are loaded and we are not inside the installer, which runs deliberately
+ * without them. Code that touches the database on every request — migrations,
+ * for one — has to be able to ask.
+ */
+if (!defined('SNH_CONFIGURED')) {
+    define('SNH_CONFIGURED', $configLoaded && !defined('SNH_INSTALLER'));
+}
+
 if (!defined('SNH_INSTALLER')) {
     if (!$configLoaded) {
         render_not_configured(
