@@ -19,21 +19,45 @@ $src = imagecreatefrompng($dir . '/source.png');
 $sw  = imagesx($src);
 
 // Compose once at high resolution, downsample per size.
-$big  = 2048;
-$c    = imagecreatetruecolor($big, $big);
+//
+// The source is a SQUARE with a white background, so it cannot simply be
+// pasted over the disc — its corners would poke out past the circle and
+// haunt every dark ground as a faint white square. Instead the square is
+// composed flat, and a per-pixel circular mask decides what survives:
+// inside the disc, the ring band around it, transparency beyond — with a
+// one-pixel soft edge so the rim stays smooth after downsampling.
+$big  = 1536;
+$flat = imagecreatetruecolor($big, $big);
+imagefill($flat, 0, 0, imagecolorallocate($flat, 255, 255, 255));
+$art = (int) ($big * 0.90);
+imagecopyresampled($flat, $src, (int) (($big - $art) / 2), (int) (($big - $art) / 2), 0, 0, $art, $art, $sw, $sw);
+
+$c = imagecreatetruecolor($big, $big);
 imagealphablending($c, false);
 imagesavealpha($c, true);
-imagefill($c, 0, 0, imagecolorallocatealpha($c, 0, 0, 0, 127));
-imagealphablending($c, true);
 
-// Faint navy-tinted ring, then the white disc inside it.
-imagefilledellipse($c, $big/2, $big/2, $big - 8, $big - 8, imagecolorallocate($c, 205, 214, 224));
-imagefilledellipse($c, $big/2, $big/2, $big - 40, $big - 40, imagecolorallocate($c, 255, 255, 255));
+$mid   = $big / 2;
+$rOut  = $big / 2 - 2;        // outer edge of the ring
+$rIn   = $rOut - 14;          // where the ring band starts
+$ring  = [205, 214, 224];     // navy-tinted hairline
 
-// The mark, at 76% of the disc. The artwork's own margins are generous, so
-// this lands the heart comfortably inside the ring.
-$art = (int) ($big * 0.90);
-imagecopyresampled($c, $src, (int) (($big - $art) / 2), (int) (($big - $art) / 2), 0, 0, $art, $art, $sw, $sw);
+for ($y = 0; $y < $big; $y++) {
+    for ($x = 0; $x < $big; $x++) {
+        $d = sqrt(($x - $mid) ** 2 + ($y - $mid) ** 2);
+
+        if ($d > $rOut + 1) {
+            $px = imagecolorallocatealpha($c, 0, 0, 0, 127);
+        } elseif ($d > $rIn) {
+            // Ring band; feather the outermost pixel into transparency.
+            $a  = (int) round(min(1, $rOut + 1 - $d) * 127);
+            $px = imagecolorallocatealpha($c, $ring[0], $ring[1], $ring[2], 127 - $a);
+        } else {
+            $rgb = imagecolorat($flat, $x, $y);
+            $px  = imagecolorallocatealpha($c, ($rgb >> 16) & 255, ($rgb >> 8) & 255, $rgb & 255, 0);
+        }
+        imagesetpixel($c, $x, $y, $px);
+    }
+}
 
 foreach ([512, 192, 96, 48] as $size) {
     $out = imagecreatetruecolor($size, $size);
