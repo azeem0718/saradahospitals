@@ -52,14 +52,17 @@ dependencies** — Hostinger pulls the branch and the site runs.
 Full instructions, including Hostinger specifics, are in
 **[docs/DEPLOY.md](docs/DEPLOY.md)**. In short:
 
-1. Create a MySQL database in hPanel.
-2. Import `sql/schema.sql` then `sql/seed.sql` via phpMyAdmin.
-3. Point hPanel → Git at this branch, install path `public_html`.
+1. Create a MySQL database and user in hPanel.
+2. Point hPanel → Git at this branch, install path `public_html`.
    The repository root is the web root.
-4. Copy `includes/config.example.php` to `includes/config.php` on the server and
-   fill in the database credentials.
-5. Visit `/setup.php` once to create the administrator account, then delete that
-   file.
+3. Open `/setup.php` and follow it. Three steps — database credentials, tables,
+   your login — and it writes `includes/config.php` for you. Delete `setup.php`
+   when it says so.
+
+`setup.php` switches itself off permanently the moment an account exists, so
+complete it promptly after deploying. No credential ever needs to be committed:
+`config.php` is git-ignored, and nothing in this repository contains a password
+or a password hash.
 
 ---
 

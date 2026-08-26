@@ -11,34 +11,52 @@ if (!defined('SNH_APP')) {
 
 require_once __DIR__ . '/not-configured.php';
 
+/*
+ * Load the credentials, if they exist yet.
+ *
+ * setup.php deliberately runs before any of this is true: it defines
+ * SNH_INSTALLER and pulls this file in only for the helpers further down the
+ * chain. It never calls db() — it opens its own connection with whatever
+ * credentials the operator has just typed in — so an unconfigured site must
+ * not be turned away here, or the installer could never run.
+ */
 $configFile = __DIR__ . '/config.php';
-if (!is_file($configFile)) {
-    render_not_configured(
-        'The file includes/config.php has not been created yet, so the site does not know how to reach its database.'
-    );
-}
-require_once $configFile;
+$configLoaded = false;
 
-// A half-filled config is as broken as a missing one, and fails much later
-// and less obviously, so check it here.
-foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS', 'SITE_URL'] as $required) {
-    if (!defined($required)) {
-        render_not_configured(
-            'includes/config.php is missing the ' . $required . ' setting.',
-            'Compare it against includes/config.example.php — every define() in that file must be present.'
-        );
-    }
-}
-if (DB_NAME === 'your_database_name' || DB_USER === 'your_database_user') {
-    render_not_configured(
-        'includes/config.php still contains the example placeholder values.',
-        'Replace your_database_name and your_database_user with the real credentials from hPanel.'
-    );
+if (is_file($configFile)) {
+    require_once $configFile;
+    $configLoaded = true;
 }
 
-// Optional, and safe to assume off: an older config.php may predate it.
+// Optional, and safe to assume off: a config.php may predate it, or not exist.
 if (!defined('DEBUG_MODE')) {
     define('DEBUG_MODE', false);
+}
+
+if (!defined('SNH_INSTALLER')) {
+    if (!$configLoaded) {
+        render_not_configured(
+            'The file includes/config.php has not been created yet, so the site does not know how to reach its database.'
+        );
+    }
+
+    // A half-filled config is as broken as a missing one, and fails later and
+    // less obviously, so check it here.
+    foreach (['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASS', 'SITE_URL'] as $required) {
+        if (!defined($required)) {
+            render_not_configured(
+                'includes/config.php is missing the ' . $required . ' setting.',
+                'Compare it against includes/config.example.php — every define() in that file must be present.'
+            );
+        }
+    }
+
+    if (DB_NAME === 'your_database_name' || DB_USER === 'your_database_user') {
+        render_not_configured(
+            'includes/config.php still contains the example placeholder values.',
+            'Replace your_database_name and your_database_user with the real credentials from hPanel.'
+        );
+    }
 }
 
 require_once __DIR__ . '/site.php';

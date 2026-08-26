@@ -5,6 +5,20 @@ Git pull is the whole deployment.
 
 ---
 
+## The short version
+
+Once the branch is deployed, open **`/setup.php`** in a browser. It walks
+through the whole of setup in three steps &mdash; database credentials, tables,
+and your login &mdash; and writes `includes/config.php` for you.
+
+Create the database first (step 1 below), then go to `/setup.php`. Steps 2 and 4
+are handled for you. Delete `setup.php` when it tells you to.
+
+The manual route is documented below in case you prefer it, or the installer
+cannot write the file.
+
+---
+
 ## 1. Create the database
 
 hPanel → **Databases → MySQL Databases**
@@ -18,21 +32,7 @@ Use the full prefixed names.
 
 ---
 
-## 2. Import the tables
-
-hPanel → **Databases → phpMyAdmin** → select your database → **Import**
-
-Import these two files, in order:
-
-1. `sql/schema.sql` — creates the tables
-2. `sql/seed.sql` — adds the two doctors, their weekly sessions and default settings
-
-`seed.sql` deliberately creates **no login account**. No password hash is ever
-committed to this repository. You create the first account in step 5.
-
----
-
-## 3. Point Git at the branch
+## 2. Point Git at the branch
 
 hPanel → **Advanced → Git**
 
@@ -50,13 +50,37 @@ Use **Auto Deployment** so a push to the branch updates the site.
 
 ---
 
-## 4. Add your credentials
+## 3. Run the installer
 
-`includes/config.php` is git-ignored, so it never reaches GitHub and is never
-overwritten by a deployment. Create it once, on the server.
+Open **`https://your-domain/setup.php`**.
 
-File Manager → `public_html/includes/` → copy `config.example.php` to
-`config.php`, then edit:
+1. **Database** — enter the name, username and password from step 1. The
+   connection is tested before anything is written; nothing is saved if it
+   fails. On success `includes/config.php` is written for you, at permissions
+   `0640`, and is git-ignored so no deployment overwrites it and no credential
+   reaches GitHub.
+2. **Tables** — one button. Runs `sql/schema.sql` and `sql/seed.sql`, creating
+   the tables and adding the two doctors, their weekly sessions and the default
+   settings.
+3. **Your login** — create the administrator account for the reception panel.
+   It refuses a password that matches your database password.
+
+The moment a user account exists, `setup.php` switches itself off: it will not
+rewrite the configuration and will not create a second account. **Complete
+setup promptly after deploying**, and delete `setup.php` when it tells you to.
+
+If the installer cannot write `includes/config.php` — some hosts lock the
+folder — it hands you the exact file contents to paste into File Manager
+instead, then continues.
+
+---
+
+## 4. Manual alternative
+
+Only needed if you would rather not use the installer.
+
+Import `sql/schema.sql` then `sql/seed.sql` in phpMyAdmin, then create
+`public_html/includes/config.php` by copying `config.example.php` and filling in:
 
 ```php
 define('DB_HOST', 'localhost');
@@ -70,7 +94,7 @@ define('DEBUG_MODE', false);   // keep false on the live site
 `DEBUG_MODE` must stay `false` in production. When true, database errors are
 printed to the page.
 
-Until this file exists the site serves a holding page carrying the hospital's
+Until the site is configured it serves a holding page carrying the hospital's
 phone numbers, so anyone who visits mid-setup still sees how to reach you. The
 setup steps sit behind a collapsed **"Setting up this site?"** toggle on that
 page. The same page appears if the credentials are wrong or the tables have not
@@ -78,20 +102,7 @@ been imported, and it never prints a credential.
 
 ---
 
-## 5. Create the first login
-
-Visit **`https://saradahospitals.highflyers.io/setup.php`** once.
-
-Enter your name, a username and a password of at least 10 characters. The page
-creates the administrator account and then **permanently disables itself** —
-it refuses to run again once any account exists.
-
-Delete `setup.php` from the server afterwards. It is inert, but there is no
-reason to leave it there.
-
----
-
-## 6. Check it works
+## 5. Check it works
 
 | Check | Where |
 |---|---|
