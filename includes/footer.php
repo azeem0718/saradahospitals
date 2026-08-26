@@ -79,6 +79,7 @@
   </a>
 </div>
 
+<script src="<?= e(asset('assets/js/select.js')) ?>" defer></script>
 <script src="<?= e(asset('assets/js/main.js')) ?>" defer></script>
 </body>
 </html>

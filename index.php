@@ -37,8 +37,8 @@ require __DIR__ . '/includes/header.php';
              hospital and two consultants here. Submits to book.php with
              everything already chosen. -->
         <form class="findbar" method="get" action="book.php">
-          <div class="findbar-field">
-            <label for="fb-doctor"><?= icon('stethoscope') ?> Doctor</label>
+          <div class="findbar-field cs" data-cs>
+            <label class="cs-label" for="fb-doctor"><?= icon('stethoscope') ?> Doctor</label>
             <select id="fb-doctor" name="doctor">
               <?php foreach ($doctors as $doc): ?>
                 <option value="<?= (int) $doc['id'] ?>"><?= e(doctor_short_name($doc['name'])) ?></option>
@@ -48,24 +48,23 @@ require __DIR__ . '/includes/header.php';
 
           <span class="findbar-sep" aria-hidden="true"></span>
 
-          <div class="findbar-field">
-            <label for="fb-date"><?= icon('calendar') ?> Day</label>
+          <div class="findbar-field cs" data-cs>
+            <label class="cs-label" for="fb-date"><?= icon('calendar') ?> Day</label>
             <select id="fb-date" name="date">
               <?php foreach (bookable_dates() as $i => $d):
-                $dt = new DateTimeImmutable($d);
+                $dt  = new DateTimeImmutable($d);
                 $lbl = $i === 0 ? 'Today' : ($i === 1 ? 'Tomorrow' : $dt->format('D, j M'));
+                if (is_free_op_day($d)) { $lbl .= ' · Free OP'; }
               ?>
-                <option value="<?= e($d) ?>"<?= ($nextSlot && $nextSlot['date'] === $d) ? ' selected' : '' ?>>
-                  <?= e($lbl) ?><?= is_free_op_day($d) ? ' — Free OP' : '' ?>
-                </option>
+                <option value="<?= e($d) ?>"<?= ($nextSlot && $nextSlot['date'] === $d) ? ' selected' : '' ?>><?= e($lbl) ?></option>
               <?php endforeach; ?>
             </select>
           </div>
 
           <span class="findbar-sep" aria-hidden="true"></span>
 
-          <div class="findbar-field">
-            <label for="fb-session"><?= icon('clock') ?> Session</label>
+          <div class="findbar-field cs" data-cs>
+            <label class="cs-label" for="fb-session"><?= icon('clock') ?> Session</label>
             <select id="fb-session" name="session">
               <option value="morning"<?= ($nextSlot && $nextSlot['session'] === 'morning') ? ' selected' : '' ?>>Morning</option>
               <option value="evening"<?= ($nextSlot && $nextSlot['session'] === 'evening') ? ' selected' : '' ?>>Evening</option>

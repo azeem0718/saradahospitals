@@ -505,13 +505,6 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 }
 /* Doctor names run much longer than "Today" or "Evening". */
 .findbar-field:first-child { flex: 1.7 1 0; }
-.findbar-field label {
-  display: flex; align-items: center; gap: .3rem;
-  font-size: .68rem; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--ink-500);
-  margin-bottom: .15rem; cursor: pointer;
-}
-.findbar-field label svg { width: 12px; height: 12px; color: var(--navy-500); flex: none; }
 
 .findbar-field select {
   appearance: none; width: 100%;
@@ -1511,4 +1504,101 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .ico-anim { animation: none !important; }
+}
+
+/* ==========================================================================
+   Custom select
+
+   The native control stays in the DOM and remains what the form submits. Only
+   its dropdown is replaced, because that list is drawn by the operating system
+   and cannot be styled to match anything around it.
+
+   Default state shows the native element, so the field is usable with
+   JavaScript off. assets/js/select.js sets data-cs-ready, which swaps in the
+   button and the listbox.
+   ========================================================================== */
+
+.cs { position: relative; }
+
+.cs-label {
+  display: flex; align-items: center; gap: .3rem;
+  font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-500);
+  margin-bottom: .15rem; cursor: pointer;
+}
+.cs-label svg { width: 12px; height: 12px; color: var(--navy-500); flex: none; }
+
+/* Enhanced: hide the native control, show ours. */
+.cs[data-cs-ready] > select {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.cs:not([data-cs-ready]) .cs-btn,
+.cs:not([data-cs-ready]) .cs-menu { display: none; }
+
+.cs-btn {
+  display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+  width: 100%; padding: 0; border: 0; background: none;
+  font: inherit; font-size: .93rem; font-weight: 600;
+  color: var(--navy-900); cursor: pointer; text-align: left;
+  min-width: 0;
+}
+.cs-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cs-arrow { flex: none; color: var(--navy-700); transition: transform .18s ease; }
+.cs.is-open .cs-arrow { transform: rotate(180deg); }
+.cs-btn:focus-visible { outline: 2.5px solid var(--navy-600); outline-offset: 4px; border-radius: 4px; }
+
+/* --------------------------------------------------------------------------
+   The list
+   -------------------------------------------------------------------------- */
+.cs-menu {
+  position: absolute; z-index: 60;
+  top: calc(100% + .7rem); left: -.6rem; min-width: calc(100% + 1.2rem);
+  max-height: 17rem; overflow-y: auto;
+  margin: 0; padding: .35rem;
+  list-style: none;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-lg);
+  animation: cs-in .16s ease-out;
+}
+@keyframes cs-in {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cs-opt {
+  display: flex; align-items: center; gap: .5rem;
+  margin: 0; padding: .6rem .7rem;
+  border-radius: var(--r-sm);
+  font-size: .93rem; font-weight: 500; color: var(--ink-700);
+  white-space: nowrap; cursor: pointer;
+  transition: background-color .12s ease, color .12s ease;
+}
+.cs-opt:hover { background: var(--navy-50); color: var(--navy-900); }
+.cs-opt:focus-visible,
+.cs-opt:focus { outline: none; background: var(--navy-50); color: var(--navy-900);
+                box-shadow: inset 0 0 0 2px var(--navy-600); }
+
+.cs-opt[aria-selected="true"] {
+  background: var(--navy-800); color: #fff; font-weight: 650;
+}
+.cs-opt[aria-selected="true"]:hover { background: var(--navy-900); color: #fff; }
+/* A tick on the chosen row, so selection survives a colour-blind reading. */
+.cs-opt[aria-selected="true"]::after {
+  content: ''; margin-left: auto; width: 15px; height: 15px; flex: none;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* On a phone the bar is a stacked card, so the list spans the field. */
+@media (max-width: 760px) {
+  .cs-menu { left: 0; right: 0; min-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-menu { animation: none; }
+  .cs-arrow { transition: none; }
 }
