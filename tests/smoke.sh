@@ -78,7 +78,7 @@ if [ -n "$ADMIN_PASS" ]; then
   check "admin/bookings.php?status=booked&doctor_id=1" auth
   # Admin-only screens still answer for the admin role; a reception account
   # is bounced, so accept either outcome and only reject PHP errors.
-  for p in users.php doctors.php images.php settings.php hospital.php tariff.php services.php backup.php; do
+  for p in users.php doctors.php images.php settings.php hospital.php tariff.php services.php pages.php backup.php; do
     code=$(curl -s -b "$JAR" -o "$BODY" -w "%{http_code}" "$BASE/admin/$p")
     case "$code" in
       200|302) printf '   ok  %-42s http=%s\n' "admin/$p" "$code" ;;

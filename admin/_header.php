@@ -27,6 +27,7 @@ $adminMenu = [
 if ($user['role'] === 'admin') {
     $adminMenu['hospital'] = ['Hospital', 'hospital.php', 'building'];
     $adminMenu['tariff']   = ['Tariff',   'tariff.php',   'discount'];
+    $adminMenu['pages']    = ['Page Text', 'pages.php',    'edit'];
     $adminMenu['services'] = ['Services', 'services.php', 'heart'];
     $adminMenu['doctors']  = ['Doctors',  'doctors.php',  'stethoscope'];
     $adminMenu['images']   = ['Pictures', 'images.php',   'image'];

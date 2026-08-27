@@ -22,15 +22,12 @@ require __DIR__ . '/includes/header.php';
       <div class="hero-copy">
         <p class="hero-place">
           <?= icon('location') ?>
-          Pamuru Road, Kandukur &middot; Prakasam District
+          <?= e(text('home.hero.place')) ?>
         </p>
 
-        <h1>Let&rsquo;s find you<br>a doctor.</h1>
+        <h1><?= text_html('home.hero.title') ?></h1>
 
-        <p class="hero-lede">
-          General Medicine, Diabetology and Obstetrics &amp; Gynaecology under one
-          roof &mdash; open every hour of every day.
-        </p>
+        <p class="hero-lede"><?= e(text('home.hero.lede')) ?></p>
 
         <!-- Segmented booking bar. Doctor, day and session rather than the
              location/department pairing a multi-site chain needs: there is one
@@ -172,8 +169,8 @@ require __DIR__ . '/includes/header.php';
 <section class="section section-paper">
   <div class="wrap">
     <div class="section-head center">
-      <span class="eyebrow">Our Departments</span>
-      <h2>Complete care for your family</h2>
+      <span class="eyebrow"><?= e(text('home.departments.eyebrow')) ?></span>
+      <h2><?= e(text('home.departments.title')) ?></h2>
       <p class="lede">
         From everyday fevers and long-term diabetes management to safe deliveries
         and emergency treatment, we look after the whole family.
@@ -201,61 +198,43 @@ $cardOpener = static function (string $slot, string $iconName, string $tone = ''
     <div class="grid grid-3">
       <a class="card card-link" href="services.php">
         <?= $cardOpener('card-medicine', 'stethoscope') ?>
-        <h3>General Medicine</h3>
-        <p>
-          Diabetes and blood pressure, heart and kidney problems, all types of fever,
-          dengue and malaria, thyroid disorders, asthma, TB and more.
-        </p>
+        <h3><?= e(text('home.card.medicine.title')) ?></h3>
+        <p><?= e(text('home.card.medicine.body')) ?></p>
         <span class="card-more">Explore services <?= icon('arrow-right') ?></span>
       </a>
 
       <a class="card card-link" href="diabetic-centre.php">
         <?= $cardOpener('card-diabetes', 'droplet', 'gold') ?>
-        <h3>Good Health Diabetic Centre</h3>
-        <p>
-          Dedicated diabetes care led by a doctor with a Diploma in Endocrinology
-          &amp; Diabetology — diagnosis, control and long-term follow-up.
-        </p>
+        <h3><?= e(text('home.card.diabetes.title')) ?></h3>
+        <p><?= e(text('home.card.diabetes.body')) ?></p>
         <span class="card-more">Diabetes care <?= icon('arrow-right') ?></span>
       </a>
 
       <a class="card card-link" href="maternity.php">
         <?= $cardOpener('card-maternity', 'maternity', 'green') ?>
-        <h3>Maternity &amp; Gynaecology</h3>
-        <p>
-          Normal and caesarean delivery, high-risk pregnancy, maternity scans,
-          PCOD, laparoscopic surgery and complete women's health care.
-        </p>
+        <h3><?= e(text('home.card.maternity.title')) ?></h3>
+        <p><?= e(text('home.card.maternity.body')) ?></p>
         <span class="card-more">Maternity care <?= icon('arrow-right') ?></span>
       </a>
 
       <a class="card card-link" href="emergency.php">
         <?= $cardOpener('card-emergency', 'emergency', 'red') ?>
-        <h3>Emergency &amp; ICU</h3>
-        <p>
-          Open 24 hours for accidents, chest pain, breathlessness, snake bite,
-          scorpion sting and any sudden illness, with ICU support.
-        </p>
+        <h3><?= e(text('home.card.emergency.title')) ?></h3>
+        <p><?= e(text('home.card.emergency.body')) ?></p>
         <span class="card-more">Emergency care <?= icon('arrow-right') ?></span>
       </a>
 
       <a class="card card-link" href="facilities.php">
         <?= $cardOpener('card-lab', 'lab') ?>
-        <h3>Laboratory &amp; Diagnostics</h3>
-        <p>
-          In-house laboratory for blood investigations, plus 2D Echo scanning
-          and maternity scans on site.
-        </p>
+        <h3><?= e(text('home.card.lab.title')) ?></h3>
+        <p><?= e(text('home.card.lab.body')) ?></p>
         <span class="card-more">See facilities <?= icon('arrow-right') ?></span>
       </a>
 
       <a class="card card-link" href="tariff.php">
         <?= $cardOpener('card-tariff', 'list') ?>
-        <h3>Transparent Tariff</h3>
-        <p>
-          Consultation fees and room charges published openly, so you know what
-          to expect before you arrive.
-        </p>
+        <h3><?= e(text('home.card.tariff.title')) ?></h3>
+        <p><?= e(text('home.card.tariff.body')) ?></p>
         <span class="card-more">View tariff <?= icon('arrow-right') ?></span>
       </a>
     </div>
@@ -266,8 +245,8 @@ $cardOpener = static function (string $slot, string $iconName, string $tone = ''
 <section class="section">
   <div class="wrap">
     <div class="section-head center">
-      <span class="eyebrow">Meet Our Doctors</span>
-      <h2>Qualified doctors you can reach</h2>
+      <span class="eyebrow"><?= e(text('home.doctors.eyebrow')) ?></span>
+      <h2><?= e(text('home.doctors.title')) ?></h2>
       <p class="lede">
         Two resident consultants covering medicine and women's health, available
         for outpatient consultation every day.
@@ -284,8 +263,8 @@ $cardOpener = static function (string $slot, string $iconName, string $tone = ''
 <section class="section section-paper">
   <div class="wrap">
     <div class="section-head center">
-      <span class="eyebrow">Facilities</span>
-      <h2>Equipped to treat, admit and monitor</h2>
+      <span class="eyebrow"><?= e(text('home.facilities.eyebrow')) ?></span>
+      <h2><?= e(text('home.facilities.title')) ?></h2>
     </div>
     <div class="grid grid-3">
       <?php foreach (FACILITIES as $f): ?>
@@ -304,8 +283,8 @@ $cardOpener = static function (string $slot, string $iconName, string $tone = ''
   <div class="wrap">
     <div class="grid grid-split">
       <div>
-        <span class="eyebrow">Find Us</span>
-        <h2>Easy to reach in Kandukur</h2>
+        <span class="eyebrow"><?= e(text('home.find.eyebrow')) ?></span>
+        <h2><?= e(text('home.find.title')) ?></h2>
         <p class="lede mb-2">
           We are on Pamuru Road, directly opposite ICICI Bank and close to
           Thyagarajaswamy Temple.

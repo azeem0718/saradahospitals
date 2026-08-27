@@ -115,6 +115,135 @@ function content_groups(): array
     ];
 }
 
+/* --------------------------------------------------------------------------
+   Page text
+
+   The wording on each public page, block by block. Structure stays in the
+   templates — which card links where, which photograph slot it uses — because
+   that is layout, not copy. What reception can change here is what the page
+   says.
+   -------------------------------------------------------------------------- */
+
+/**
+ * @return array<string, array{label:string, url:string, blocks:array}>
+ */
+function content_pages(): array
+{
+    return [
+        'home' => [
+            'label'  => 'Home',
+            'url'    => 'index.php',
+            'blocks' => [
+                'home.hero.place' => [
+                    'label' => 'Hero — location line', 'type' => 'text',
+                    'default' => 'Pamuru Road, Kandukur · Prakasam District',
+                ],
+                'home.hero.title' => [
+                    'label' => 'Hero — headline', 'type' => 'area',
+                    'hint'  => 'Each new line becomes a line break on the page.',
+                    'default' => "Let’s find you\na doctor.",
+                ],
+                'home.hero.lede' => [
+                    'label' => 'Hero — opening sentence', 'type' => 'area',
+                    'default' => 'General Medicine, Diabetology and Obstetrics & Gynaecology under one '
+                               . 'roof — open every hour of every day.',
+                ],
+
+                'home.departments.eyebrow' => [
+                    'label' => 'Departments — small heading', 'type' => 'text',
+                    'default' => 'Our Departments',
+                ],
+                'home.departments.title' => [
+                    'label' => 'Departments — heading', 'type' => 'text',
+                    'default' => 'Complete care for your family',
+                ],
+                'home.departments.lede' => [
+                    'label' => 'Departments — intro', 'type' => 'area',
+                    'default' => 'From everyday fevers and long-term diabetes management to safe '
+                               . 'deliveries and emergency treatment, we look after the whole family.',
+                ],
+
+                'home.card.medicine.title' => [
+                    'label' => 'Card 1 — title', 'type' => 'text', 'default' => 'General Medicine',
+                ],
+                'home.card.medicine.body' => [
+                    'label' => 'Card 1 — text', 'type' => 'area',
+                    'default' => 'Diabetes and blood pressure, heart and kidney problems, all types of '
+                               . 'fever, dengue and malaria, thyroid disorders, asthma, TB and more.',
+                ],
+                'home.card.diabetes.title' => [
+                    'label' => 'Card 2 — title', 'type' => 'text', 'default' => 'Good Health Diabetic Centre',
+                ],
+                'home.card.diabetes.body' => [
+                    'label' => 'Card 2 — text', 'type' => 'area',
+                    'default' => 'Dedicated diabetes care led by a doctor with a Diploma in '
+                               . 'Endocrinology & Diabetology — diagnosis, control and long-term follow-up.',
+                ],
+                'home.card.maternity.title' => [
+                    'label' => 'Card 3 — title', 'type' => 'text', 'default' => 'Maternity & Gynaecology',
+                ],
+                'home.card.maternity.body' => [
+                    'label' => 'Card 3 — text', 'type' => 'area',
+                    'default' => 'Normal and caesarean delivery, high-risk pregnancy, maternity scans, '
+                               . "PCOD, laparoscopic surgery and complete women's health care.",
+                ],
+                'home.card.emergency.title' => [
+                    'label' => 'Card 4 — title', 'type' => 'text', 'default' => 'Emergency & ICU',
+                ],
+                'home.card.emergency.body' => [
+                    'label' => 'Card 4 — text', 'type' => 'area',
+                    'default' => 'Open 24 hours for accidents, chest pain, breathlessness, snake bite, '
+                               . 'scorpion sting and any sudden illness, with ICU support.',
+                ],
+                'home.card.lab.title' => [
+                    'label' => 'Card 5 — title', 'type' => 'text', 'default' => 'Laboratory & Diagnostics',
+                ],
+                'home.card.lab.body' => [
+                    'label' => 'Card 5 — text', 'type' => 'area',
+                    'default' => 'In-house laboratory for blood investigations, plus 2D Echo scanning '
+                               . 'and maternity scans on site.',
+                ],
+                'home.card.tariff.title' => [
+                    'label' => 'Card 6 — title', 'type' => 'text', 'default' => 'Transparent Tariff',
+                ],
+                'home.card.tariff.body' => [
+                    'label' => 'Card 6 — text', 'type' => 'area',
+                    'default' => 'Consultation fees and room charges published openly, so you know what '
+                               . 'to expect before you arrive.',
+                ],
+
+                'home.doctors.eyebrow' => [
+                    'label' => 'Doctors — small heading', 'type' => 'text', 'default' => 'Meet Our Doctors',
+                ],
+                'home.doctors.title' => [
+                    'label' => 'Doctors — heading', 'type' => 'text',
+                    'default' => 'Qualified doctors you can reach',
+                ],
+                'home.facilities.eyebrow' => [
+                    'label' => 'Facilities — small heading', 'type' => 'text', 'default' => 'Facilities',
+                ],
+                'home.facilities.title' => [
+                    'label' => 'Facilities — heading', 'type' => 'text',
+                    'default' => 'Equipped to treat, admit and monitor',
+                ],
+                'home.find.eyebrow' => [
+                    'label' => 'Find us — small heading', 'type' => 'text', 'default' => 'Find Us',
+                ],
+                'home.find.title' => [
+                    'label' => 'Find us — heading', 'type' => 'text',
+                    'default' => 'Easy to reach in Kandukur',
+                ],
+            ],
+        ],
+    ];
+}
+
+/** Multi-line text for the page: escaped, with newlines becoming breaks. */
+function text_html(string $key): string
+{
+    return nl2br(e(text($key)), false);
+}
+
 /** Flat key => spec map for validating and looking up a single field. */
 function content_specs(): array
 {
@@ -123,6 +252,9 @@ function content_specs(): array
         $flat = [];
         foreach (content_groups() as $group) {
             $flat += $group['fields'];
+        }
+        foreach (content_pages() as $page) {
+            $flat += $page['blocks'];
         }
     }
     return $flat;
