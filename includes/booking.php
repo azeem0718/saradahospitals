@@ -476,6 +476,43 @@ function create_booking(array $data, string $bookedVia = 'online'): array
 }
 
 /**
+ * May the patient still cancel this booking themselves?
+ *
+ * Only a plain "booked" token, and only while showing up is still ahead of
+ * them: any future date, or today before the session's end. Once reception
+ * has marked them arrived the desk owns the booking, and past sessions are
+ * history, not something to edit.
+ */
+function booking_cancellable(array $booking): bool
+{
+    if ($booking['status'] !== 'booked') {
+        return false;
+    }
+
+    $today = date('Y-m-d');
+    if ($booking['booking_date'] < $today) {
+        return false;
+    }
+    if ($booking['booking_date'] > $today) {
+        return true;
+    }
+
+    $stmt = db()->prepare(
+        'SELECT end_time FROM doctor_sessions
+          WHERE doctor_id = ? AND weekday = ? AND session = ?'
+    );
+    $stmt->execute([
+        $booking['doctor_id'],
+        (int) (new DateTimeImmutable($booking['booking_date']))->format('w'),
+        $booking['session'],
+    ]);
+    $end = $stmt->fetchColumn();
+
+    return $end === false
+        || new DateTimeImmutable('now') < new DateTimeImmutable($today . ' ' . $end);
+}
+
+/**
  * Live counts for one slot (doctor, date, session).
  *
  * "Now serving" is the highest token reception has marked completed — the

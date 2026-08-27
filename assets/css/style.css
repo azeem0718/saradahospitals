@@ -1614,6 +1614,18 @@ body { padding-bottom: 30px; }
   .queue-mine-grid { gap: .5rem; }
 }
 
+/* Booking summary on the cancel page. */
+.cancel-summary {
+  display: grid; grid-template-columns: auto 1fr; gap: .45rem 1.2rem;
+  margin: 0 0 1.3rem; padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--rule);
+}
+.cancel-summary dt {
+  font-size: .72rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-500); align-self: center;
+}
+.cancel-summary dd { margin: 0; color: var(--ink-800); }
+
 /* --------------------------------------------------------------------------
    Print
    -------------------------------------------------------------------------- */

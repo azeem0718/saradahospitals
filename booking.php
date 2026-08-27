@@ -164,7 +164,13 @@ require __DIR__ . '/includes/header.php';
         <?= icon('info') ?>
         <p>
           <strong>Need to cancel or change this booking?</strong>
-          Please call <a href="tel:<?= e(HOSPITAL['landline']) ?>"><?= e(HOSPITAL['landline_display']) ?></a>
+          <?php if (booking_cancellable($booking)): ?>
+            You can <a href="cancel.php?ref=<?= e($booking['reference']) ?>">cancel it
+            online</a> with the phone number you booked with, or call
+          <?php else: ?>
+            Please call
+          <?php endif; ?>
+          <a href="tel:<?= e(HOSPITAL['landline']) ?>"><?= e(HOSPITAL['landline_display']) ?></a>
           so someone else can use the token.
         </p>
       </div>
