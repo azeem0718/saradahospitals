@@ -18,7 +18,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
 /** Bump this when a migration is added below. */
-const SCHEMA_VERSION = 7;
+const SCHEMA_VERSION = 8;
 
 /**
  * Migrations, keyed by the version they bring the database up to.
@@ -148,6 +148,27 @@ function schema_migrations(): array
         // actually changed: every field's default still lives in PHP beside
         // the code that uses it, so a fresh database renders the site exactly
         // as it shipped, and clearing a row is what "reset to default" means.
+        // Editable lists — tariff rows, standing offers, service lists. One
+        // table serves them all: a tariff row uses title/amount/unit, an offer
+        // uses title/body/icon, a service list uses title alone. As with the
+        // content table, an empty list means "still showing the defaults".
+        8 => static function (PDO $pdo): void {
+            $pdo->exec(
+                "CREATE TABLE IF NOT EXISTS `list_items` (
+                  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                  `list_key`   VARCHAR(40)  NOT NULL,
+                  `sort_order` SMALLINT     NOT NULL DEFAULT 0,
+                  `title`      VARCHAR(160) NOT NULL DEFAULT '',
+                  `body`       VARCHAR(400) NOT NULL DEFAULT '',
+                  `icon`       VARCHAR(40)  NOT NULL DEFAULT '',
+                  `amount`     INT UNSIGNED DEFAULT NULL,
+                  `unit`       VARCHAR(40)  NOT NULL DEFAULT '',
+                  PRIMARY KEY (`id`),
+                  KEY `idx_list` (`list_key`, `sort_order`, `id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+            );
+        },
+
         7 => static function (PDO $pdo): void {
             $pdo->exec(
                 "CREATE TABLE IF NOT EXISTS `content` (

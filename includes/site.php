@@ -37,13 +37,13 @@ const HOSPITAL_DEFAULTS = [
 ];
 
 /** Consultation fees, exactly as displayed on the tariff board. */
-const CONSULTATION_FEES = [
+const CONSULTATION_FEES_DEFAULTS = [
     ['label' => 'OP Consultation', 'amount' => 200, 'unit' => ''],
     ['label' => 'Emergency OP after 9 PM', 'amount' => 400, 'unit' => ''],
 ];
 
 /** Room and service charges, exactly as displayed on the tariff board. */
-const ROOM_CHARGES = [
+const ROOM_CHARGES_DEFAULTS = [
     ['label' => 'ICU',                 'amount' => 3000, 'unit' => 'per day'],
     ['label' => 'Single Room (A/C)',   'amount' => 1700, 'unit' => 'per day'],
     ['label' => 'Sharing Room (A/C)',  'amount' => 1600, 'unit' => 'per day'],
@@ -53,7 +53,7 @@ const ROOM_CHARGES = [
 ];
 
 /** Standing offers printed on the hospital letterhead. */
-const OFFERS = [
+const OFFERS_DEFAULTS = [
     [
         'title' => 'Free OP Every Friday',
         'text'  => 'Outpatient consultations are provided free of charge every Friday.',

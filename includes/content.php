@@ -214,6 +214,189 @@ function content_save(array $values): void
     content_forget();
 }
 
+/* --------------------------------------------------------------------------
+   Editable lists
+
+   Tariff rows, standing offers and the service lists are all sequences of
+   short records, so one table and one editor serve all of them. A list that
+   has no rows in the database is still showing the shipped defaults; saving
+   one writes the whole sequence, and resetting deletes it.
+   -------------------------------------------------------------------------- */
+
+/**
+ * Every editable list, with the columns it actually uses and the defaults it
+ * falls back to.
+ *
+ * `shape` maps the stored row back into the array shape the page already
+ * expects, so the templates that render these lists did not have to change.
+ *
+ * @return array<string, array{label:string, hint:string, uses:list<string>,
+ *                             default:list<array>, shape:callable}>
+ */
+function content_lists(): array
+{
+    $money = static fn (array $r): array => [
+        'label'  => $r['title'],
+        'amount' => (int) $r['amount'],
+        'unit'   => $r['unit'],
+    ];
+
+    return [
+        'tariff.consultation' => [
+            'label'   => 'Consultation fees',
+            'hint'    => 'The doctor-visit charges, exactly as the tariff board reads.',
+            'uses'    => ['title', 'amount'],
+            'default' => array_map(
+                static fn (array $r): array => ['title' => $r['label'], 'amount' => $r['amount'], 'unit' => $r['unit']],
+                CONSULTATION_FEES_DEFAULTS
+            ),
+            'shape'   => $money,
+        ],
+        'tariff.rooms' => [
+            'label'   => 'Room and service charges',
+            'hint'    => 'Beds and per-day services. Rows marked "per day" also appear '
+                       . 'on the Facilities page.',
+            'uses'    => ['title', 'amount', 'unit'],
+            'default' => array_map(
+                static fn (array $r): array => ['title' => $r['label'], 'amount' => $r['amount'], 'unit' => $r['unit']],
+                ROOM_CHARGES_DEFAULTS
+            ),
+            'shape'   => $money,
+        ],
+        'offers' => [
+            'label'   => 'Standing offers',
+            'hint'    => 'The band shown across the home page. Keep these to what the '
+                       . 'hospital actually offers — patients arrive expecting them.',
+            'uses'    => ['title', 'body', 'icon'],
+            'default' => array_map(
+                static fn (array $r): array => ['title' => $r['title'], 'body' => $r['text'], 'icon' => $r['icon']],
+                OFFERS_DEFAULTS
+            ),
+            'shape'   => static fn (array $r): array => [
+                'title' => $r['title'],
+                'text'  => $r['body'],
+                'icon'  => $r['icon'] !== '' ? $r['icon'] : 'award',
+            ],
+        ],
+    ];
+}
+
+/** Raw stored rows for every list, keyed by list. Read once per request. */
+function list_rows(bool $reload = false): array
+{
+    static $cache = null;
+
+    if ($cache === null || $reload) {
+        $cache = [];
+        try {
+            $sql = 'SELECT list_key, title, body, icon, amount, unit
+                      FROM list_items ORDER BY list_key, sort_order, id';
+            foreach (db()->query($sql) as $row) {
+                $cache[$row['list_key']][] = $row;
+            }
+        } catch (PDOException $e) {
+            error_log('Lists unavailable: ' . $e->getMessage());
+        }
+    }
+
+    return $cache;
+}
+
+function list_forget(): void
+{
+    list_rows(true);
+}
+
+/**
+ * The rows to edit for a list: what reception saved, or the defaults when they
+ * have not touched it yet.
+ *
+ * @return list<array{title:string, body:string, icon:string, amount:?int, unit:string}>
+ */
+function list_editable(string $key): array
+{
+    $stored = list_rows()[$key] ?? [];
+    if ($stored) {
+        return array_map(static fn (array $r): array => [
+            'title'  => (string) $r['title'],
+            'body'   => (string) $r['body'],
+            'icon'   => (string) $r['icon'],
+            'amount' => $r['amount'] === null ? null : (int) $r['amount'],
+            'unit'   => (string) $r['unit'],
+        ], $stored);
+    }
+
+    return array_map(static fn (array $r): array => [
+        'title'  => (string) ($r['title'] ?? ''),
+        'body'   => (string) ($r['body'] ?? ''),
+        'icon'   => (string) ($r['icon'] ?? ''),
+        'amount' => isset($r['amount']) ? (int) $r['amount'] : null,
+        'unit'   => (string) ($r['unit'] ?? ''),
+    ], content_lists()[$key]['default'] ?? []);
+}
+
+/** True once reception has saved their own version of a list. */
+function list_is_edited(string $key): bool
+{
+    return !empty(list_rows()[$key]);
+}
+
+/**
+ * Replace a list wholesale. Rewriting rather than reconciling row by row keeps
+ * the editor honest: what the form showed is exactly what ends up stored, and
+ * reordering needs no identity tracking.
+ */
+function list_save(string $key, array $rows): void
+{
+    if (!isset(content_lists()[$key])) {
+        return;
+    }
+
+    $pdo = db();
+    $pdo->beginTransaction();
+    try {
+        $pdo->prepare('DELETE FROM list_items WHERE list_key = ?')->execute([$key]);
+        $insert = $pdo->prepare(
+            'INSERT INTO list_items (list_key, sort_order, title, body, icon, amount, unit)
+             VALUES (?,?,?,?,?,?,?)'
+        );
+        foreach (array_values($rows) as $i => $row) {
+            $insert->execute([
+                $key,
+                $i,
+                mb_substr(trim((string) ($row['title'] ?? '')), 0, 160),
+                mb_substr(trim((string) ($row['body'] ?? '')), 0, 400),
+                mb_substr(trim((string) ($row['icon'] ?? '')), 0, 40),
+                ($row['amount'] ?? '') === '' || $row['amount'] === null ? null : (int) $row['amount'],
+                mb_substr(trim((string) ($row['unit'] ?? '')), 0, 40),
+            ]);
+        }
+        $pdo->commit();
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }
+
+    list_forget();
+}
+
+/** Drop reception's version so the list tracks the shipped defaults again. */
+function list_reset(string $key): void
+{
+    db()->prepare('DELETE FROM list_items WHERE list_key = ?')->execute([$key]);
+    list_forget();
+}
+
+/** A list in the array shape its page already expects. */
+function list_shaped(string $key): array
+{
+    $shape = content_lists()[$key]['shape'] ?? null;
+    $rows  = list_editable($key);
+    return $shape === null ? $rows : array_map($shape, $rows);
+}
+
 /**
  * Define HOSPITAL from the defaults with reception's edits laid over the top.
  *
@@ -244,4 +427,17 @@ function hospital_boot(): void
     }
 
     define('HOSPITAL', $h);
+
+    // Same trick for the lists: the pages keep reading CONSULTATION_FEES and
+    // friends in the shape they always had, unaware that the rows may now come
+    // from the database.
+    if (SNH_CONFIGURED) {
+        define('CONSULTATION_FEES', list_shaped('tariff.consultation'));
+        define('ROOM_CHARGES', list_shaped('tariff.rooms'));
+        define('OFFERS', list_shaped('offers'));
+    } else {
+        define('CONSULTATION_FEES', CONSULTATION_FEES_DEFAULTS);
+        define('ROOM_CHARGES', ROOM_CHARGES_DEFAULTS);
+        define('OFFERS', OFFERS_DEFAULTS);
+    }
 }
