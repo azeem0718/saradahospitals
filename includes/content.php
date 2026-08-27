@@ -238,6 +238,7 @@ function content_pages(): array
         'about' => [
             'label'  => 'About',
             'url'    => 'about.php',
+            'lists'  => ['about.values'],
             'blocks' => [
                 'about.hero.title' => [
                     'label' => 'Banner — heading', 'type' => 'text',
@@ -293,6 +294,7 @@ function content_pages(): array
         'contact' => [
             'label'  => 'Contact',
             'url'    => 'contact.php',
+            'lists'  => ['contact.faq'],
             'blocks' => [
                 'contact.hero.title' => [
                     'label' => 'Banner — heading', 'type' => 'text', 'default' => 'Contact Us',
@@ -403,6 +405,270 @@ function content_pages(): array
                 ],
             ],
         ],
+        'services' => [
+            'label'  => 'Services',
+            'url'    => 'services.php',
+            'blocks' => [
+                'services.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text', 'default' => 'Our Services',
+                ],
+                'services.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => "General medicine and women's health, delivered by resident "
+                               . 'consultants with laboratory and ICU support on site.',
+                ],
+                'services.medicine.eyebrow' => [
+                    'label' => 'Department 1 — small heading', 'type' => 'text', 'default' => 'Department 01',
+                ],
+                'services.medicine.title' => [
+                    'label' => 'Department 1 — heading', 'type' => 'text', 'default' => 'General Medicine',
+                ],
+                'services.medicine.lede' => [
+                    'label' => 'Department 1 — intro', 'type' => 'area',
+                    'default' => 'Consultation, diagnosis and treatment for everyday illness and for '
+                               . 'the long-term conditions that need watching year after year.',
+                ],
+                'services.medicine.noun' => [
+                    'label' => 'Department 1 — what the list is called', 'type' => 'text',
+                    'hint'  => 'Reads as "14 conditions treated".',
+                    'default' => 'conditions treated',
+                ],
+                'services.obg.eyebrow' => [
+                    'label' => 'Department 2 — small heading', 'type' => 'text', 'default' => 'Department 02',
+                ],
+                'services.obg.title' => [
+                    'label' => 'Department 2 — heading', 'type' => 'text',
+                    'default' => 'Obstetrics & Gynaecology',
+                ],
+                'services.obg.lede' => [
+                    'label' => 'Department 2 — intro', 'type' => 'area',
+                    'default' => "Pregnancy, delivery and complete women's health care, from the first "
+                               . 'antenatal visit through to menopause.',
+                ],
+                'services.obg.noun' => [
+                    'label' => 'Department 2 — what the list is called', 'type' => 'text',
+                    'default' => 'procedures and services',
+                ],
+            ],
+        ],
+        'facilities' => [
+            'label'  => 'Facilities',
+            'url'    => 'facilities.php',
+            'lists'  => ['facilities.diagnostics'],
+            'blocks' => [
+                'facilities.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text', 'default' => 'Our Facilities',
+                ],
+                'facilities.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => 'Everything on this page is available inside the building, so patients '
+                               . 'are not sent elsewhere mid-treatment.',
+                ],
+                'facilities.rooms.eyebrow' => [
+                    'label' => 'Rooms — small heading', 'type' => 'text', 'default' => 'Rooms & Admission',
+                ],
+                'facilities.rooms.title' => [
+                    'label' => 'Rooms — heading', 'type' => 'text',
+                    'default' => 'Air-conditioned rooms and wards',
+                ],
+                'facilities.rooms.body' => [
+                    'label' => 'Rooms — text', 'type' => 'area',
+                    'hint'  => 'Leave a blank line between paragraphs.',
+                    'default' => "Patients who need to be admitted can choose from an air-conditioned "
+                               . "single room, a sharing room, or the general ward. Every option is "
+                               . "air-conditioned, and charges are published openly.\n\n"
+                               . "Oxygen support and infusion are available for admitted patients, "
+                               . "charged as listed on the tariff.",
+                ],
+                'facilities.diagnostics.eyebrow' => [
+                    'label' => 'Diagnostics — small heading', 'type' => 'text', 'default' => 'Diagnostics',
+                ],
+                'facilities.diagnostics.title' => [
+                    'label' => 'Diagnostics — heading', 'type' => 'text',
+                    'default' => 'Tests done here, not sent away',
+                ],
+                'facilities.note.seniors' => [
+                    'label' => 'Notice — senior discount', 'type' => 'area',
+                    'default' => '**Patients above 60 receive 20% off blood tests.** Please mention your '
+                               . 'age when the test is ordered.',
+                ],
+            ],
+        ],
+        'diabetic' => [
+            'label'  => 'Diabetic Centre',
+            'url'    => 'diabetic-centre.php',
+            'lists'  => ['diabetic.conditions'],
+            'blocks' => [
+                'diabetic.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text',
+                    'default' => 'Good Health Diabetic Centre',
+                ],
+                'diabetic.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => 'Hope for Better Life — dedicated diabetes care at Sarada Nursing Home.',
+                ],
+                'diabetic.why.eyebrow' => [
+                    'label' => 'Why — small heading', 'type' => 'text', 'default' => 'Why a dedicated centre',
+                ],
+                'diabetic.why.title' => [
+                    'label' => 'Why — heading', 'type' => 'text',
+                    'default' => 'Diabetes needs follow-up, not just a prescription',
+                ],
+                'diabetic.why.body' => [
+                    'label' => 'Why — text', 'type' => 'area',
+                    'hint'  => 'Blank line between paragraphs. **bold**, *italic* and [links](book.php) all work.',
+                    'default' => "Diabetes is not treated in a single visit. Sugar levels shift with "
+                               . "diet, weight, illness, stress and age, and the medicines that worked "
+                               . "last year may not be right this year. Left unchecked, it quietly "
+                               . "damages the eyes, kidneys, nerves and heart.\n\n"
+                               . "The Good Health Diabetic Centre exists so that patients in and around "
+                               . "Kandukur have somewhere close by to be reviewed regularly, rather "
+                               . "than only when something goes wrong.\n\n"
+                               . "Care here is led by **Dr. Gundavarapu Venkatesh**, who holds an MD in "
+                               . "General Medicine from SRM University, Chennai, and a **Diploma in "
+                               . "Endocrinology & Diabetology**.",
+                ],
+                'diabetic.training.title' => [
+                    'label' => 'Training card — heading', 'type' => 'text',
+                    'default' => 'Trained in current diabetes practice',
+                ],
+                'diabetic.training.body' => [
+                    'label' => 'Training card — text', 'type' => 'area',
+                    'default' => "Dr. Venkatesh has completed *Changing the Paradigm in Type 2 Diabetes "
+                               . "Mellitus Management*, a multidisciplinary diabetes self-study "
+                               . "programme developed by Medical Trends and based on official "
+                               . "resources of the **American Diabetes Association (ADA)**.\n\n"
+                               . "It means the treatment you receive follows current international "
+                               . "guidance, not habit.",
+                ],
+                'diabetic.cards.eyebrow' => [
+                    'label' => 'Conditions — small heading', 'type' => 'text', 'default' => 'What we look after',
+                ],
+                'diabetic.cards.title' => [
+                    'label' => 'Conditions — heading', 'type' => 'text',
+                    'default' => 'Diabetes and related conditions',
+                ],
+            ],
+        ],
+        'maternity' => [
+            'label'  => 'Maternity',
+            'url'    => 'maternity.php',
+            'lists'  => ['maternity.journey', 'maternity.gynae'],
+            'blocks' => [
+                'maternity.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text',
+                    'default' => "Maternity & Women's Health",
+                ],
+                'maternity.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => 'Care through pregnancy, delivery and beyond, under Dr. Maddipudi '
+                               . 'Brahmani, MBBS, MS (OBG).',
+                ],
+                'maternity.delivery.eyebrow' => [
+                    'label' => 'Delivery — small heading', 'type' => 'text',
+                    'default' => 'Pregnancy & Delivery',
+                ],
+                'maternity.delivery.title' => [
+                    'label' => 'Delivery — heading', 'type' => 'text',
+                    'default' => 'Safe delivery, close to home',
+                ],
+                'maternity.delivery.body' => [
+                    'label' => 'Delivery — text', 'type' => 'area',
+                    'hint'  => 'Blank line between paragraphs. **bold** and *italic* work.',
+                    'default' => "Having a baby should not mean travelling far from your family. Our "
+                               . "maternity service covers the whole journey — regular antenatal "
+                               . "check-ups, maternity scanning, and delivery here at the nursing home "
+                               . "with a qualified obstetrician present.\n\n"
+                               . "Both **normal delivery** and **caesarean section** are carried out "
+                               . "here. Pregnancies that need extra watching — **high-risk pregnancy** "
+                               . "— are followed more closely, with ICU support available in the "
+                               . "building if it is ever needed.\n\n"
+                               . "Ectopic pregnancy and other urgent obstetric problems are treated as "
+                               . "emergencies, at any hour.",
+                ],
+                'maternity.journey.title' => [
+                    'label' => 'Pregnancy card — heading', 'type' => 'text',
+                    'default' => 'Through your pregnancy',
+                ],
+                'maternity.gynae.eyebrow' => [
+                    'label' => 'Gynaecology — small heading', 'type' => 'text', 'default' => 'Gynaecology',
+                ],
+                'maternity.gynae.title' => [
+                    'label' => 'Gynaecology — heading', 'type' => 'text',
+                    'default' => "Women's health at every stage",
+                ],
+                'maternity.gynae.lede' => [
+                    'label' => 'Gynaecology — intro', 'type' => 'area',
+                    'default' => "From the teenage years through to menopause, many women's health "
+                               . 'problems are treatable once they are properly examined.',
+                ],
+                'maternity.urgent' => [
+                    'label' => 'Urgent notice', 'type' => 'area',
+                    'hint'  => '{mobile} and {mobile_tel} print the current emergency number.',
+                    'default' => '**Bleeding, severe pain, or labour starting?** Do not wait for an '
+                               . 'appointment. Come to the hospital or call '
+                               . '[{mobile}](tel:{mobile_tel}) immediately. We are open 24 hours.',
+                ],
+            ],
+        ],
+        'emergency' => [
+            'label'  => 'Emergency',
+            'url'    => 'emergency.php',
+            'lists'  => ['emergency.signs'],
+            'blocks' => [
+                'emergency.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text', 'default' => '24/7 Emergency Care',
+                ],
+                'emergency.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => 'Our emergency department is open every hour of every day, including '
+                               . 'Sundays and festival days.',
+                ],
+                'emergency.notice' => [
+                    'label' => 'Warning notice', 'type' => 'area',
+                    'default' => '**Do not book a token for an emergency.** Online booking is only for '
+                               . 'routine outpatient consultations. In an emergency, come straight to '
+                               . 'the hospital or call us on the way.',
+                ],
+                'emergency.when.eyebrow' => [
+                    'label' => 'When — small heading', 'type' => 'text', 'default' => 'Come in immediately',
+                ],
+                'emergency.when.title' => [
+                    'label' => 'When — heading', 'type' => 'text',
+                    'default' => 'When to treat it as an emergency',
+                ],
+                'emergency.when.lede' => [
+                    'label' => 'When — intro', 'type' => 'area',
+                    'default' => 'If any of the following is happening, do not wait for the morning '
+                               . 'consultation. Bring the patient in at once.',
+                ],
+                'emergency.icu.eyebrow' => [
+                    'label' => 'ICU — small heading', 'type' => 'text', 'default' => 'Intensive Care',
+                ],
+                'emergency.icu.title' => [
+                    'label' => 'ICU — heading', 'type' => 'text', 'default' => 'ICU support in the building',
+                ],
+                'emergency.icu.body' => [
+                    'label' => 'ICU — text', 'type' => 'area',
+                    'hint'  => 'Blank line between paragraphs; [links](tariff.php) are allowed.',
+                    'default' => "Patients who need continuous monitoring can be admitted to our ICU "
+                               . "without being moved to another hospital. Oxygen and infusion support "
+                               . "are available, and our in-house laboratory means urgent blood "
+                               . "investigations are done on site.\n\n"
+                               . "ICU and oxygen charges are published openly on our "
+                               . "[tariff page](tariff.php).",
+                ],
+                'emergency.finding.title' => [
+                    'label' => 'Directions card — heading', 'type' => 'text',
+                    'default' => 'Finding us in a hurry',
+                ],
+                'emergency.finding.body' => [
+                    'label' => 'Directions card — landmark line', 'type' => 'area',
+                    'default' => 'We are on Pamuru Road, directly opposite ICICI Bank, near '
+                               . 'Thyagarajaswamy Temple.',
+                ],
+            ],
+        ],
     ];
 }
 
@@ -438,7 +704,7 @@ function text_paragraphs(string $key): array
  * The one place raw wording becomes HTML.
  *
  * Escape first, so nothing typed into the admin panel can inject markup, then
- * put back a deliberately small set: **bold**, [links](book.php), the live
+ * put back a deliberately small set: **bold**, *italic*, [links](book.php), the live
  * figures below, and single newlines as breaks. A link's destination is
  * checked against a short allowlist of shapes — a page on this site, an
  * absolute http(s) address, a tel: or mailto: — so a pasted javascript: URL
@@ -447,7 +713,10 @@ function text_paragraphs(string $key): array
 function content_inline(string $raw): string
 {
     $html = e(content_placeholders($raw));
+    // Bold first: with ** already consumed, a lone * can only mean italic.
     $html = preg_replace('/\*\*(.+?)\*\*/s', '<strong>$1</strong>', $html) ?? $html;
+    // The marker has to hug its text, so "2 * 3 * 4" stays arithmetic.
+    $html = preg_replace('/(?<![\*\w])\*(?!\*)(\S(?:.*?\S)?)\*(?![\*\w])/s', '<em>$1</em>', $html) ?? $html;
 
     $html = preg_replace_callback(
         '/\[([^\]]{1,120})\]\(([^)\s]{1,200})\)/',
@@ -715,6 +984,113 @@ function content_lists(): array
             ],
             'shape'   => static fn (array $r): array => ['title' => $r['title'], 'text' => $r['body']],
         ],
+        'facilities.diagnostics' => [
+            'label'   => 'Diagnostics on site',
+            'hint'    => 'The three cards under "Tests done here" on the Facilities page.',
+            'uses'    => ['title', 'body', 'icon'],
+            'default' => [
+                ['title' => 'Modern Laboratory', 'icon' => 'lab',
+                 'body'  => 'Blood investigations and routine tests processed in our own laboratory, '
+                          . 'so results reach the doctor quickly.'],
+                ['title' => '2D Echo Scan', 'icon' => 'scan',
+                 'body'  => 'Cardiac echo scanning on site for patients with heart complaints or '
+                          . 'long-standing diabetes.'],
+                ['title' => 'Maternity Scans', 'icon' => 'maternity',
+                 'body'  => 'Pregnancy scanning as part of routine antenatal care and high-risk '
+                          . 'pregnancy monitoring.'],
+            ],
+            'shape'   => static fn (array $r): array => [
+                'title' => $r['title'], 'text' => $r['body'],
+                'icon'  => $r['icon'] !== '' ? $r['icon'] : 'lab',
+            ],
+        ],
+        'diabetic.conditions' => [
+            'label'   => 'Diabetes centre — what we look after',
+            'hint'    => 'The cards on the Diabetic Centre page.',
+            'uses'    => ['title', 'body', 'icon'],
+            'default' => [
+                ['title' => 'Diabetes Management', 'icon' => 'droplet', 'tone' => 'gold',
+                 'body'  => 'Diagnosis, medication review, sugar control and ongoing follow-up for type 2 diabetes.'],
+                ['title' => 'Blood Pressure', 'icon' => 'heart', 'tone' => 'red',
+                 'body'  => 'Hypertension so often travels with diabetes that the two are managed together here.'],
+                ['title' => 'Thyroid Disorders', 'icon' => 'shield', 'tone' => '',
+                 'body'  => 'Assessment and treatment of thyroid problems, which frequently overlap with diabetes.'],
+                ['title' => 'Laboratory Investigations', 'icon' => 'lab', 'tone' => '',
+                 'body'  => 'Blood sugar and related tests done in our own laboratory, so results come back quickly.'],
+                ['title' => '2D Echo Scan', 'icon' => 'scan', 'tone' => '',
+                 'body'  => 'Cardiac echo scanning on site, since long-standing diabetes affects the heart.'],
+                ['title' => 'Complication Screening', 'icon' => 'stethoscope', 'tone' => 'green',
+                 'body'  => 'Review of kidney, nerve and heart problems that can develop alongside diabetes.'],
+            ],
+            'uses_tone' => true,
+            'shape'   => static fn (array $r): array => [
+                'title' => $r['title'], 'text' => $r['body'], 'tone' => $r['tone'],
+                'icon'  => $r['icon'] !== '' ? $r['icon'] : 'droplet',
+            ],
+        ],
+        'maternity.journey' => [
+            'label'   => 'Through your pregnancy',
+            'hint'    => 'The checklist beside the delivery text. One item per row.',
+            'uses'    => ['title'],
+            'default' => array_map(static fn (string $t): array => ['title' => $t], [
+                'Antenatal consultation and monitoring',
+                'Maternity scans',
+                'High-risk pregnancy care',
+                'Normal delivery',
+                'Caesarean section',
+                'Ectopic pregnancy treatment',
+            ]),
+            'shape'   => static fn (array $r): string => $r['title'],
+        ],
+        'maternity.gynae' => [
+            'label'   => "Women's health cards",
+            'hint'    => 'The cards under "Women\'s health at every stage".',
+            'uses'    => ['title', 'body', 'icon'],
+            'uses_tone' => true,
+            'default' => [
+                ['title' => 'Menstrual Problems & PCOD', 'icon' => 'droplet', 'tone' => 'green',
+                 'body'  => 'Irregular, heavy or painful periods, and polycystic ovarian disease (PCOD).'],
+                ['title' => 'Infertility Treatment', 'icon' => 'heart', 'tone' => 'green',
+                 'body'  => 'Assessment and treatment for couples having difficulty conceiving.'],
+                ['title' => 'Laparoscopic Operations', 'icon' => 'stethoscope', 'tone' => 'green',
+                 'body'  => 'Keyhole surgery, which usually means smaller wounds and a quicker recovery.'],
+                ['title' => 'Hysterectomy', 'icon' => 'shield', 'tone' => 'green',
+                 'body'  => 'Surgical removal of the uterus where it is medically indicated.'],
+                ['title' => 'Tubectomy', 'icon' => 'users', 'tone' => 'green',
+                 'body'  => 'Permanent family planning procedures, carried out here at the nursing home.'],
+                ['title' => 'Menopause Care', 'icon' => 'clock', 'tone' => 'green',
+                 'body'  => 'Support and treatment for the symptoms that come with menopause.'],
+            ],
+            'shape'   => static fn (array $r): array => [
+                'title' => $r['title'], 'text' => $r['body'], 'tone' => $r['tone'],
+                'icon'  => $r['icon'] !== '' ? $r['icon'] : 'heart',
+            ],
+        ],
+        'emergency.signs' => [
+            'label'   => 'Emergency warning signs',
+            'hint'    => 'The cards telling patients when to come straight in.',
+            'uses'    => ['title', 'body', 'icon'],
+            'uses_tone' => true,
+            'default' => [
+                ['title' => 'Snake Bite & Scorpion Sting', 'icon' => 'droplet', 'tone' => 'red',
+                 'body'  => 'Bring the patient in immediately. Keep them still and calm, and do not '
+                          . 'cut, suck or tie the wound tightly.'],
+                ['title' => 'Chest Pain', 'icon' => 'heart', 'tone' => 'red',
+                 'body'  => 'Sudden chest pain, pain spreading to the arm or jaw, or heavy sweating with it.'],
+                ['title' => 'Breathlessness', 'icon' => 'icu', 'tone' => 'red',
+                 'body'  => 'Serious difficulty breathing, a severe asthma attack, or the lips turning blue.'],
+                ['title' => 'Paralysis or Stroke', 'icon' => 'alert', 'tone' => 'red',
+                 'body'  => 'Sudden weakness on one side, a drooping face, slurred speech or loss of consciousness.'],
+                ['title' => 'High Fever & Fits', 'icon' => 'emergency', 'tone' => 'red',
+                 'body'  => 'Very high fever, fits, severe dengue or malaria symptoms, or a child who has become drowsy.'],
+                ['title' => 'Obstetric Emergency', 'icon' => 'maternity', 'tone' => 'red',
+                 'body'  => 'Labour starting, bleeding in pregnancy, or severe abdominal pain.'],
+            ],
+            'shape'   => static fn (array $r): array => [
+                'title' => $r['title'], 'text' => $r['body'], 'tone' => $r['tone'],
+                'icon'  => $r['icon'] !== '' ? $r['icon'] : 'emergency',
+            ],
+        ],
         'about.values' => [
             'label'   => 'What guides us',
             'hint'    => 'The principles listed on the About page. One per row.',
@@ -764,6 +1140,12 @@ function content_lists(): array
     ];
 }
 
+/** The accent colours a card list may use. '' is the default navy. */
+function content_tones(): array
+{
+    return ['' => 'Default', 'gold' => 'Gold', 'red' => 'Red', 'green' => 'Green'];
+}
+
 /** Raw stored rows for every list, keyed by list. Read once per request. */
 function list_rows(bool $reload = false): array
 {
@@ -772,7 +1154,7 @@ function list_rows(bool $reload = false): array
     if ($cache === null || $reload) {
         $cache = [];
         try {
-            $sql = 'SELECT list_key, title, body, icon, amount, unit
+            $sql = 'SELECT list_key, title, body, icon, tone, amount, unit
                       FROM list_items ORDER BY list_key, sort_order, id';
             foreach (db()->query($sql) as $row) {
                 $cache[$row['list_key']][] = $row;
@@ -804,6 +1186,7 @@ function list_editable(string $key): array
             'title'  => (string) $r['title'],
             'body'   => (string) $r['body'],
             'icon'   => (string) $r['icon'],
+            'tone'   => (string) ($r['tone'] ?? ''),
             'amount' => $r['amount'] === null ? null : (int) $r['amount'],
             'unit'   => (string) $r['unit'],
         ], $stored);
@@ -813,6 +1196,7 @@ function list_editable(string $key): array
         'title'  => (string) ($r['title'] ?? ''),
         'body'   => (string) ($r['body'] ?? ''),
         'icon'   => (string) ($r['icon'] ?? ''),
+        'tone'   => (string) ($r['tone'] ?? ''),
         'amount' => isset($r['amount']) ? (int) $r['amount'] : null,
         'unit'   => (string) ($r['unit'] ?? ''),
     ], content_lists()[$key]['default'] ?? []);
@@ -840,8 +1224,8 @@ function list_save(string $key, array $rows): void
     try {
         $pdo->prepare('DELETE FROM list_items WHERE list_key = ?')->execute([$key]);
         $insert = $pdo->prepare(
-            'INSERT INTO list_items (list_key, sort_order, title, body, icon, amount, unit)
-             VALUES (?,?,?,?,?,?,?)'
+            'INSERT INTO list_items (list_key, sort_order, title, body, icon, tone, amount, unit)
+             VALUES (?,?,?,?,?,?,?,?)'
         );
         foreach (array_values($rows) as $i => $row) {
             $insert->execute([
@@ -850,6 +1234,7 @@ function list_save(string $key, array $rows): void
                 mb_substr(trim((string) ($row['title'] ?? '')), 0, 160),
                 mb_substr(trim((string) ($row['body'] ?? '')), 0, 400),
                 mb_substr(trim((string) ($row['icon'] ?? '')), 0, 40),
+                mb_substr(trim((string) ($row['tone'] ?? '')), 0, 20),
                 ($row['amount'] ?? '') === '' || $row['amount'] === null ? null : (int) $row['amount'],
                 mb_substr(trim((string) ($row['unit'] ?? '')), 0, 40),
             ]);

@@ -23,7 +23,16 @@ if (!isset($pages[$slug])) {
 $page   = $pages[$slug];
 $errors = [];
 
-if (is_post()) {
+// A page's lists — its FAQ, its cards — are edited on the same screen as its
+// wording, because to reception they are simply parts of the same page.
+$allowed    = $page['lists'] ?? [];
+$redirectTo = 'pages.php?page=' . urlencode($slug);
+$listErrors = [];
+require __DIR__ . '/_list-save.php';
+$listErrors = $errors;
+$errors     = [];
+
+if (is_post() && post('page') !== '') {
     require_csrf();
 
     $target = post('page');
@@ -92,6 +101,16 @@ require __DIR__ . '/_header.php';
   </div>
 <?php endif; ?>
 
+<?php if ($listErrors): ?>
+  <div class="notice notice-emergency">
+    <?= icon('alert') ?>
+    <p><strong>Nothing was saved.</strong></p>
+    <ul>
+      <?php foreach ($listErrors as $message): ?><li><?= e($message) ?></li><?php endforeach; ?>
+    </ul>
+  </div>
+<?php endif; ?>
+
 <div class="notice notice-info">
   <?= icon('info') ?>
   <p>
@@ -149,5 +168,9 @@ require __DIR__ . '/_header.php';
     <button class="btn btn-primary" type="submit"><?= icon('check') ?> Save page text</button>
   </div>
 </form>
+
+<?php foreach ($allowed as $key): ?>
+  <?php require __DIR__ . '/_list-editor.php'; ?>
+<?php endforeach; ?>
 
 <?php require __DIR__ . '/_footer.php'; ?>

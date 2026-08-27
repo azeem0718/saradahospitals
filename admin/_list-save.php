@@ -14,7 +14,9 @@ declare(strict_types=1);
 /** @var string $redirectTo */
 $errors = [];
 
-if (is_post()) {
+// A screen may carry both text blocks and lists; only a list form sends a
+// list_key, so anything else is somebody else's submission.
+if (is_post() && post('list_key') !== '') {
     require_csrf();
 
     $key   = post('list_key');
@@ -59,8 +61,15 @@ if (is_post()) {
             continue;
         }
 
+        if (!empty($lists[$key]['uses_tone'])
+            && !array_key_exists((string) ($row['tone'] ?? ''), content_tones())) {
+            $errors[] = 'Choose a listed colour for "' . $title . '".';
+            continue;
+        }
+
         $cleaned[] = [
             'order'  => (int) ($row['order'] ?? 0),
+            'tone'   => (string) ($row['tone'] ?? ''),
             'title'  => $title,
             'body'   => (string) ($row['body'] ?? ''),
             'icon'   => (string) ($row['icon'] ?? ''),

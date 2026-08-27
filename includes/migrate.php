@@ -18,7 +18,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
 /** Bump this when a migration is added below. */
-const SCHEMA_VERSION = 8;
+const SCHEMA_VERSION = 9;
 
 /**
  * Migrations, keyed by the version they bring the database up to.
@@ -152,6 +152,12 @@ function schema_migrations(): array
         // table serves them all: a tariff row uses title/amount/unit, an offer
         // uses title/body/icon, a service list uses title alone. As with the
         // content table, an empty list means "still showing the defaults".
+        // Card lists carry an accent colour. Without somewhere to keep it, making
+        // those cards editable would have quietly flattened the page to one hue.
+        9 => static function (PDO $pdo): void {
+            add_column($pdo, 'list_items', 'tone', "VARCHAR(20) NOT NULL DEFAULT '' AFTER `icon`");
+        },
+
         8 => static function (PDO $pdo): void {
             $pdo->exec(
                 "CREATE TABLE IF NOT EXISTS `list_items` (

@@ -25,33 +25,31 @@ $consultant = static function (string $needle) use ($doctors): ?array {
 
 $departments = [
     [
-        'eyebrow'  => 'Department 01',
-        'title'    => 'General Medicine',
+        'eyebrow'  => text('services.medicine.eyebrow'),
+        'title'    => text('services.medicine.title'),
         'tone'     => 'navy',
         'icon'     => 'stethoscope',
-        'lede'     => 'Consultation, diagnosis and treatment for everyday illness '
-                    . 'and for the long-term conditions that need watching year after year.',
+        'lede'     => text('services.medicine.lede'),
         'items'    => GENERAL_MEDICINE,
-        'noun'     => 'conditions treated',
+        'noun'     => text('services.medicine.noun'),
         'doctor'   => $consultant('General Medicine'),
     ],
     [
-        'eyebrow'  => 'Department 02',
-        'title'    => 'Obstetrics & Gynaecology',
+        'eyebrow'  => text('services.obg.eyebrow'),
+        'title'    => text('services.obg.title'),
         'tone'     => 'green',
         'icon'     => 'maternity',
-        'lede'     => 'Pregnancy, delivery and complete women\'s health care, from the '
-                    . 'first antenatal visit through to menopause.',
+        'lede'     => text('services.obg.lede'),
         'items'    => OBG_SERVICES,
-        'noun'     => 'procedures and services',
+        'noun'     => text('services.obg.noun'),
         'doctor'   => $consultant('Obstetric'),
     ],
 ];
 
 require __DIR__ . '/includes/header.php';
 page_hero(
-    'Our Services',
-    'General medicine and women\'s health, delivered by resident consultants with laboratory and ICU support on site.',
+    text('services.hero.title'),
+    text('services.hero.lede'),
     'Services',
     'services'
 );

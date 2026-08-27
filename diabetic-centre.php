@@ -9,8 +9,8 @@ $activeNav       = 'diabetic';
 
 require __DIR__ . '/includes/header.php';
 page_hero(
-    'Good Health Diabetic Centre',
-    'Hope for Better Life — dedicated diabetes care at Sarada Nursing Home.',
+    text('diabetic.hero.title'),
+    text('diabetic.hero.lede'),
     'Diabetic Centre',
     'diabetes'
 );
@@ -20,39 +20,21 @@ page_hero(
   <div class="wrap">
     <div class="grid grid-split">
       <div>
-        <span class="eyebrow">Why a dedicated centre</span>
-        <h2>Diabetes needs follow-up, not just a prescription</h2>
-        <p>
-          Diabetes is not treated in a single visit. Sugar levels shift with diet,
-          weight, illness, stress and age, and the medicines that worked last year
-          may not be right this year. Left unchecked, it quietly damages the eyes,
-          kidneys, nerves and heart.
-        </p>
-        <p>
-          The Good Health Diabetic Centre exists so that patients in and around
-          Kandukur have somewhere close by to be reviewed regularly, rather than
-          only when something goes wrong.
-        </p>
-        <p class="mb-0">
-          Care here is led by <strong>Dr. Gundavarapu Venkatesh</strong>, who holds
-          an MD in General Medicine from SRM University, Chennai, and a
-          <strong>Diploma in Endocrinology &amp; Diabetology</strong>.
-        </p>
+        <span class="eyebrow"><?= e(text('diabetic.why.eyebrow')) ?></span>
+        <h2><?= e(text('diabetic.why.title')) ?></h2>
+        <?php $whyParas = text_paragraphs('diabetic.why.body'); ?>
+        <?php foreach ($whyParas as $i => $para): ?>
+          <p<?= $i === count($whyParas) - 1 ? ' class="mb-0"' : '' ?>><?= $para ?></p>
+        <?php endforeach; ?>
       </div>
 
       <div class="card">
         <span class="card-icon gold"><?= icon('award') ?></span>
-        <h3>Trained in current diabetes practice</h3>
-        <p>
-          Dr. Venkatesh has completed <em>Changing the Paradigm in Type 2 Diabetes
-          Mellitus Management</em>, a multidisciplinary diabetes self-study programme
-          developed by Medical Trends and based on official resources of the
-          <strong>American Diabetes Association (ADA)</strong>.
-        </p>
-        <p class="mb-0">
-          It means the treatment you receive follows current international guidance,
-          not habit.
-        </p>
+        <h3><?= e(text('diabetic.training.title')) ?></h3>
+        <?php $trainParas = text_paragraphs('diabetic.training.body'); ?>
+        <?php foreach ($trainParas as $i => $para): ?>
+          <p<?= $i === count($trainParas) - 1 ? ' class="mb-0"' : '' ?>><?= $para ?></p>
+        <?php endforeach; ?>
       </div>
     </div>
   </div>
@@ -61,40 +43,17 @@ page_hero(
 <section class="section section-paper">
   <div class="wrap">
     <div class="section-head center">
-      <span class="eyebrow">What we look after</span>
-      <h2>Diabetes and related conditions</h2>
+      <span class="eyebrow"><?= e(text('diabetic.cards.eyebrow')) ?></span>
+      <h2><?= e(text('diabetic.cards.title')) ?></h2>
     </div>
     <div class="grid grid-3">
-      <div class="card">
-        <span class="card-icon gold"><?= icon('droplet') ?></span>
-        <h3>Diabetes Management</h3>
-        <p>Diagnosis, medication review, sugar control and ongoing follow-up for type 2 diabetes.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon red"><?= icon('heart') ?></span>
-        <h3>Blood Pressure</h3>
-        <p>Hypertension so often travels with diabetes that the two are managed together here.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon"><?= icon('shield') ?></span>
-        <h3>Thyroid Disorders</h3>
-        <p>Assessment and treatment of thyroid problems, which frequently overlap with diabetes.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon"><?= icon('lab') ?></span>
-        <h3>Laboratory Investigations</h3>
-        <p>Blood sugar and related tests done in our own laboratory, so results come back quickly.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon"><?= icon('scan') ?></span>
-        <h3>2D Echo Scan</h3>
-        <p>Cardiac echo scanning on site, since long-standing diabetes affects the heart.</p>
-      </div>
-      <div class="card">
-        <span class="card-icon green"><?= icon('stethoscope') ?></span>
-        <h3>Complication Screening</h3>
-        <p>Review of kidney, nerve and heart problems that can develop alongside diabetes.</p>
-      </div>
+      <?php foreach (list_shaped('diabetic.conditions') as $c): ?>
+        <div class="card">
+          <span class="card-icon<?= $c['tone'] !== '' ? ' ' . e($c['tone']) : '' ?>"><?= icon($c['icon']) ?></span>
+          <h3><?= e($c['title']) ?></h3>
+          <p><?= e($c['text']) ?></p>
+        </div>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>

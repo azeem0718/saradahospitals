@@ -41,6 +41,7 @@ $blank = 3;
               <th scope="col"><?= in_array('body', $list['uses'], true) ? 'Title' : 'Description' ?></th>
               <?php if (in_array('body', $list['uses'], true)): ?><th scope="col">Text</th><?php endif; ?>
               <?php if (in_array('icon', $list['uses'], true)): ?><th scope="col">Icon</th><?php endif; ?>
+              <?php if (!empty($list['uses_tone'])): ?><th scope="col">Colour</th><?php endif; ?>
               <?php if (in_array('amount', $list['uses'], true)): ?><th scope="col" style="width:9rem">Amount (₹)</th><?php endif; ?>
               <?php if (in_array('unit', $list['uses'], true)): ?><th scope="col" style="width:9rem">Per</th><?php endif; ?>
               <th scope="col" style="width:5rem">Remove</th>
@@ -50,7 +51,7 @@ $blank = 3;
             <?php
               $all = $rows;
               for ($b = 0; $b < $blank; $b++) {
-                  $all[] = ['title' => '', 'body' => '', 'icon' => '', 'amount' => null, 'unit' => ''];
+                  $all[] = ['title' => '', 'body' => '', 'icon' => '', 'tone' => '', 'amount' => null, 'unit' => ''];
               }
             ?>
             <?php foreach ($all as $i => $row): $n = 'rows[' . $i . ']'; ?>
@@ -74,6 +75,17 @@ $blank = 3;
                       <?php foreach (array_keys(icon_feature_set()) as $name): ?>
                         <option value="<?= e($name) ?>"<?= $row['icon'] === $name ? ' selected' : '' ?>>
                           <?= e($name) ?>
+                        </option>
+                      <?php endforeach; ?>
+                    </select>
+                  </td>
+                <?php endif; ?>
+                <?php if (!empty($list['uses_tone'])): ?>
+                  <td>
+                    <select name="<?= e($n) ?>[tone]" aria-label="Colour">
+                      <?php foreach (content_tones() as $value => $label): ?>
+                        <option value="<?= e($value) ?>"<?= ($row['tone'] ?? '') === $value ? ' selected' : '' ?>>
+                          <?= e($label) ?>
                         </option>
                       <?php endforeach; ?>
                     </select>
