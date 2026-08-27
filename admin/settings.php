@@ -18,6 +18,7 @@ if (is_post()) {
     $cutoff   = filter_input(INPUT_POST, 'booking_cutoff_minutes', FILTER_VALIDATE_INT);
     $freeDay  = filter_input(INPUT_POST, 'free_op_weekday', FILTER_VALIDATE_INT);
     $enabled  = isset($_POST['bookings_enabled']) ? '1' : '0';
+    $heroPick = post('hero_style') === 'classic' ? 'classic' : 'slides';
     $announce = post('announcement');
 
     if ($window === false || $window < 1 || $window > 90) {
@@ -43,6 +44,7 @@ if (is_post()) {
             'booking_cutoff_minutes' => (string) $cutoff,
             'free_op_weekday'        => (string) $freeDay,
             'bookings_enabled'       => $enabled,
+            'hero_style'             => $heroPick,
             'announcement'           => $announce,
         ] as $key => $value) {
             $stmt->execute([$key, $value]);
@@ -66,6 +68,23 @@ require __DIR__ . '/_header.php';
   <div class="panel-body">
     <form method="post" action="settings.php">
       <?= csrf_field() ?>
+
+      <div class="field">
+        <label class="choice-label" style="cursor:pointer" for="hero_classic">
+          <input type="checkbox" id="hero_classic" name="hero_style" value="classic"
+                 style="width:20px;height:20px;margin-top:2px"
+                 <?= setting('hero_style', 'slides') === 'classic' ? 'checked' : '' ?>>
+          <span>
+            <span class="choice-title">Use the plain home page banner</span>
+            <span class="choice-sub">
+              The home page normally opens with a slideshow that fades between
+              five pictures of what the hospital treats. Tick this to go back to
+              the original banner — the headline, the booking bar and the drawn
+              picture of the building. Nothing else on the page changes.
+            </span>
+          </span>
+        </label>
+      </div>
 
       <div class="field">
         <label class="choice-label" style="cursor:pointer" for="bookings_enabled">

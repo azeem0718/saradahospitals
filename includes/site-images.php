@@ -47,6 +47,20 @@ function site_image_groups(): array
                 'banner-book'       => 'Book a Token',
             ],
         ],
+        'hero' => [
+            'label' => 'Home page slideshow',
+            'hint'  => 'The five pictures that fade behind the headline at the top of '
+                     . 'the home page. Wide, landscape photographs work best — anything '
+                     . 'roughly 16:9. Faces and detail near the left edge get covered by '
+                     . 'the text, so keep the subject to the right.',
+            'slots' => [
+                'hero-slide-1' => 'Slide 1',
+                'hero-slide-2' => 'Slide 2',
+                'hero-slide-3' => 'Slide 3',
+                'hero-slide-4' => 'Slide 4',
+                'hero-slide-5' => 'Slide 5',
+            ],
+        ],
         'cards' => [
             'label' => 'Home page department cards',
             'hint'  => 'The six cards under "What we do" on the home page. Roughly '

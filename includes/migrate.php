@@ -18,7 +18,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
 /** Bump this when a migration is added below. */
-const SCHEMA_VERSION = 9;
+const SCHEMA_VERSION = 10;
 
 /**
  * Migrations, keyed by the version they bring the database up to.
@@ -154,6 +154,27 @@ function schema_migrations(): array
         // content table, an empty list means "still showing the defaults".
         // Card lists carry an accent colour. Without somewhere to keep it, making
         // those cards editable would have quietly flattened the page to one hue.
+        // The hero slideshow's five pictures. Seeded from the department card
+        // photographs, which are already on disk and already credited, so the
+        // slideshow arrives looking finished; reception can swap any of them
+        // afterwards without touching the cards they were borrowed from.
+        10 => static function (PDO $pdo): void {
+            $stmt = $pdo->prepare('INSERT IGNORE INTO site_images (slot, file, alt) VALUES (?,?,?)');
+            $dir  = dirname(__DIR__) . '/assets/img/site/';
+            $seed = [
+                ['hero-slide-1', 'card-emergency.jpg', 'An ambulance outside the hospital'],
+                ['hero-slide-2', 'card-medicine.jpg',  'A doctor holding a stethoscope'],
+                ['hero-slide-3', 'card-diabetes.jpg',  'A blood glucose meter being read'],
+                ['hero-slide-4', 'card-maternity.jpg', 'Maternity care'],
+                ['hero-slide-5', 'card-lab.jpg',       'A laboratory technician examining a sample'],
+            ];
+            foreach ($seed as [$slot, $file, $alt]) {
+                if (is_file($dir . $file)) {
+                    $stmt->execute([$slot, $file, $alt]);
+                }
+            }
+        },
+
         9 => static function (PDO $pdo): void {
             add_column($pdo, 'list_items', 'tone', "VARCHAR(20) NOT NULL DEFAULT '' AFTER `icon`");
         },

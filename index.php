@@ -15,81 +15,15 @@ $nextSlot = next_available();
 require __DIR__ . '/includes/header.php';
 ?>
 
-<section class="hero">
-  <div class="wrap">
-    <div class="hero-grid">
-
-      <div class="hero-copy">
-        <p class="hero-place">
-          <?= icon('location') ?>
-          <?= e(text('home.hero.place')) ?>
-        </p>
-
-        <h1><?= text_html('home.hero.title') ?></h1>
-
-        <p class="hero-lede"><?= e(text('home.hero.lede')) ?></p>
-
-        <!-- Segmented booking bar. Doctor, day and session rather than the
-             location/department pairing a multi-site chain needs: there is one
-             hospital and two consultants here. Submits to book.php with
-             everything already chosen. -->
-        <form class="findbar" method="get" action="book.php">
-          <div class="findbar-field cs" data-cs>
-            <label class="cs-label" for="fb-doctor"><?= icon('stethoscope') ?> Doctor</label>
-            <select id="fb-doctor" name="doctor">
-              <?php foreach ($doctors as $doc): ?>
-                <option value="<?= (int) $doc['id'] ?>"><?= e(doctor_short_name($doc['name'])) ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-
-          <span class="findbar-sep" aria-hidden="true"></span>
-
-          <div class="findbar-field cs" data-cs>
-            <label class="cs-label" for="fb-date"><?= icon('calendar') ?> Day</label>
-            <select id="fb-date" name="date">
-              <?php foreach (bookable_dates() as $i => $d):
-                $dt  = new DateTimeImmutable($d);
-                $lbl = $i === 0 ? 'Today' : ($i === 1 ? 'Tomorrow' : $dt->format('D, j M'));
-                if (is_free_op_day($d)) { $lbl .= ' · Free OP'; }
-              ?>
-                <option value="<?= e($d) ?>"<?= ($nextSlot && $nextSlot['date'] === $d) ? ' selected' : '' ?>><?= e($lbl) ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-
-          <span class="findbar-sep" aria-hidden="true"></span>
-
-          <div class="findbar-field cs" data-cs>
-            <label class="cs-label" for="fb-session"><?= icon('clock') ?> Session</label>
-            <select id="fb-session" name="session">
-              <option value="morning"<?= ($nextSlot && $nextSlot['session'] === 'morning') ? ' selected' : '' ?>>Morning</option>
-              <option value="evening"<?= ($nextSlot && $nextSlot['session'] === 'evening') ? ' selected' : '' ?>>Evening</option>
-            </select>
-          </div>
-
-          <button class="findbar-go" type="submit">
-            <?= icon('search') ?><span>Search</span>
-          </button>
-        </form>
-
-        <?php if ($nextSlot !== null): ?>
-          <p class="hero-live">
-            <span class="live-dot" aria-hidden="true"></span>
-            <strong><?= e($nextSlot['when']) ?> &middot; <?= e($nextSlot['label']) ?></strong>
-            session open &mdash; <?= $nextSlot['remaining'] ?> token<?= $nextSlot['remaining'] === 1 ? '' : 's' ?> left
-          </p>
-        <?php endif; ?>
-      </div>
-
-      <div class="hero-art" aria-hidden="false">
-        <span class="hero-art-disc" aria-hidden="true"></span>
-        <?= hospital_illustration() ?>
-      </div>
-
-    </div>
-  </div>
-</section>
+<?php
+/*
+ * Two hero styles ship: the slideshow, and the original headline-and-drawing
+ * hero it replaced. Settings chooses between them, so going back is a
+ * checkbox rather than a deployment.
+ */
+require __DIR__ . '/includes/'
+    . (setting('hero_style', 'slides') === 'classic' ? 'hero-classic.php' : 'hero-slides.php');
+?>
 
 <!-- Quick links ------------------------------------------------------- -->
 <section class="quicklinks">

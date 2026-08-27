@@ -1091,6 +1091,34 @@ function content_lists(): array
                 'icon'  => $r['icon'] !== '' ? $r['icon'] : 'emergency',
             ],
         ],
+        'hero.slides' => [
+            'label'   => 'Home page slideshow',
+            'hint'    => 'Each row is one slide, in order. The picture for slide 1 comes '
+                       . 'from "Slide 1" under Pictures, and so on. Keep these to what the '
+                       . 'hospital actually offers — this is the first thing a patient reads.',
+            'uses'    => ['title', 'body', 'icon'],
+            'default' => [
+                ['title' => 'Emergency & ICU, around the clock', 'icon' => 'emergency',
+                 'body'  => 'Open every hour of every day for accidents, chest pain, snake bite '
+                          . 'and sudden illness — with ICU support in the building.'],
+                ['title' => 'General Medicine', 'icon' => 'stethoscope',
+                 'body'  => 'Fevers, dengue and malaria, blood pressure, thyroid, asthma, and '
+                          . 'heart and kidney problems — seen by a resident MD physician.'],
+                ['title' => 'Good Health Diabetic Centre', 'icon' => 'droplet',
+                 'body'  => 'Dedicated diabetes care under a doctor with a Diploma in '
+                          . 'Endocrinology & Diabetology — diagnosis, control and follow-up.'],
+                ['title' => 'Maternity & Gynaecology', 'icon' => 'maternity',
+                 'body'  => 'Antenatal care, normal and caesarean delivery, and complete '
+                          . "women's health under a resident MS obstetrician."],
+                ['title' => 'Laboratory & 2D Echo', 'icon' => 'lab',
+                 'body'  => 'Blood investigations, 2D Echo and maternity scans done on site, '
+                          . 'so results reach your doctor the same visit.'],
+            ],
+            'shape'   => static fn (array $r): array => [
+                'title' => $r['title'], 'text' => $r['body'],
+                'icon'  => $r['icon'] !== '' ? $r['icon'] : 'heart',
+            ],
+        ],
         'about.values' => [
             'label'   => 'What guides us',
             'hint'    => 'The principles listed on the About page. One per row.',
