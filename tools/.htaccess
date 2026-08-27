@@ -1,0 +1,6 @@
+# Build scripts are for the command line, not the browser. The one exception
+# is backup.php, which URL-based cron may call — and it demands BACKUP_KEY.
+Require all denied
+<Files "backup.php">
+  Require all granted
+</Files>

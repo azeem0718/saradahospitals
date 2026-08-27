@@ -186,5 +186,23 @@ sessions. Check that the session save path is writable in hPanel.
 The bookings table holds patient names and phone numbers. Take regular backups
 and keep them somewhere private.
 
-hPanel → **Files → Backups** covers the files. For the database, export it from
-phpMyAdmin periodically, or enable Hostinger's automatic database backups.
+The site backs its own database up. Set the cron once in hPanel →
+**Advanced → Cron Jobs**, daily at a quiet hour:
+
+```
+/usr/bin/php /home/USER/domains/saradahospitals.com/public_html/tools/backup.php
+```
+
+(The exact path is shown on Admin → Backups.) Each run writes a gzipped SQL
+dump into `storage/backups/` — a folder the web server refuses to serve — and
+deletes dumps older than 14 days. **Admin → Backups** lists them, takes one on
+demand before a risky change, and downloads them; phpMyAdmin imports a dump
+as-is to restore.
+
+If your plan only offers URL-based cron, add a long random
+`define('BACKUP_KEY', '…');` to `includes/config.php` and point the cron at
+`https://saradahospitals.com/tools/backup.php?key=THAT-KEY` — without the key
+the URL refuses to run.
+
+hPanel → **Files → Backups** still covers the files themselves (photographs,
+code), and Hostinger's own automatic backups remain a good second net.

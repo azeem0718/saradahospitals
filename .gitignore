@@ -28,3 +28,7 @@ assets/uploads/*
 Thumbs.db
 .vscode/
 .idea/
+
+# Database backups stay on the server
+storage/backups/*
+!storage/backups/.gitkeep

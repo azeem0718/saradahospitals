@@ -18,3 +18,7 @@ define('SITE_URL', 'https://saradahospitals.com');
 
 // Set to true only while debugging. Never leave true on a live site.
 define('DEBUG_MODE', false);
+
+// Only needed if the nightly backup runs as a URL cron instead of a CLI cron:
+// tools/backup.php?key=... must match this. Use a long random string.
+// define('BACKUP_KEY', '');
