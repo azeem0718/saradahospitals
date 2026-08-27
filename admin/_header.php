@@ -22,6 +22,7 @@ $adminMenu = [
     'new'      => ['New Token', 'new.php',      'plus'],
     'schedule' => ['Schedule',  'schedule.php', 'clock'],
     'leave'    => ['Leave',     'leave.php',    'close'],
+    'analytics' => ['Analytics', 'analytics.php', 'icu'],
 ];
 if ($user['role'] === 'admin') {
     $adminMenu['doctors']  = ['Doctors',  'doctors.php',  'stethoscope'];
