@@ -5,9 +5,14 @@
  * Everything here is taken directly from the nursing home's own signage,
  * letterhead and brochure. Nothing is invented — if a fact is not on those
  * materials it does not belong in this file.
+ *
+ * These are the *defaults*. Reception can override any of them from the admin
+ * panel; content.php lays those edits over this array and defines the HOSPITAL
+ * constant that the rest of the site reads. Editing this file therefore
+ * changes what an un-edited field says, which is what it should do.
  */
 
-const HOSPITAL = [
+const HOSPITAL_DEFAULTS = [
     'name'        => 'Sarada Nursing Home',
     'tagline'     => 'Your Health is Our Responsibility',
     'sub_brand'   => 'Good Health Diabetic Centre',

@@ -18,7 +18,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
 /** Bump this when a migration is added below. */
-const SCHEMA_VERSION = 6;
+const SCHEMA_VERSION = 7;
 
 /**
  * Migrations, keyed by the version they bring the database up to.
@@ -144,6 +144,22 @@ function schema_migrations(): array
         // The tariff slots arrived a round later: a hand holding a rupee note,
         // for the page that says exactly what treatment costs. Same INSERT
         // IGNORE contract as migration 5.
+        // Editable page text. The table holds only what reception has
+        // actually changed: every field's default still lives in PHP beside
+        // the code that uses it, so a fresh database renders the site exactly
+        // as it shipped, and clearing a row is what "reset to default" means.
+        7 => static function (PDO $pdo): void {
+            $pdo->exec(
+                "CREATE TABLE IF NOT EXISTS `content` (
+                  `content_key`   VARCHAR(80) NOT NULL,
+                  `content_value` TEXT        NOT NULL,
+                  `updated_at`    DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                              ON UPDATE CURRENT_TIMESTAMP,
+                  PRIMARY KEY (`content_key`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci"
+            );
+        },
+
         6 => static function (PDO $pdo): void {
             $stmt = $pdo->prepare(
                 'INSERT IGNORE INTO site_images (slot, file, alt) VALUES (?,?,?)'

@@ -324,3 +324,12 @@ start_session();
  * already loaded, unless the database is genuinely behind.
  */
 run_migrations();
+
+/*
+ * Resolve the hospital's own details — name, address, phone numbers — from the
+ * defaults plus whatever reception has edited, and define HOSPITAL from the
+ * result. After migrations, because the first request on a new deploy creates
+ * the table this reads.
+ */
+require_once __DIR__ . '/content.php';
+hospital_boot();
