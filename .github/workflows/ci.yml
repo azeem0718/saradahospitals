@@ -10,9 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
+      # The runner image ships PHP 8.3 with the extensions this site uses,
+      # so no third-party setup action is needed.
       - name: php -l every file
         run: |
           fail=0
@@ -42,10 +41,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: pdo_mysql, gd, mbstring
+      - name: Check the preinstalled PHP has what the site needs
+        run: |
+          php -v
+          php -m | grep -iE 'pdo_mysql|gd|mbstring'
 
       # Throwaway CI-only credentials for the job's disposable database —
       # nothing here exists outside this run.
