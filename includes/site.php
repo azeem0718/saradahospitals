@@ -67,7 +67,7 @@ const OFFERS_DEFAULTS = [
 ];
 
 /** General Medicine conditions treated, from the services brochure. */
-const GENERAL_MEDICINE = [
+const GENERAL_MEDICINE_DEFAULTS = [
     'Diabetes (Sugar) & Blood Pressure',
     'Heart & Kidney Problems',
     'Paralysis & Stroke',
@@ -85,7 +85,7 @@ const GENERAL_MEDICINE = [
 ];
 
 /** Obstetrics & Gynaecology services, from the services brochure. */
-const OBG_SERVICES = [
+const OBG_SERVICES_DEFAULTS = [
     'Normal Delivery',
     'Caesarean Section',
     'High Risk Pregnancy',
@@ -101,7 +101,7 @@ const OBG_SERVICES = [
 ];
 
 /** Core facilities, from the brochure footer. */
-const FACILITIES = [
+const FACILITIES_DEFAULTS = [
     [
         'title' => '24/7 Emergency Care',
         'text'  => 'Round-the-clock emergency treatment, every day of the year.',

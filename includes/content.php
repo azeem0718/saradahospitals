@@ -263,6 +263,42 @@ function content_lists(): array
             ),
             'shape'   => $money,
         ],
+        'services.medicine' => [
+            'label'   => 'General Medicine — conditions treated',
+            'hint'    => 'The list on the Services page, and part of the structured '
+                       . 'data search engines read. One condition per row.',
+            'uses'    => ['title'],
+            'default' => array_map(
+                static fn (string $s): array => ['title' => $s],
+                GENERAL_MEDICINE_DEFAULTS
+            ),
+            'shape'   => static fn (array $r): string => $r['title'],
+        ],
+        'services.obg' => [
+            'label'   => 'Obstetrics & Gynaecology — procedures',
+            'hint'    => 'The second Services list, and structured data alongside it.',
+            'uses'    => ['title'],
+            'default' => array_map(
+                static fn (string $s): array => ['title' => $s],
+                OBG_SERVICES_DEFAULTS
+            ),
+            'shape'   => static fn (array $r): string => $r['title'],
+        ],
+        'facilities' => [
+            'label'   => 'Facilities',
+            'hint'    => 'The cards on the home page, the About page and Facilities. '
+                       . 'Each needs a short title, a sentence and an icon.',
+            'uses'    => ['title', 'body', 'icon'],
+            'default' => array_map(
+                static fn (array $r): array => ['title' => $r['title'], 'body' => $r['text'], 'icon' => $r['icon']],
+                FACILITIES_DEFAULTS
+            ),
+            'shape'   => static fn (array $r): array => [
+                'title' => $r['title'],
+                'text'  => $r['body'],
+                'icon'  => $r['icon'] !== '' ? $r['icon'] : 'shield',
+            ],
+        ],
         'offers' => [
             'label'   => 'Standing offers',
             'hint'    => 'The band shown across the home page. Keep these to what the '
@@ -435,9 +471,15 @@ function hospital_boot(): void
         define('CONSULTATION_FEES', list_shaped('tariff.consultation'));
         define('ROOM_CHARGES', list_shaped('tariff.rooms'));
         define('OFFERS', list_shaped('offers'));
+        define('GENERAL_MEDICINE', list_shaped('services.medicine'));
+        define('OBG_SERVICES', list_shaped('services.obg'));
+        define('FACILITIES', list_shaped('facilities'));
     } else {
         define('CONSULTATION_FEES', CONSULTATION_FEES_DEFAULTS);
         define('ROOM_CHARGES', ROOM_CHARGES_DEFAULTS);
         define('OFFERS', OFFERS_DEFAULTS);
+        define('GENERAL_MEDICINE', GENERAL_MEDICINE_DEFAULTS);
+        define('OBG_SERVICES', OBG_SERVICES_DEFAULTS);
+        define('FACILITIES', FACILITIES_DEFAULTS);
     }
 }
