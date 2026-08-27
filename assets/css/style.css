@@ -1670,15 +1670,15 @@ body { padding-bottom: 30px; }
 .hs-text { grid-area: 1 / 1; }
 .hs-text[hidden] { display: none; }
 
-.hs-eyebrow {
-  display: inline-flex; align-items: center; gap: .5rem;
-  margin: 0 0 .6rem; padding: .34rem .8rem .34rem .55rem;
-  border-radius: 999px;
-  background: rgba(238, 244, 250, .1);
-  border: 1px solid rgba(185, 205, 226, .28);
-  color: #fff; font-size: .82rem; font-weight: 600; letter-spacing: .01em;
+/* A small gold mark rather than a pill repeating the headline underneath it. */
+.hs-mark {
+  display: inline-grid; place-items: center;
+  width: 46px; height: 46px; margin-bottom: 1.1rem;
+  border-radius: 14px;
+  background: rgba(224, 182, 78, .14);
+  border: 1px solid rgba(224, 182, 78, .38);
 }
-.hs-eyebrow svg { width: 18px; height: 18px; color: var(--gold-400); }
+.hs-mark svg { width: 24px; height: 24px; color: var(--gold-400); }
 
 .hero-show .hs-title {
   color: #fff; margin: 0 0 .5em;
@@ -1693,21 +1693,37 @@ body { padding-bottom: 30px; }
 
 /* Entrance: the three lines rise a little, one after another. Only opacity and
    translate, so it composites on the GPU and cannot disturb the layout. */
-.hs-text.is-on .hs-eyebrow,
+.hs-text.is-on .hs-mark,
 .hs-text.is-on .hs-title,
 .hs-text.is-on .hs-lede { animation: hs-rise .62s cubic-bezier(.22,.85,.3,1) both; }
 .hs-text.is-on .hs-title { animation-delay: .07s; }
 .hs-text.is-on .hs-lede  { animation-delay: .14s; }
 @keyframes hs-rise { from { opacity: 0; translate: 0 14px; } to { opacity: 1; translate: 0 0; } }
 
-.hero-show .findbar { margin-top: clamp(1.6rem, 3vw, 2.2rem); }
+.hs-actions {
+  display: flex; flex-wrap: wrap; gap: .8rem;
+  margin-top: clamp(1.7rem, 3vw, 2.3rem);
+}
+.btn-hero-primary {
+  background: var(--red-600); color: #fff;
+  box-shadow: 0 10px 26px -10px rgba(190, 22, 34, .8);
+}
+.btn-hero-primary:hover { background: var(--red-700); color: #fff; }
+.btn-hero-ghost {
+  background: rgba(238, 244, 250, .1); color: #fff;
+  border: 1.5px solid rgba(238, 244, 250, .42);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+}
+.btn-hero-ghost:hover { background: rgba(238, 244, 250, .2); color: #fff; }
+
+.hs-live { margin-top: 1.35rem; }
 .hero-show .hero-live { color: var(--navy-100); }
 /* The classic hero puts this on ivory, so the emphasis is navy there. On the
    slideshow it lands on a dark photograph and has to invert. */
 .hero-show .hero-live strong { color: #fff; }
 .hero-show .live-dot { box-shadow: 0 0 0 0 rgba(255, 255, 255, .5); }
 
-.hs-dots { display: flex; gap: .5rem; margin-top: 1.5rem; }
+.hs-dots { display: flex; gap: .5rem; margin-top: 1.6rem; }
 .hs-dot {
   width: 34px; height: 20px; padding: 0; border: 0; background: none;
   cursor: pointer; display: grid; place-items: center;
@@ -1723,6 +1739,9 @@ body { padding-bottom: 30px; }
 
 @media (max-width: 620px) {
   .hero-show { min-height: 0; padding-top: 2.2rem; }
+  .hs-actions { flex-direction: column; align-items: stretch; }
+  .hs-actions .btn { width: 100%; }
+  .hs-mark { width: 40px; height: 40px; margin-bottom: .9rem; }
   .hs-scrim {
     background:
       linear-gradient(180deg, rgba(6,22,38,.88) 0%, rgba(6,22,38,.8) 45%, rgba(6,22,38,.92) 100%);
@@ -1733,7 +1752,7 @@ body { padding-bottom: 30px; }
    no drift, no rise and no automatic changes — the script does not start. */
 @media (prefers-reduced-motion: reduce) {
   .hs-layer { transition: none; animation: none; }
-  .hs-text.is-on .hs-eyebrow,
+  .hs-text.is-on .hs-mark,
   .hs-text.is-on .hs-title,
   .hs-text.is-on .hs-lede { animation: none; }
 }

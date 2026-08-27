@@ -62,18 +62,44 @@ if (!$heroSlides) {
          seconds by a banner nobody asked to hear is worse than silence. The
          script turns it polite the moment a reader uses the dots, because a
          change they asked for is one they should be told about. -->
+    <!-- The text block the slides rewrite. aria-live is off while the show
+         rotates on its own: a screen reader being interrupted every six
+         seconds by a banner nobody asked to hear is worse than silence. The
+         script turns it polite the moment a reader uses the dots, because a
+         change they asked for is one they should be told about. -->
     <div class="hs-copy" data-hs-copy aria-live="off" aria-atomic="true">
       <?php foreach ($heroSlides as $i => $slide): ?>
         <div class="hs-text<?= $i === 0 ? ' is-on' : '' ?>" data-hs-text="<?= $i ?>"
              <?= $i === 0 ? '' : 'hidden' ?>>
-          <p class="hs-eyebrow"><?= icon($slide['icon']) ?><span><?= e($slide['title']) ?></span></p>
-          <h1 class="hs-title"><?= text_html('home.hero.title') ?></h1>
+          <span class="hs-mark" aria-hidden="true"><?= icon($slide['icon']) ?></span>
+          <h1 class="hs-title"><?= e($slide['title']) ?></h1>
           <p class="hs-lede"><?= e($slide['text']) ?></p>
         </div>
       <?php endforeach; ?>
     </div>
 
-    <?php require __DIR__ . '/hero-findbar.php'; ?>
+    <!-- Two plain choices rather than a search form: book, or telephone. A
+         hero is where somebody decides what to do, not where they fill
+         anything in — the booking page asks for the details, and it asks for
+         them on a page built to. -->
+    <div class="hs-actions">
+      <a class="btn btn-lg btn-hero-primary" href="book.php">
+        <?= icon('ticket') ?> Book an OP Token
+      </a>
+      <a class="btn btn-lg btn-hero-ghost" href="tel:<?= e(HOSPITAL['mobile']) ?>">
+        <?= icon('phone') ?> Emergency <?= e(HOSPITAL['mobile_display']) ?>
+      </a>
+    </div>
+
+    <?php if ($nextSlot !== null): ?>
+      <!-- Live, and worth keeping: it is the one line on the page that proves
+           the booking system is a real queue rather than a contact form. -->
+      <p class="hero-live hs-live">
+        <span class="live-dot" aria-hidden="true"></span>
+        <strong><?= e($nextSlot['when']) ?> &middot; <?= e($nextSlot['label']) ?></strong>
+        session open &mdash; <?= $nextSlot['remaining'] ?> token<?= $nextSlot['remaining'] === 1 ? '' : 's' ?> left
+      </p>
+    <?php endif; ?>
 
     <!-- Manual control. Real buttons, so they are reachable by keyboard and
          announced properly; the auto-advance stops the moment one is used. -->

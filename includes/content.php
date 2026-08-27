@@ -1093,24 +1093,25 @@ function content_lists(): array
         ],
         'hero.slides' => [
             'label'   => 'Home page slideshow',
-            'hint'    => 'Each row is one slide, in order. The picture for slide 1 comes '
+            'hint'    => 'Each row is one slide, in order. The title is the big heading '
+                       . 'on that slide, so write it as one. The picture for slide 1 comes '
                        . 'from "Slide 1" under Pictures, and so on. Keep these to what the '
                        . 'hospital actually offers — this is the first thing a patient reads.',
             'uses'    => ['title', 'body', 'icon'],
             'default' => [
-                ['title' => 'Emergency & ICU, around the clock', 'icon' => 'emergency',
+                ['title' => 'Emergency care, every hour of every day', 'icon' => 'emergency',
                  'body'  => 'Open every hour of every day for accidents, chest pain, snake bite '
                           . 'and sudden illness — with ICU support in the building.'],
-                ['title' => 'General Medicine', 'icon' => 'stethoscope',
+                ['title' => 'General Medicine, seven days a week', 'icon' => 'stethoscope',
                  'body'  => 'Fevers, dengue and malaria, blood pressure, thyroid, asthma, and '
                           . 'heart and kidney problems — seen by a resident MD physician.'],
                 ['title' => 'Good Health Diabetic Centre', 'icon' => 'droplet',
                  'body'  => 'Dedicated diabetes care under a doctor with a Diploma in '
                           . 'Endocrinology & Diabetology — diagnosis, control and follow-up.'],
-                ['title' => 'Maternity & Gynaecology', 'icon' => 'maternity',
+                ['title' => 'Maternity care, close to home', 'icon' => 'maternity',
                  'body'  => 'Antenatal care, normal and caesarean delivery, and complete '
                           . "women's health under a resident MS obstetrician."],
-                ['title' => 'Laboratory & 2D Echo', 'icon' => 'lab',
+                ['title' => 'Laboratory and 2D Echo on site', 'icon' => 'lab',
                  'body'  => 'Blood investigations, 2D Echo and maternity scans done on site, '
                           . 'so results reach your doctor the same visit.'],
             ],
