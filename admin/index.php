@@ -50,6 +50,7 @@ $adminActions  =
     '<a class="btn btn-outline btn-sm" href="index.php?date=' . e($prev) . '">' . icon('chevron-left') . ' Previous</a>' .
     '<a class="btn btn-outline btn-sm" href="index.php">Today</a>' .
     '<a class="btn btn-outline btn-sm" href="index.php?date=' . e($next) . '">Next ' . icon('chevron-right') . '</a>' .
+    '<a class="btn btn-outline btn-sm" href="register.php?date=' . e($date) . '">' . icon('print') . ' Register</a>' .
     '<a class="btn btn-primary btn-sm" href="new.php?date=' . e($date) . '">' . icon('plus') . ' New Token</a>';
 
 require __DIR__ . '/_header.php';

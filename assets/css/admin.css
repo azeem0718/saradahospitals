@@ -343,3 +343,36 @@ hr + .form-section { margin-top: 0; }
 }
 
 .stat-sub { font-size: .55em; font-weight: 600; color: var(--ink-500); margin-left: .35rem; }
+
+/* --------------------------------------------------------------------------
+   OP register
+   -------------------------------------------------------------------------- */
+.register-sheet { background: var(--paper); border: 1px solid var(--rule); border-radius: var(--r-lg); padding: 1.6rem; }
+.register-head { display: flex; gap: 1rem; align-items: center; border-bottom: 2px solid var(--navy-900); padding-bottom: 1rem; }
+.register-head h2 { font-family: var(--font-display); font-size: 1.4rem; margin: 0; color: var(--navy-900); }
+.register-head p { margin: .15rem 0 0; font-size: .82rem; color: var(--ink-600); }
+.register-date { margin-left: auto; text-align: right; display: flex; flex-direction: column; }
+.register-date span { font-size: .7rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-500); }
+.register-date strong { font-size: 1.05rem; color: var(--navy-900); }
+.register-date em { font-style: normal; font-size: .78rem; color: var(--green-700); font-weight: 700; }
+.register-session { font-family: var(--font-display); font-size: 1.1rem; margin: 1.4rem 0 .6rem; color: var(--navy-900); }
+.register-session span { font-family: var(--font-sans); font-size: .82rem; font-weight: 500; color: var(--ink-500); }
+.register-empty { font-size: .9rem; }
+.register-table { font-size: .88rem; }
+.register-table th, .register-table td { padding: .55rem .7rem; }
+.register-table .small { display: block; font-weight: 400; }
+.register-table tr.is-cancelled { opacity: .5; text-decoration: line-through; }
+.register-sign { min-width: 110px; }
+.register-foot { margin: 1.2rem 0 0; font-size: .78rem; color: var(--ink-500); }
+
+@media print {
+  .admin-bar, .admin-nav, .admin-head .btn-row, .notice { display: none !important; }
+  .admin-main { padding: 0; }
+  .admin-head h1 { display: none; }
+  .admin-head p { display: none; }
+  .register-sheet { border: 0; border-radius: 0; padding: 0; }
+  .register-table thead th { background: #fff !important; color: #000; border-bottom: 2px solid #000; }
+  .register-table th, .register-table td { border-bottom: 1px solid #999; }
+  .table-wrap { overflow: visible; }
+  body { background: #fff; }
+}

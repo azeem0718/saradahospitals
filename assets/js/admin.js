@@ -11,6 +11,11 @@
     });
   });
 
+  /* Print buttons (the OP register). */
+  document.querySelectorAll('[data-print]').forEach(function (btn) {
+    btn.addEventListener('click', function () { window.print(); });
+  });
+
   /* Auto-submit filter selects so reception does not hunt for a button. */
   document.querySelectorAll('[data-autosubmit]').forEach(function (el) {
     el.addEventListener('change', function () {
