@@ -378,12 +378,8 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .brand { display: flex; align-items: center; gap: .7rem; text-decoration: none; margin-right: auto; }
 .brand-mark { width: 40px; height: 40px; flex: none; }
 .brand-text { display: flex; flex-direction: column; line-height: 1.08; gap: .12rem; }
-/* As large as the fixed 76px bar can hold; 600 is Newsreader's heaviest real
-   weight — anything above it would be synthesized and smear. Scales down just
-   enough on narrow phones that the full name never ellipsizes. */
-/* As large and heavy as the fixed 76px bar can hold. The variable font
-   carries real weight up to 800 — fonts.css declares the full range — so
-   this is a true bold, not a synthesized one. "Sarada" takes the logo's red. */
+/* The shared lockup, as used in the footer and on the token slip. The
+   masthead's own, larger treatment is scoped to .site-header below. */
 .brand-name {
   font-family: var(--font-display); font-weight: 750;
   font-size: clamp(1.45rem, 1.02rem + 1.9vw, 1.85rem); color: var(--navy-900);
@@ -396,6 +392,29 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   font-size: .655rem; font-weight: 500; color: var(--ink-500);
   letter-spacing: .09em; text-transform: uppercase; white-space: nowrap;
 }
+
+/* The masthead name is sized to fill the fixed 76px bar rather than to a
+   round number. Vertically the bar had room going spare — the lockup used
+   only 45 of its 76px — so what actually caps the name is horizontal: it has
+   to clear the menu button on a phone and the nine nav links on a laptop.
+   That free width grows 1:1 with the viewport, which is why the middle term
+   is a vw slope rather than a fixed step — the name takes exactly the room
+   the bar frees up and stops. The floor holds 360px phones at the size they
+   already had, where there is genuinely nothing left to give; the cap is
+   where the lockup would start to overpower the nav, not where the bar runs
+   out. Weight 780 is real rather than synthesized: fonts.css declares
+   Newsreader's full 400–800 axis. */
+.site-header .brand-text { line-height: 1; gap: .1rem; }
+.site-header .brand { gap: .55rem; }
+.site-header .brand-name {
+  font-weight: 780;
+  font-size: clamp(1.45rem, 11.2vw - 17px, 2.4rem);
+  letter-spacing: -.026em;
+}
+/* The tagline used to be the widest thing in the lockup, pinning it at 230px
+   and holding the name down with it. Letting it scale too hands that width
+   back to the name, which is the part anyone actually reads. */
+.site-header .brand-tag { font-size: clamp(.56rem, 1.6vw, .63rem); letter-spacing: .085em; }
 
 .nav { display: flex; align-items: center; gap: .1rem; }
 .nav a {
@@ -434,13 +453,30 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 /* Between 950 and 1200 the links stay inline but tighten up, and the brand
    yields a step of its size, so nine sections and the lockup share the bar. */
 @media (min-width: 950px) and (max-width: 1199px) {
-  .brand-name { font-size: 1.42rem; }
+  /* The nav is at its widest here relative to the bar, so the name gets what
+     is left rather than a flat step: at 950 that is the size it always was,
+     and it grows back to full by 1200 as the links stop crowding it. */
+  .site-header .brand-name { font-size: clamp(1.55rem, 9.4vw - 68px, 2.15rem); }
   .nav a { font-size: .815rem; padding: .45rem .42rem; }
   .header-inner { gap: .6rem; }
 }
 
+/* Once the name is at full size the 40px badge reads undersized beside it.
+   Only from 1200 up, where the bar has width to spare — in the band below,
+   a larger badge would take it straight back off the nav. */
+@media (min-width: 1200px) {
+  .site-header .brand-mark { width: 46px; height: 46px; }
+}
+
 @media (max-width: 949px) {
   .nav-toggle { display: inline-flex; }
+
+  /* Only the menu button shares the bar here, so the space between it and
+     the lockup — and a couple of millimetres off the badge — is width the
+     name can have instead. On a phone every pixel of it is spoken for. */
+  .header-inner { gap: .5rem; }
+  .site-header .brand { gap: .45rem; }
+  .site-header .brand-mark { width: 38px; height: 38px; }
 
   /* The menu hangs off the sticky header itself (top: 100%), so it stays
      attached wherever the page has scrolled to — the old fixed position
@@ -518,7 +554,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 @media (max-width: 760px) {
   .brand { min-width: 0; }
-  .brand-name, .brand-tag { overflow: hidden; text-overflow: ellipsis; }
+  .site-header .brand-name, .site-header .brand-tag { overflow: hidden; text-overflow: ellipsis; }
 }
 
 /* --------------------------------------------------------------------------
