@@ -38,6 +38,7 @@
           <li><a href="tariff.php">Tariff</a></li>
           <li><a href="gallery.php">Gallery</a></li>
           <li><a href="book.php">Book a Token</a></li>
+          <li><a href="queue.php">Live Queue</a></li>
         </ul>
       </div>
 

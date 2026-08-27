@@ -142,6 +142,13 @@ require __DIR__ . '/includes/header.php';
     </div>
 
     <?php if (!$cancelled && !$past): ?>
+      <?php if ($booking['booking_date'] === date('Y-m-d')): ?>
+        <div class="btn-row mt-3 no-print" style="justify-content:center">
+          <a class="btn btn-primary" href="queue.php?ref=<?= e($booking['reference']) ?>">
+            <?= icon('users') ?> Live queue — see your place
+          </a>
+        </div>
+      <?php endif; ?>
       <div class="btn-row mt-3 no-print" style="justify-content:center">
         <a class="btn btn-whatsapp"
            href="https://wa.me/?text=<?= rawurlencode($slip) ?>"

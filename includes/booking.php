@@ -475,6 +475,124 @@ function create_booking(array $data, string $bookedVia = 'online'): array
     return ['ok' => false, 'error' => 'We could not save your booking. Please call ' . HOSPITAL['mobile_display'] . '.'];
 }
 
+/**
+ * Live counts for one slot (doctor, date, session).
+ *
+ * "Now serving" is the highest token reception has marked completed — the
+ * number on the door has just changed to the one after it. The waiting count
+ * is everyone still holding a live token (booked or arrived); cancellations
+ * and no-shows are out of the queue.
+ *
+ * @return array{now_serving:int, waiting:int, issued:int}
+ */
+function queue_counts(int $doctorId, string $date, string $session): array
+{
+    $stmt = db()->prepare(
+        'SELECT
+            COALESCE(MAX(CASE WHEN status = "completed" THEN token_no END), 0) AS now_serving,
+            COALESCE(SUM(status IN ("booked", "arrived")), 0)                  AS waiting,
+            COALESCE(SUM(status <> "cancelled"), 0)                            AS issued
+           FROM bookings
+          WHERE doctor_id = ? AND booking_date = ? AND session = ?'
+    );
+    $stmt->execute([$doctorId, $date, $session]);
+    $row = $stmt->fetch();
+
+    return [
+        'now_serving' => (int) $row['now_serving'],
+        'waiting'     => (int) $row['waiting'],
+        'issued'      => (int) $row['issued'],
+    ];
+}
+
+/**
+ * How many patients are still ahead of this booking: live tokens with a lower
+ * number. A cancelled or no-show token ahead of you does not count — you will
+ * not wait for them.
+ */
+function queue_position(array $booking): int
+{
+    $stmt = db()->prepare(
+        'SELECT COUNT(*) FROM bookings
+          WHERE doctor_id = ? AND booking_date = ? AND session = ?
+            AND token_no < ? AND status IN ("booked", "arrived")'
+    );
+    $stmt->execute([
+        $booking['doctor_id'],
+        $booking['booking_date'],
+        $booking['session'],
+        $booking['token_no'],
+    ]);
+    return (int) $stmt->fetchColumn();
+}
+
+/**
+ * The queue that matters for one doctor right now, today.
+ *
+ * Of the doctor's sessions today, pick the one in progress; failing that, one
+ * past its end time with patients still waiting, since clinics run over
+ * ("overrun" — treated as live); then the next one yet to start; then the last
+ * one that ran. Null when the doctor has no session today or all are blocked.
+ *
+ * @return array{session:string, label:string, timing:string, state:string,
+ *               now_serving:int, waiting:int, issued:int, cap:int}|null
+ *         state is one of upcoming | running | overrun | ended.
+ */
+function doctor_queue_today(int $doctorId): ?array
+{
+    $date    = date('Y-m-d');
+    $weekday = (int) date('w');
+
+    $stmt = db()->prepare(
+        'SELECT session, start_time, end_time, token_cap
+           FROM doctor_sessions
+          WHERE doctor_id = ? AND weekday = ? AND is_active = 1
+          ORDER BY FIELD(session, "morning", "evening")'
+    );
+    $stmt->execute([$doctorId, $weekday]);
+
+    $now        = new DateTimeImmutable('now');
+    $candidates = [];
+
+    foreach ($stmt as $row) {
+        $session = (string) $row['session'];
+        if (is_blocked($doctorId, $date, $session)) {
+            continue;
+        }
+
+        $counts = queue_counts($doctorId, $date, $session);
+        $start  = new DateTimeImmutable($date . ' ' . $row['start_time']);
+        $end    = new DateTimeImmutable($date . ' ' . $row['end_time']);
+
+        if ($now < $start) {
+            $state = 'upcoming';
+        } elseif ($now <= $end) {
+            $state = 'running';
+        } else {
+            $state = $counts['waiting'] > 0 ? 'overrun' : 'ended';
+        }
+
+        $candidates[] = $counts + [
+            'session' => $session,
+            'label'   => session_label($session),
+            'timing'  => format_time((string) $row['start_time']) . ' – '
+                       . format_time((string) $row['end_time']),
+            'state'   => $state,
+            'cap'     => (int) $row['token_cap'],
+        ];
+    }
+
+    foreach (['running', 'overrun', 'upcoming'] as $wanted) {
+        foreach ($candidates as $candidate) {
+            if ($candidate['state'] === $wanted) {
+                return $candidate;
+            }
+        }
+    }
+
+    return $candidates ? end($candidates) : null;
+}
+
 function get_booking_by_id(int $id): ?array
 {
     $stmt = db()->prepare(
