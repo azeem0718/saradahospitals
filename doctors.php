@@ -12,8 +12,8 @@ $doctors = get_doctors();
 
 require __DIR__ . '/includes/header.php';
 page_hero(
-    'Our Doctors',
-    'Two resident consultants covering general medicine, diabetes care and women\'s health.',
+    text('doctors.hero.title'),
+    text('doctors.hero.lede'),
     'Doctors',
     'doctors'
 );
@@ -22,10 +22,9 @@ page_hero(
 <section class="section">
   <div class="wrap">
     <div class="section-head">
-      <span class="eyebrow">Consultants</span>
-      <h2>Select your preferred doctor</h2>
-      <p>Open a profile to see qualifications and the conditions each doctor
-         treats, or book a token straight away.</p>
+      <span class="eyebrow"><?= e(text('doctors.list.eyebrow')) ?></span>
+      <h2><?= e(text('doctors.list.title')) ?></h2>
+      <p><?= e(text('doctors.list.lede')) ?></p>
     </div>
 
     <div class="doc-cards">

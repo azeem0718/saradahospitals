@@ -9,8 +9,8 @@ $activeNav       = 'tariff';
 
 require __DIR__ . '/includes/header.php';
 page_hero(
-    'Tariff & Charges',
-    'Our fees are displayed at reception and published here, so you know what to expect before you arrive.',
+    text('tariff.hero.title'),
+    text('tariff.hero.lede'),
     'Tariff',
     'tariff'
 );
@@ -58,30 +58,17 @@ page_hero(
 
     <div class="notice notice-success">
       <?= icon('calendar') ?>
-      <p>
-        <strong>Free OP every Friday.</strong>
-        Outpatient consultations are provided free of charge every Friday.
-      </p>
+      <p><?= text_rich('tariff.note.friday') ?></p>
     </div>
 
     <div class="notice notice-success">
       <?= icon('discount') ?>
-      <p>
-        <strong>20% off blood tests for patients above 60.</strong>
-        Please tell reception your age when the test is ordered.
-      </p>
+      <p><?= text_rich('tariff.note.seniors') ?></p>
     </div>
 
     <div class="notice notice-info mb-0">
       <?= icon('info') ?>
-      <p>
-        <strong>Please note</strong>
-        The charges above cover consultation, room occupancy and the listed
-        services. Medicines, laboratory investigations, procedures and surgery are
-        billed separately according to the treatment given. For an estimate before
-        admission, please ask at reception or call
-        <a href="tel:<?= e(HOSPITAL['landline']) ?>"><?= e(HOSPITAL['landline_display']) ?></a>.
-      </p>
+      <p><?= text_rich('tariff.note.small') ?></p>
     </div>
 
   </div>

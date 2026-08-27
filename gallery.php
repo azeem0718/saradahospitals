@@ -35,7 +35,7 @@ $placeholders = [
 ];
 
 require __DIR__ . '/includes/header.php';
-page_hero('Gallery', 'A look around Sarada Nursing Home.', 'Gallery', 'gallery');
+page_hero(text('gallery.hero.title'), text('gallery.hero.lede'), 'Gallery', 'gallery');
 ?>
 
 <section class="section">

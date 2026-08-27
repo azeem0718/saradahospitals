@@ -235,6 +235,174 @@ function content_pages(): array
                 ],
             ],
         ],
+        'about' => [
+            'label'  => 'About',
+            'url'    => 'about.php',
+            'blocks' => [
+                'about.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text',
+                    'default' => 'About Sarada Nursing Home',
+                ],
+                'about.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => 'A neighbourhood nursing home on Pamuru Road, Kandukur, caring for '
+                               . 'families across Prakasam district.',
+                ],
+                'about.who.eyebrow' => [
+                    'label' => 'Who we are — small heading', 'type' => 'text', 'default' => 'Who We Are',
+                ],
+                'about.who.title' => [
+                    'label' => 'Who we are — heading', 'type' => 'text',
+                    'default' => 'Your health is our responsibility',
+                ],
+                'about.who.body' => [
+                    'label' => 'Who we are — the main text', 'type' => 'area',
+                    'hint'  => 'Leave a blank line between paragraphs. Wrap words in **stars** for bold.',
+                    'default' => "Sarada Nursing Home is a full-service nursing home in Kandukur, Prakasam "
+                               . "district. We bring together General Medicine, Diabetology and Obstetrics "
+                               . "& Gynaecology in one place, so a family does not have to travel to a "
+                               . "larger city for routine and urgent care.\n\n"
+                               . "Our emergency department stays open twenty-four hours a day, every day of "
+                               . "the year. Patients who need close monitoring can be admitted to our ICU, "
+                               . "and our in-house laboratory means blood investigations are done on site "
+                               . "rather than sent away and waited on.\n\n"
+                               . "Alongside general practice, we run the **Good Health Diabetic Centre** "
+                               . "for people living with diabetes — a condition that needs steady, "
+                               . "long-term follow-up rather than one-off visits.\n\n"
+                               . "We publish our consultation fees and room charges openly, because knowing "
+                               . "the cost before you arrive is part of being treated with respect.",
+                ],
+                'about.values.title' => [
+                    'label' => 'Principles card — heading', 'type' => 'text', 'default' => 'What guides us',
+                ],
+                'about.team.eyebrow' => [
+                    'label' => 'Doctors — small heading', 'type' => 'text', 'default' => 'Our Team',
+                ],
+                'about.team.title' => [
+                    'label' => 'Doctors — heading', 'type' => 'text',
+                    'default' => 'The doctors who will see you',
+                ],
+                'about.onsite.eyebrow' => [
+                    'label' => 'Facilities — small heading', 'type' => 'text', 'default' => 'On Site',
+                ],
+                'about.onsite.title' => [
+                    'label' => 'Facilities — heading', 'type' => 'text', 'default' => 'What we have here',
+                ],
+            ],
+        ],
+        'contact' => [
+            'label'  => 'Contact',
+            'url'    => 'contact.php',
+            'blocks' => [
+                'contact.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text', 'default' => 'Contact Us',
+                ],
+                'contact.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => 'Call us any time, or come and see us on Pamuru Road, Kandukur.',
+                ],
+                'contact.touch.eyebrow' => [
+                    'label' => 'Get in touch — small heading', 'type' => 'text', 'default' => 'Get in touch',
+                ],
+                'contact.touch.title' => [
+                    'label' => 'Get in touch — heading', 'type' => 'text', 'default' => 'We are open 24 hours',
+                ],
+                'contact.touch.lede' => [
+                    'label' => 'Get in touch — intro', 'type' => 'area',
+                    'default' => 'For emergencies call the mobile number — it is answered around the '
+                               . 'clock. For appointments, tariff questions and general enquiries, the '
+                               . 'landline reaches our reception.',
+                ],
+                'contact.find.title' => [
+                    'label' => 'How to find us — heading', 'type' => 'text', 'default' => 'How to find us',
+                ],
+                'contact.find.body' => [
+                    'label' => 'How to find us — directions', 'type' => 'area',
+                    'hint'  => 'Wrap words in **stars** for bold.',
+                    'default' => 'We are on **Pamuru Road** in Kandukur, directly **opposite ICICI Bank** '
+                               . 'and close to **Thyagarajaswamy Temple**. Look for the Sarada Nursing '
+                               . 'Home board above the entrance.',
+                ],
+                'contact.faq.eyebrow' => [
+                    'label' => 'Questions — small heading', 'type' => 'text', 'default' => 'Before you call',
+                ],
+                'contact.faq.title' => [
+                    'label' => 'Questions — heading', 'type' => 'text', 'default' => 'Common questions',
+                ],
+            ],
+        ],
+        'doctors' => [
+            'label'  => 'Doctors',
+            'url'    => 'doctors.php',
+            'blocks' => [
+                'doctors.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text', 'default' => 'Our Doctors',
+                ],
+                'doctors.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => "Two resident consultants covering general medicine, diabetes care "
+                               . "and women's health.",
+                ],
+                'doctors.list.eyebrow' => [
+                    'label' => 'List — small heading', 'type' => 'text', 'default' => 'Consultants',
+                ],
+                'doctors.list.title' => [
+                    'label' => 'List — heading', 'type' => 'text', 'default' => 'Select your preferred doctor',
+                ],
+                'doctors.list.lede' => [
+                    'label' => 'List — intro', 'type' => 'area',
+                    'default' => 'Open a profile to see qualifications and the conditions each doctor '
+                               . 'treats, or book a token straight away.',
+                ],
+            ],
+        ],
+        'gallery' => [
+            'label'  => 'Gallery',
+            'url'    => 'gallery.php',
+            'blocks' => [
+                'gallery.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text', 'default' => 'Gallery',
+                ],
+                'gallery.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => 'A look around Sarada Nursing Home.',
+                ],
+            ],
+        ],
+        'tariff' => [
+            'label'  => 'Tariff',
+            'url'    => 'tariff.php',
+            'blocks' => [
+                'tariff.hero.title' => [
+                    'label' => 'Banner — heading', 'type' => 'text', 'default' => 'Tariff & Charges',
+                ],
+                'tariff.hero.lede' => [
+                    'label' => 'Banner — sentence under it', 'type' => 'area',
+                    'default' => 'Our fees are displayed at reception and published here, so you know '
+                               . 'what to expect before you arrive.',
+                ],
+                'tariff.note.friday' => [
+                    'label' => 'Notice — free OP', 'type' => 'area',
+                    'hint'  => 'Wrap the opening words in **stars** to bold them.',
+                    'default' => '**Free OP every Friday.** Outpatient consultations are provided free '
+                               . 'of charge every Friday.',
+                ],
+                'tariff.note.seniors' => [
+                    'label' => 'Notice — senior discount', 'type' => 'area',
+                    'default' => '**20% off blood tests for patients above 60.** Please tell reception '
+                               . 'your age when the test is ordered.',
+                ],
+                'tariff.note.small' => [
+                    'label' => 'Notice — what is not included', 'type' => 'area',
+                    'hint'  => '{landline} prints the current reception number.',
+                    'default' => '**Please note** The charges above cover consultation, room occupancy '
+                               . 'and the listed services. Medicines, laboratory investigations, '
+                               . 'procedures and surgery are billed separately according to the '
+                               . 'treatment given. For an estimate before admission, please ask at '
+                               . 'reception or call [{landline}](tel:{landline_tel}).',
+                ],
+            ],
+        ],
     ];
 }
 
@@ -242,6 +410,104 @@ function content_pages(): array
 function text_html(string $key): string
 {
     return nl2br(e(text($key)), false);
+}
+
+/**
+ * A rich block split into paragraphs, each ready to print inside a <p>.
+ *
+ * Blank lines separate paragraphs — the way anyone types them — so a block of
+ * several paragraphs stays one editable box rather than becoming four.
+ *
+ * @return list<string> HTML-safe paragraphs
+ */
+function text_paragraphs(string $key): array
+{
+    $parts = preg_split('/\R\s*\R/', trim(text($key))) ?: [];
+    $out   = [];
+    foreach ($parts as $part) {
+        $part = trim($part);
+        if ($part === '') {
+            continue;
+        }
+        $out[] = content_inline($part);
+    }
+    return $out;
+}
+
+/**
+ * The one place raw wording becomes HTML.
+ *
+ * Escape first, so nothing typed into the admin panel can inject markup, then
+ * put back a deliberately small set: **bold**, [links](book.php), the live
+ * figures below, and single newlines as breaks. A link's destination is
+ * checked against a short allowlist of shapes — a page on this site, an
+ * absolute http(s) address, a tel: or mailto: — so a pasted javascript: URL
+ * is printed as text rather than honoured.
+ */
+function content_inline(string $raw): string
+{
+    $html = e(content_placeholders($raw));
+    $html = preg_replace('/\*\*(.+?)\*\*/s', '<strong>$1</strong>', $html) ?? $html;
+
+    $html = preg_replace_callback(
+        '/\[([^\]]{1,120})\]\(([^)\s]{1,200})\)/',
+        static function (array $m): string {
+            $href = html_entity_decode($m[2], ENT_QUOTES, 'UTF-8');
+            $ok = preg_match('#^https?://#i', $href)
+               || preg_match('#^(tel:|mailto:)#i', $href)
+               || preg_match('#^[a-z0-9\-]+\.php(\?[^\s]*)?$#i', $href)
+               || preg_match('#^/[^\s]*$#', $href);
+            if (!$ok) {
+                return $m[1];   // keep the words, drop the destination
+            }
+            $external = (bool) preg_match('#^https?://#i', $href);
+            return '<a href="' . e($href) . '"'
+                 . ($external ? ' target="_blank" rel="noopener"' : '') . '>' . $m[1] . '</a>';
+        },
+        $html
+    ) ?? $html;
+
+    return nl2br($html, false);
+}
+
+/**
+ * Figures that must never drift from what the hospital actually charges.
+ *
+ * A sentence quoting a fee is wording reception should own, but the number in
+ * it belongs to the tariff. These placeholders let them write the sentence
+ * while the amount keeps coming from the tariff screen.
+ */
+function content_placeholders(string $raw): string
+{
+    if (!str_contains($raw, '{')) {
+        return $raw;
+    }
+    $fees = defined('CONSULTATION_FEES') ? CONSULTATION_FEES : [];
+    return strtr($raw, [
+        '{op_fee}'        => isset($fees[0]) ? money((int) $fees[0]['amount']) : '',
+        '{emergency_fee}' => isset($fees[1]) ? money((int) $fees[1]['amount']) : '',
+        '{landline}'      => defined('HOSPITAL') ? HOSPITAL['landline_display'] : '',
+        '{mobile}'        => defined('HOSPITAL') ? HOSPITAL['mobile_display'] : '',
+        // The dialable forms, for the destination of a tel: link. The printed
+        // and dialable numbers differ, so a link built from the printed one
+        // would not actually call the hospital.
+        '{landline_tel}'  => defined('HOSPITAL') ? HOSPITAL['landline'] : '',
+        '{mobile_tel}'    => defined('HOSPITAL') ? HOSPITAL['mobile'] : '',
+    ]);
+}
+
+/**
+ * A block that may carry emphasis.
+ *
+ * Everything is escaped first, so nothing reception types can inject markup;
+ * only then is a deliberately tiny subset put back — **bold**, and blank lines
+ * as paragraph breaks. That is enough for the couple of places the original
+ * wording emphasised a name, without handing a rich-text editor to a desk that
+ * did not ask for one.
+ */
+function text_rich(string $key): string
+{
+    return content_inline(text($key));
 }
 
 /** Flat key => spec map for validating and looking up a single field. */
@@ -413,6 +679,55 @@ function content_lists(): array
             'default' => array_map(
                 static fn (string $s): array => ['title' => $s],
                 OBG_SERVICES_DEFAULTS
+            ),
+            'shape'   => static fn (array $r): string => $r['title'],
+        ],
+        'contact.faq' => [
+            'label'   => 'Common questions',
+            'hint'    => 'The questions on the Contact page. In an answer you may use '
+                       . '**bold**, [links](book.php), and {op_fee}, {emergency_fee}, '
+                       . '{landline} or {mobile}, which always print the current values.',
+            'uses'    => ['title', 'body'],
+            'default' => [
+                [
+                    'title' => 'Do I need an appointment?',
+                    'body'  => 'Walk-in patients are always seen. Booking a token online simply saves '
+                             . 'you waiting — you get a number in advance rather than taking one at the desk.',
+                ],
+                [
+                    'title' => 'What are the OP timings?',
+                    'body'  => 'Current session timings, and how many tokens are still free, are shown '
+                             . 'live on the [booking page](book.php). Emergency care runs 24 hours '
+                             . 'regardless of OP timings.',
+                ],
+                [
+                    'title' => 'How much does a consultation cost?',
+                    'body'  => 'OP consultation is {op_fee}, and {emergency_fee} for emergency OP after '
+                             . '9 PM. Consultations are **free every Friday**. Full charges are on the '
+                             . '[tariff page](tariff.php).',
+                ],
+                [
+                    'title' => 'Can I cancel a token I booked?',
+                    'body'  => 'Yes. You can [cancel it online](cancel.php) with your reference number '
+                             . 'and the phone number you booked with, or call {landline} — either way '
+                             . 'the token goes back to another patient.',
+                ],
+            ],
+            'shape'   => static fn (array $r): array => ['title' => $r['title'], 'text' => $r['body']],
+        ],
+        'about.values' => [
+            'label'   => 'What guides us',
+            'hint'    => 'The principles listed on the About page. One per row.',
+            'uses'    => ['title'],
+            'default' => array_map(
+                static fn (string $t): array => ['title' => $t],
+                [
+                    'Always open — emergencies do not keep office hours',
+                    'Clear, published pricing with no surprises',
+                    'Qualified consultants you can actually see',
+                    'Care close to home, in your own town',
+                    'Free OP every Friday, and senior discounts on tests',
+                ]
             ),
             'shape'   => static fn (array $r): string => $r['title'],
         ],

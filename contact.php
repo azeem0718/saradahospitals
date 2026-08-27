@@ -9,8 +9,8 @@ $activeNav       = 'contact';
 
 require __DIR__ . '/includes/header.php';
 page_hero(
-    'Contact Us',
-    'Call us any time, or come and see us on Pamuru Road, Kandukur.',
+    text('contact.hero.title'),
+    text('contact.hero.lede'),
     'Contact',
     'contact'
 );
@@ -20,13 +20,9 @@ page_hero(
   <div class="wrap">
     <div class="grid grid-split">
       <div>
-        <span class="eyebrow">Get in touch</span>
-        <h2>We are open 24 hours</h2>
-        <p class="lede mb-3">
-          For emergencies call the mobile number — it is answered around the clock.
-          For appointments, tariff questions and general enquiries, the landline
-          reaches our reception.
-        </p>
+        <span class="eyebrow"><?= e(text('contact.touch.eyebrow')) ?></span>
+        <h2><?= e(text('contact.touch.title')) ?></h2>
+        <p class="lede mb-3"><?= text_rich('contact.touch.lede') ?></p>
         <?php contact_details(); ?>
 
         <div class="btn-row mt-3">
@@ -45,13 +41,8 @@ page_hero(
         <?php map_block(); ?>
         <div class="card mt-2">
           <span class="card-icon"><?= icon('location') ?></span>
-          <h3>How to find us</h3>
-          <p>
-            We are on <strong>Pamuru Road</strong> in Kandukur, directly
-            <strong>opposite ICICI Bank</strong> and close to
-            <strong>Thyagarajaswamy Temple</strong>. Look for the Sarada Nursing
-            Home board above the entrance.
-          </p>
+          <h3><?= e(text('contact.find.title')) ?></h3>
+          <p><?= text_rich('contact.find.body') ?></p>
           <a class="btn btn-primary btn-block" href="<?= e(HOSPITAL['map']['link']) ?>" target="_blank" rel="noopener">
             <?= icon('arrow-right') ?> Get Directions
           </a>
@@ -64,40 +55,17 @@ page_hero(
 <section class="section section-paper">
   <div class="wrap wrap-narrow">
     <div class="section-head center">
-      <span class="eyebrow">Before you call</span>
-      <h2>Common questions</h2>
+      <span class="eyebrow"><?= e(text('contact.faq.eyebrow')) ?></span>
+      <h2><?= e(text('contact.faq.title')) ?></h2>
     </div>
 
-    <div class="card mb-2">
-      <h3>Do I need an appointment?</h3>
-      <p class="mb-0">
-        Walk-in patients are always seen. Booking a token online simply saves you
-        waiting — you get a number in advance rather than taking one at the desk.
-      </p>
-    </div>
-    <div class="card mb-2">
-      <h3>What are the OP timings?</h3>
-      <p class="mb-0">
-        Current session timings, and how many tokens are still free, are shown live
-        on the <a href="book.php">booking page</a>. Emergency care runs 24 hours
-        regardless of OP timings.
-      </p>
-    </div>
-    <div class="card mb-2">
-      <h3>How much does a consultation cost?</h3>
-      <p class="mb-0">
-        OP consultation is <?= money(200) ?>, and <?= money(400) ?> for emergency OP
-        after 9 PM. Consultations are <strong>free every Friday</strong>. Full
-        charges are on the <a href="tariff.php">tariff page</a>.
-      </p>
-    </div>
-    <div class="card mb-0">
-      <h3>Can I cancel a token I booked?</h3>
-      <p class="mb-0">
-        Yes — please call <a href="tel:<?= e(HOSPITAL['landline']) ?>"><?= e(HOSPITAL['landline_display']) ?></a>
-        and give your reference number, so the token can go to another patient.
-      </p>
-    </div>
+    <?php $faqs = list_shaped('contact.faq'); ?>
+    <?php foreach ($faqs as $i => $faq): ?>
+      <div class="card <?= $i === count($faqs) - 1 ? 'mb-0' : 'mb-2' ?>">
+        <h3><?= e($faq['title']) ?></h3>
+        <p class="mb-0"><?= content_inline($faq['text']) ?></p>
+      </div>
+    <?php endforeach; ?>
   </div>
 </section>
 
