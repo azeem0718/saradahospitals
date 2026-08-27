@@ -408,7 +408,23 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .site-header .brand { gap: .55rem; }
 .site-header .brand-name {
   font-weight: 780;
-  font-size: clamp(1.45rem, 11.2vw - 17px, 2.4rem);
+  /* Fluid, and in rem so the name follows the reader's own text-size setting
+     rather than ignoring it. The size is derived from the width the bar
+     actually has — the viewport less the lockup's fixed furniture (page
+     padding, badge, gaps, menu button) — because that free width grows 1:1
+     with the screen while the furniture does not.
+
+     The second term is a hard ceiling in px and it is the important one: a
+     rem-based size grows when the phone's system text size is turned up, and
+     an earlier version of this rule sat flush against the menu button with no
+     slack, so on a real handset the name ran under it and was clipped. This
+     term cannot grow with the root font, so it holds the name inside the bar
+     whatever the reader's settings — and the divisors carry roughly 15% slack
+     besides, for a fallback face that sets wider than Newsreader. */
+  font-size: min(
+    clamp(1.48rem, (100vw - 8.6rem) / 10.4, 2.4rem),
+    (100vw - 134px) / 9.9
+  );
   letter-spacing: -.026em;
 }
 /* The tagline used to be the widest thing in the lockup, pinning it at 230px
@@ -453,10 +469,13 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 /* Between 950 and 1200 the links stay inline but tighten up, and the brand
    yields a step of its size, so nine sections and the lockup share the bar. */
 @media (min-width: 950px) and (max-width: 1199px) {
-  /* The nav is at its widest here relative to the bar, so the name gets what
-     is left rather than a flat step: at 950 that is the size it always was,
-     and it grows back to full by 1200 as the links stop crowding it. */
-  .site-header .brand-name { font-size: clamp(1.55rem, 9.4vw - 68px, 2.15rem); }
+  /* Same idea as the base rule, but here the nine nav links are the
+     furniture rather than the menu button, so far more width is subtracted:
+     at 950 that lands on the size the name always had, and it grows back to
+     full by 1200 as the links stop crowding it. */
+  .site-header .brand-name {
+    font-size: min(clamp(1.5rem, (100vw - 46rem) / 11, 2.15rem), (100vw - 720px) / 10.2);
+  }
   .nav a { font-size: .815rem; padding: .45rem .42rem; }
   .header-inner { gap: .6rem; }
 }
@@ -466,6 +485,10 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
    a larger badge would take it straight back off the nav. */
 @media (min-width: 1200px) {
   .site-header .brand-mark { width: 46px; height: 46px; }
+  /* Here the full nav is the furniture, so the base rule's mobile constant
+     does not describe this bar and cannot hold the name in. Its own ceiling
+     does, and being in px it stays put when the root font is turned up. */
+  .site-header .brand-name { font-size: min(2.4rem, (100vw - 830px) / 9.9); }
 }
 
 @media (max-width: 949px) {
@@ -545,6 +568,13 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
     animation: nav-dim .25s ease both;
   }
   @keyframes nav-dim { from { opacity: 0; } to { opacity: 1; } }
+}
+
+/* Below 360px there is not room for both name and tagline, and the tagline is
+   the half the hospital can spare — it is decorative, the name is not. */
+@media (max-width: 359px) {
+  .site-header .brand-tag { display: none; }
+  .site-header .brand-mark { width: 34px; height: 34px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
