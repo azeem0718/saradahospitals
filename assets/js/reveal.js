@@ -32,9 +32,9 @@
     ['.quick',                'zoom'],
     ['.fact',                 'up'],
     ['.section-head',         'up'],
-    ['.card',                 'up'],
+    ['.card',                 'side-alt'],
     ['.dept',                 'up'],
-    ['.doc-card',             'up'],
+    ['.doc-card',             'side-alt'],
     ['.profile-card',         'up'],
     ['.profile-block',        'up'],
     ['.offer-item',           'zoom'],
@@ -53,6 +53,10 @@
   try {
     var tagged = [];
 
+    /* 'side-alt' resolves per element: first card in a row of siblings comes
+       from the left, the next from the right, and so on down the grid. */
+    var sides = new Map();
+
     TARGETS.forEach(function (pair) {
       var selector = pair[0], variant = pair[1];
 
@@ -63,7 +67,14 @@
             || el.closest('.token-slip, form')) {
           return;
         }
-        el.setAttribute('data-reveal', variant);
+        var resolved = variant;
+        if (variant === 'side-alt') {
+          var parent = el.parentElement || document.body;
+          var n = sides.get(parent) || 0;
+          sides.set(parent, n + 1);
+          resolved = n % 2 === 0 ? 'slide-left' : 'slide-right';
+        }
+        el.setAttribute('data-reveal', resolved);
         tagged.push(el);
       });
     });

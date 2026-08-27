@@ -2169,6 +2169,29 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
 .js-reveal [data-reveal="left"].is-in { animation-name: rv-left; }
 .js-reveal [data-reveal="right"].is-in { animation-name: rv-right; }
 
+/* Cards enter from alternate sides (reveal.js assigns the side by position).
+   The travel is a shared token so phones take a shorter slide, and the body
+   is clipped sideways so the rightward start can never widen the page —
+   clip, not hidden, because hidden would turn the body into a scroll
+   container and silently break the named view-timelines below. */
+:root { --rv-dx: 44px; }
+@media (max-width: 640px) { :root { --rv-dx: 30px; } }
+html.js-reveal body { overflow-x: clip; }
+
+.js-reveal [data-reveal="slide-left"].is-in,
+.js-reveal [data-reveal="slide-right"].is-in { animation-duration: .7s; }
+.js-reveal [data-reveal="slide-left"].is-in  { animation-name: rv-slide-l; }
+.js-reveal [data-reveal="slide-right"].is-in { animation-name: rv-slide-r; }
+
+@keyframes rv-slide-l {
+  from { opacity: 0; translate: calc(-1 * var(--rv-dx, 44px)) 0; }
+  to   { opacity: 1; translate: 0 0; }
+}
+@keyframes rv-slide-r {
+  from { opacity: 0; translate: var(--rv-dx, 44px) 0; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
 @keyframes rv-up   { from { opacity: 0; translate: 0 26px; }  to { opacity: 1; translate: 0 0; } }
 @keyframes rv-fade { from { opacity: 0; }                     to { opacity: 1; } }
 @keyframes rv-zoom { from { opacity: 0; scale: .93; }         to { opacity: 1; scale: 1; } }
