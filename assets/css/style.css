@@ -1993,10 +1993,19 @@ body { padding-bottom: 30px; }
   .hs-dots { margin-top: 1.15rem; }
 }
 
-/* A reader who has asked for less motion gets the pictures and the words with
-   no drift, no rise and no automatic changes — the script does not start. */
+/* A reader who has asked for less motion gets no rise, no sheen and no lift —
+   nothing that travels or scales. The pictures still change, because a
+   cross-dissolve moves nothing: it is a change of opacity, and opacity is not
+   motion. It is slowed to a longer, gentler dissolve to match the request.
+
+   This used to switch the slideshow off entirely, and that turned out to be
+   the wrong reading of the preference twice over — it is a request to reduce
+   motion, not to freeze content, and Android's battery saver turns it on by
+   itself, so a phone in power-saving mode showed a hero that never changed
+   and looked broken. The dots remain the way to stop it for good, which is
+   what WCAG 2.2.2 actually asks for. */
 @media (prefers-reduced-motion: reduce) {
-  .hs-layer { transition: none; }
+  .hs-layer { transition: opacity 1.1s linear; }
   .hs-text.is-on .hs-mark,
   .hs-text.is-on .hs-title,
   .hs-text.is-on .hs-lede { animation: none; }

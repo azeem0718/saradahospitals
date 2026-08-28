@@ -34,15 +34,21 @@
      readable. Anything slower to cross and the hero would never stop moving.
      The bar under the words is told the same number, so what it draws is the
      truth rather than a guess. */
-  var EVERY = 2000;
+  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* A reader who asked for less motion still gets the pictures, just slowly
+     and with nothing that travels: the stylesheet drops every animation and
+     leaves a long cross-dissolve, which changes opacity and moves nothing.
+     Switching the show off for them was the old behaviour and it was wrong on
+     two counts — the preference asks to reduce motion rather than to freeze
+     content, and Android turns it on by itself in battery saver, so a phone in
+     power-saving mode showed a hero that simply never changed. */
+  var EVERY = still.matches ? 6000 : 2000;
   root.style.setProperty('--hs-turn', EVERY + 'ms');
 
   var at = 0;
   var timer = null;
   var stopped = false;
-
-  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (still.matches) return;   // one slide, no motion, nothing to do
 
   function show(next) {
     if (next === at) return;
@@ -100,9 +106,17 @@
     if (copy) copy.setAttribute('aria-live', 'polite');
   }
 
-  /* Reading the slide you are on should not have it snatched away. */
-  root.addEventListener('pointerenter', pause);
-  root.addEventListener('pointerleave', function () { if (!stopped) start(); });
+  /* Hovering does NOT pause, and that is a correction rather than an omission.
+     It used to: the idea was that the slide you are reading should not be
+     snatched away. But this hero is half the screen on a laptop, so a cursor
+     resting anywhere over it — which is where a cursor usually is — froze the
+     show for as long as it sat there. What that produced was not courtesy but
+     a slideshow that looked broken, which is exactly how it was reported.
+
+     Pausing on focus stays: that means somebody is tabbing through the hero
+     and is about to act on it. So does pausing a hidden tab. And the dots,
+     swipe and arrow keys still stop the rotation for good, which is the
+     mechanism WCAG 2.2.2 actually asks for — hover was never it. */
   root.addEventListener('focusin', pause);
   root.addEventListener('focusout', function () {
     if (!stopped && !root.contains(document.activeElement)) start();
@@ -161,8 +175,14 @@
     frame.addEventListener('pointerleave', release);
   }
 
-  /* If the preference changes mid-visit, honour it. */
-  var onChange = function () { if (still.matches) { stopped = true; pause(); } };
+  /* If the preference changes mid-visit, re-pace rather than stop. */
+  var onChange = function () {
+    if (stopped) return;
+    EVERY = still.matches ? 6000 : 2000;
+    root.style.setProperty('--hs-turn', EVERY + 'ms');
+    pause();
+    start();
+  };
   if (still.addEventListener) { still.addEventListener('change', onChange); }
   else if (still.addListener) { still.addListener(onChange); }
 
