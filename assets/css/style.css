@@ -1734,29 +1734,55 @@ body { padding-bottom: 30px; }
   touch-action: pan-y;
 }
 
-/* One movement for all five pictures. Because the scale sits here and not on
-   the layers, nothing resets when a layer's class changes: the outgoing and
-   incoming pictures are always at identical size, and the slow travel never
-   snaps back to its start. */
-.hs-stage {
-  position: absolute; inset: 0;
-  animation: hs-drift 26s ease-in-out infinite alternate;
-  will-change: transform;
-}
-@keyframes hs-drift { from { scale: 1.02; } to { scale: 1.09; } }
+/* The pictures do not move. A slow drift was here and it was the wrong idea
+   twice over: a picture that is always changing size is the thing that made
+   the slideshow feel unsettled in the first place, and any zoom past 1.0 eats
+   the edges of the two diagrams, whose outer panels are their content. The
+   crossfade alone is enough — it is calm, and it is honest about the fact
+   that nothing here is actually moving. */
+.hs-stage { position: absolute; inset: 0; }
 
+/* The one source picked here in a custom property, so the layer and both of
+   its pseudo-elements below always agree on which file they are showing. */
 .hs-layer {
+  --hs-src: var(--hs-img);
   position: absolute; inset: 0;
-  background-image: var(--hs-img);
+  background-image: var(--hs-src);
   background-size: cover; background-position: center;
   opacity: 0;
   transition: opacity 1.5s cubic-bezier(.4, 0, .3, 1);
   will-change: opacity;
 }
 @media (max-width: 700px) {
-  .hs-layer { background-image: var(--hs-img-sm, var(--hs-img)); }
+  .hs-layer { --hs-src: var(--hs-img-sm, var(--hs-img)); }
 }
 .hs-layer.is-on { opacity: 1; }
+
+/* A photograph fills the frame; losing the edges of a scene costs nothing.
+   A diagram cannot afford that — its outer panels are its content — and
+   padding it out with bars is not fitting either. So a soft layer shows the
+   whole picture over a blurred copy of itself: the sharp image sits in front
+   at 'contain', and behind it the same file, blown past the frame's edges and
+   blurred, fills whatever the frame's shape leaves over. The browser builds
+   that surround for the frame it actually has, which is why one file fits a
+   1.18 laptop frame, a 1.6 tablet frame and a square phone frame with no bar
+   and no crop — and why there is never a seam, since the surround is the
+   picture itself continuing outward. */
+.hs-layer.hs-soft { background: none; }
+.hs-layer.hs-soft::before,
+.hs-layer.hs-soft::after {
+  content: ''; position: absolute;
+  background-image: var(--hs-src);
+  background-position: center; background-repeat: no-repeat;
+}
+.hs-layer.hs-soft::before {
+  /* Past the frame's edges, so the blur never thins out into a vignette at
+     the border; the frame's own overflow clipping trims the excess. */
+  inset: -64px;
+  background-size: cover;
+  filter: blur(26px) saturate(1.05);
+}
+.hs-layer.hs-soft::after { inset: 0; background-size: contain; }
 
 /* --------------------------------------------------------------------------
    Actions
@@ -1896,7 +1922,13 @@ body { padding-bottom: 30px; }
 }
 
 @media (max-width: 620px) {
-  .hs-frame { aspect-ratio: 4 / 3; }
+  /* Square on a phone. The frame's shape has to be the same for every slide —
+     a frame that resized per picture is the jumping this was built to stop —
+     so it is chosen for the tightest case: the diagrams are square, and at 4:3
+     they came out 293px tall with their labels too small to read. Square gives
+     them the full width of the screen. The photographs are cropped a little
+     harder in return, which costs a scene nothing. */
+  .hs-frame { aspect-ratio: 1 / 1; }
   .hs-actions { flex-direction: column; align-items: stretch; gap: .7rem; }
   .hs-actions .hbtn { width: 100%; justify-content: center; }
   .hs-mark { width: 40px; height: 40px; margin-bottom: .9rem; }
@@ -1905,7 +1937,6 @@ body { padding-bottom: 30px; }
 /* A reader who has asked for less motion gets the pictures and the words with
    no drift, no rise and no automatic changes — the script does not start. */
 @media (prefers-reduced-motion: reduce) {
-  .hs-stage { animation: none; }
   .hs-layer { transition: none; }
   .hs-text.is-on .hs-mark,
   .hs-text.is-on .hs-title,

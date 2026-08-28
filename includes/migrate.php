@@ -18,7 +18,36 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
 /** Bump this when a migration is added below. */
-const SCHEMA_VERSION = 10;
+const SCHEMA_VERSION = 12;
+
+/**
+ * Put the shipped picture into each of the named slots, if it is not already
+ * filled.
+ *
+ * Each seeding migration names the slots its own round introduced, so an old
+ * database still fills in exactly what that round added — but the files and the
+ * wording come from the one registry in site-images.php rather than a copy per
+ * migration, which is what keeps a picture's description honest when the
+ * picture itself is replaced.
+ *
+ * INSERT IGNORE: a slot reception has already filled — or has since emptied
+ * and refilled — is theirs, and this never overwrites it.
+ */
+function seed_site_images(PDO $pdo, array $slots): void
+{
+    require_once __DIR__ . '/site-images.php';
+
+    $stmt  = $pdo->prepare('INSERT IGNORE INTO site_images (slot, file, alt) VALUES (?,?,?)');
+    $dir   = dirname(__DIR__) . '/assets/img/site/';
+    $seeds = site_image_seeds();
+
+    foreach ($slots as $slot) {
+        $seed = $seeds[$slot] ?? null;
+        if ($seed !== null && is_file($dir . $seed['file'])) {
+            $stmt->execute([$slot, $seed['file'], $seed['alt']]);
+        }
+    }
+}
 
 /**
  * Migrations, keyed by the version they bring the database up to.
@@ -118,27 +147,12 @@ function schema_migrations(): array
         // INSERT IGNORE: a slot reception has already filled — or has since
         // emptied and refilled — is theirs, and this never overwrites it.
         5 => static function (PDO $pdo): void {
-            $stmt = $pdo->prepare(
-                'INSERT IGNORE INTO site_images (slot, file, alt) VALUES (?,?,?)'
-            );
-            $defaults = [
-                ['banner-about', 'banner-about.jpg', 'A stethoscope resting on a wooden heart'],
-                ['banner-services', 'banner-services.jpg', 'A stethoscope laid out on a table'],
-                ['banner-diabetes', 'banner-diabetes.jpg', 'A glucometer showing a blood sugar reading'],
-                ['banner-maternity', 'banner-maternity.jpg', 'A newborn baby sleeping'],
-                ['banner-emergency', 'banner-emergency.jpg', 'An ambulance outside a hospital'],
-                ['card-medicine', 'card-medicine.jpg', 'A doctor holding the chest piece of a stethoscope'],
-                ['card-diabetes', 'card-diabetes.jpg', 'A glucometer showing a blood sugar reading'],
-                ['card-maternity', 'card-maternity.jpg', 'A newborn baby sleeping in a basket'],
-                ['card-emergency', 'card-emergency.jpg', 'A Force Traveller ambulance'],
-                ['card-lab', 'card-lab.jpg', 'A gloved hand holding a blood sample tube'],
-            ];
-            $dir = dirname(__DIR__) . '/assets/img/site/';
-            foreach ($defaults as [$slot, $file, $alt]) {
-                if (is_file($dir . $file)) {
-                    $stmt->execute([$slot, $file, $alt]);
-                }
-            }
+            seed_site_images($pdo, [
+                'banner-about', 'banner-services', 'banner-diabetes',
+                'banner-maternity', 'banner-emergency',
+                'card-medicine', 'card-diabetes', 'card-maternity',
+                'card-emergency', 'card-lab',
+            ]);
         },
 
         // The tariff slots arrived a round later: a hand holding a rupee note,
@@ -154,19 +168,56 @@ function schema_migrations(): array
         // content table, an empty list means "still showing the defaults".
         // Card lists carry an accent colour. Without somewhere to keep it, making
         // those cards editable would have quietly flattened the page to one hue.
+        // The maternity slide moved off the card's photograph onto one cut to
+        // the hero's own proportions. Only a row still pointing at the old
+        // shared file is moved: once reception uploads their own picture the
+        // slot is theirs, and this leaves it alone.
+        // Every slide moved off the shared card photographs onto its own
+        // rendition. Only a row still pointing at the old shared file is
+        // moved: once reception uploads their own picture the slot is theirs,
+        // and this leaves it alone.
+        12 => static function (PDO $pdo): void {
+            require_once __DIR__ . '/site-images.php';
+            $stmt = $pdo->prepare(
+                'UPDATE site_images SET file = ?, alt = ? WHERE slot = ? AND file = ?'
+            );
+            $was = [
+                'hero-slide-1' => 'card-emergency.jpg',
+                'hero-slide-2' => 'card-medicine.jpg',
+                'hero-slide-3' => 'card-diabetes.jpg',
+                'hero-slide-4' => 'card-maternity.jpg',
+                'hero-slide-5' => 'card-lab.jpg',
+            ];
+            $seeds = site_image_seeds();
+            foreach ($was as $slot => $old) {
+                $stmt->execute([$seeds[$slot]['file'], $seeds[$slot]['alt'], $slot, $old]);
+            }
+        },
+
+        // The shipped pictures were replaced with the hospital's own, so the
+        // wording describing them no longer matched what is on screen — a
+        // screen reader would have been told about an ambulance outside while
+        // the picture showed a resuscitation. Only rows still holding the
+        // shipped file are corrected: once reception uploads their own
+        // photograph the description is theirs, and this leaves it alone.
+        11 => static function (PDO $pdo): void {
+            require_once __DIR__ . '/site-images.php';
+            $stmt = $pdo->prepare(
+                'UPDATE site_images SET alt = ? WHERE slot = ? AND file = ?'
+            );
+            foreach (site_image_seeds() as $slot => $seed) {
+                $stmt->execute([$seed['alt'], $slot, $seed['file']]);
+            }
+        },
+
         // The hero slideshow's five pictures. Seeded from the department card
         // photographs, which are already on disk and already credited, so the
         // slideshow arrives looking finished; reception can swap any of them
         // afterwards without touching the cards they were borrowed from.
         10 => static function (PDO $pdo): void {
-            require_once __DIR__ . '/site-images.php';
-            $stmt = $pdo->prepare('INSERT IGNORE INTO site_images (slot, file, alt) VALUES (?,?,?)');
-            $dir  = dirname(__DIR__) . '/assets/img/site/';
-            foreach (site_image_seeds() as $slot => $seed) {
-                if (is_file($dir . $seed['file'])) {
-                    $stmt->execute([$slot, $seed['file'], $seed['alt']]);
-                }
-            }
+            seed_site_images($pdo, [
+                'hero-slide-1', 'hero-slide-2', 'hero-slide-3', 'hero-slide-4', 'hero-slide-5',
+            ]);
         },
 
         9 => static function (PDO $pdo): void {
@@ -203,19 +254,7 @@ function schema_migrations(): array
         },
 
         6 => static function (PDO $pdo): void {
-            $stmt = $pdo->prepare(
-                'INSERT IGNORE INTO site_images (slot, file, alt) VALUES (?,?,?)'
-            );
-            $dir = dirname(__DIR__) . '/assets/img/site/';
-            $defaults = [
-                ['card-tariff', 'card-tariff.jpg', 'A hand holding an Indian rupee note'],
-                ['banner-tariff', 'banner-tariff.jpg', 'A hand holding an Indian rupee note'],
-            ];
-            foreach ($defaults as [$slot, $file, $alt]) {
-                if (is_file($dir . $file)) {
-                    $stmt->execute([$slot, $file, $alt]);
-                }
-            }
+            seed_site_images($pdo, ['card-tariff', 'banner-tariff']);
         },
     ];
 }
@@ -278,7 +317,13 @@ function run_migrations(): void
              ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)'
         );
 
-        foreach (schema_migrations() as $version => $step) {
+        // The file lists migrations newest first so the current one is on
+        // top; they must still RUN oldest first, and the version saved after
+        // the loop must be the highest, not merely the last one listed.
+        $steps = schema_migrations();
+        ksort($steps);
+
+        foreach ($steps as $version => $step) {
             if ($version <= $from) {
                 continue;
             }

@@ -55,7 +55,7 @@ if (!$heroSlides) {
               $style .= ";--hs-img-sm:url('" . e($small) . "')";
           }
         ?>
-        <div class="hs-layer<?= $i === 0 ? ' is-on' : '' ?>"
+        <div class="hs-layer<?= site_image_soft($slot) ? ' hs-soft' : '' ?><?= $i === 0 ? ' is-on' : '' ?>"
              data-hs-layer="<?= $i ?>" style="<?= $style ?>"></div>
       <?php endforeach; ?>
     </div>

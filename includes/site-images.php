@@ -78,26 +78,76 @@ function site_image_groups(): array
 }
 
 /**
- * Slots that ship with a photograph already in place, and the file and wording
- * each arrives with.
+ * Every slot that ships with a picture already in place: the file it arrives
+ * with, the wording describing it, and how it should fill its frame.
  *
- * The hero slideshow borrows the department card photographs, which are already
- * on disk and already credited, so the slideshow arrives looking finished. The
- * migration seeds from this map and the content overview reads it, so there is
- * one statement of what shipped rather than two that could drift apart — which
- * is what lets the overview tell a shipped picture from one reception uploaded.
+ * The migrations seed from this map and the content overview reads it, so
+ * there is one statement of what shipped rather than three that could drift
+ * apart — which is what lets the overview tell a shipped picture from one
+ * reception uploaded, and what keeps a picture's description honest when the
+ * picture itself is replaced.
  *
- * @return array<string, array{file:string, alt:string}>
+ * @return array<string, array{file:string, alt:string, fit?:string, bg?:string}>
  */
 function site_image_seeds(): array
 {
+    $icu   = 'Doctors and nurses treating a patient in the emergency room, with an '
+           . 'ambulance arriving outside';
+    $lab   = 'Technicians at work in the hospital laboratory';
+    $sugar = 'The warning signs of diabetes, around a man with a blood glucose meter';
+    $women = "Women's health care, around a doctor scanning an expectant mother";
+    $rupee = 'A hand holding an Indian rupee note';
+
+    // Two of these are diagrams rather than scenes: the panels around the edge
+    // are the content, so where a slot can show a picture whole it does, filled
+    // out in the diagram's own background colour. Cropping one to fill a frame
+    // would cut off exactly what it is there to say. Page banners keep 'cover'
+    // either way — a banner is a texture behind a title, not something to read.
     return [
-        'hero-slide-1' => ['file' => 'card-emergency.jpg', 'alt' => 'An ambulance outside the hospital'],
-        'hero-slide-2' => ['file' => 'card-medicine.jpg',  'alt' => 'A doctor holding a stethoscope'],
-        'hero-slide-3' => ['file' => 'card-diabetes.jpg',  'alt' => 'A blood glucose meter being read'],
-        'hero-slide-4' => ['file' => 'card-maternity.jpg', 'alt' => 'Maternity care'],
-        'hero-slide-5' => ['file' => 'card-lab.jpg',       'alt' => 'A laboratory technician examining a sample'],
+        'banner-about'      => ['file' => 'banner-about.jpg',
+                                'alt'  => 'Families being helped at the hospital reception desk'],
+        'banner-services'   => ['file' => 'banner-services.jpg',   'alt' => $lab],
+        'banner-diabetes'   => ['file' => 'banner-diabetes.jpg',   'alt' => $sugar],
+        'banner-maternity'  => ['file' => 'banner-maternity.jpg',  'alt' => $women],
+        'banner-emergency'  => ['file' => 'banner-emergency.jpg',  'alt' => $icu],
+        'banner-tariff'     => ['file' => 'banner-tariff.jpg',     'alt' => $rupee],
+
+        'card-medicine'     => ['file' => 'card-medicine.jpg',
+                                'alt'  => 'A doctor holding the chest piece of a stethoscope'],
+        'card-diabetes'     => ['file' => 'card-diabetes.jpg',     'alt' => $sugar],
+        'card-maternity'    => ['file' => 'card-maternity.jpg',    'alt' => $women],
+        'card-emergency'    => ['file' => 'card-emergency.jpg',    'alt' => $icu],
+        'card-lab'          => ['file' => 'card-lab.jpg',          'alt' => $lab],
+        'card-tariff'       => ['file' => 'card-tariff.jpg',       'alt' => $rupee],
+
+        // Each slide has its own rendition rather than borrowing a card's.
+        // The photographs simply fill the frame — losing the edges of a scene
+        // costs nothing. The two marked 'soft' are diagrams: their outer
+        // panels are their content, so the hero shows them whole and fills
+        // whatever the frame's shape leaves over with a blurred copy of the
+        // same picture. The browser builds that surround per frame, which is
+        // what makes one file fit every screen shape without bars or crops.
+        'hero-slide-1' => ['file' => 'hero-slide-1.jpg', 'alt' => $icu],
+        'hero-slide-2' => ['file' => 'hero-slide-2.jpg',
+                           'alt'  => 'A doctor holding a stethoscope'],
+        'hero-slide-3' => ['file' => 'hero-slide-3.jpg', 'alt' => $sugar, 'soft' => true],
+        'hero-slide-4' => ['file' => 'hero-slide-4.jpg', 'alt' => $women, 'soft' => true],
+        'hero-slide-5' => ['file' => 'hero-slide-5.jpg', 'alt' => $lab],
     ];
+}
+
+/**
+ * True when a slot's picture should be shown whole over a blurred copy of
+ * itself, rather than cropped to fill the frame.
+ *
+ * Only a shipped diagram asks for this, and only while it is still the picture
+ * in the slot: the moment reception uploads their own, it is a photograph as
+ * far as we know, and photographs fill the frame.
+ */
+function site_image_soft(string $slot): bool
+{
+    $seed = site_image_seeds()[$slot] ?? null;
+    return $seed !== null && !empty($seed['soft']) && !site_image_is_custom($slot);
 }
 
 /**
