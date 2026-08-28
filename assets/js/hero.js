@@ -22,7 +22,9 @@
   var count  = texts.length;
   if (count < 2) return;
 
-  var EVERY = 6500;
+  /* 3.5s a slide. The pictures take 1.8s to cross, so for more than half of
+     every turn two of them are on screen together — which is the point. */
+  var EVERY = 3500;
   var at = 0;
   var timer = null;
   var stopped = false;

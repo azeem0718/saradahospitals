@@ -83,11 +83,37 @@ if (!$heroSlides) {
          anything in — the booking page asks for the details, and it asks for
          them on a page built to. -->
     <div class="hs-actions">
-      <a class="btn btn-lg btn-hero-primary" href="book.php">
-        <?= icon('ticket') ?> Book an OP Token
+      <?php
+        /*
+         * The corner brackets are fixed-size SVGs pinned to each corner rather
+         * than one frame stretched around the button: a stretched rounded rect
+         * turns its corners into ellipses at any width but the one it was drawn
+         * for. Each bracket draws itself in on hover by running its dash offset
+         * to zero, which is why the paths carry pathLength="1" — the maths then
+         * holds whatever the button's real size turns out to be.
+         */
+        $bracket = static function (string $where): string {
+            // Inset by a pixel and drawn to an 11px arc: the button clips its own
+            // overflow at a 15px radius, so a bracket sitting flush to the edge
+            // loses half its stroke to the corner. This one sits inside it.
+            $d = $where === 'tl' ? 'M39 1 H12 A11 11 0 0 0 1 12 V39'
+                                 : 'M1 39 H28 A11 11 0 0 0 39 28 V1';
+            return '<svg class="hbtn-corner hbtn-corner-' . $where . '" viewBox="0 0 40 40"'
+                 . ' aria-hidden="true" focusable="false"><path d="' . $d . '" pathLength="1"/></svg>';
+        };
+      ?>
+
+      <a class="hbtn hbtn-primary" href="book.php">
+        <?= $bracket('tl') ?><?= $bracket('br') ?>
+        <span class="hbtn-sheen" aria-hidden="true"></span>
+        <span class="hbtn-label"><?= icon('ticket') ?><span>Book an OP Token</span></span>
+        <span class="hbtn-go" aria-hidden="true"><?= icon('arrow-right') ?></span>
       </a>
-      <a class="btn btn-lg btn-hero-ghost" href="tel:<?= e(HOSPITAL['mobile']) ?>">
-        <?= icon('phone') ?> Emergency <?= e(HOSPITAL['mobile_display']) ?>
+
+      <a class="hbtn hbtn-ghost" href="tel:<?= e(HOSPITAL['mobile']) ?>">
+        <?= $bracket('tl') ?><?= $bracket('br') ?>
+        <span class="hbtn-sheen" aria-hidden="true"></span>
+        <span class="hbtn-label"><?= icon('phone') ?><span>Emergency <?= e(HOSPITAL['mobile_display']) ?></span></span>
       </a>
     </div>
 
