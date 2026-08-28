@@ -7,7 +7,12 @@
  * good static banner, which is why nothing here is required for the page to
  * make sense.
  *
- * Deliberately absent: any horizontal movement. The slides crossfade.
+ * Three ways to drive it: the bars underneath, a swipe across the photograph,
+ * and the arrow keys once anything in the hero has focus. All three mean the
+ * same thing — the reader is choosing now — so all three stop the clock.
+ *
+ * Deliberately absent: any horizontal movement of the slides themselves. A
+ * swipe changes which picture is showing; it does not drag one across.
  */
 (function () {
   'use strict';
@@ -19,12 +24,16 @@
   var texts  = root.querySelectorAll('[data-hs-text]');
   var dots   = root.querySelectorAll('[data-hs-dot]');
   var copy   = root.querySelector('[data-hs-copy]');
+  var frame  = root.querySelector('[data-hs-frame]');
   var count  = texts.length;
   if (count < 2) return;
 
-  /* 3.5s a slide. The pictures take 1.8s to cross, so for more than half of
-     every turn two of them are on screen together — which is the point. */
+  /* 3.5s a slide. The pictures take 1.5s to cross, so for a good part of every
+     turn two of them are on screen together — which is the point. The bar
+     under the words is told the same number, so what it draws is the truth. */
   var EVERY = 3500;
+  root.style.setProperty('--hs-turn', EVERY + 'ms');
+
   var at = 0;
   var timer = null;
   var stopped = false;
@@ -50,18 +59,42 @@
     texts[next].classList.add('is-on');
 
     if (dots[at]) { dots[at].classList.remove('is-on'); dots[at].removeAttribute('aria-current'); }
-    if (dots[next]) { dots[next].classList.add('is-on'); dots[next].setAttribute('aria-current', 'true'); }
+    if (dots[next]) {
+      // Same trick for the progress bar: without the reflow it would keep the
+      // finished state of the previous turn instead of filling again.
+      var fill = dots[next].querySelector('i');
+      if (fill) { fill.style.animation = 'none'; void fill.offsetWidth; fill.style.animation = ''; }
+      dots[next].classList.add('is-on');
+      dots[next].setAttribute('aria-current', 'true');
+    }
 
     at = next;
   }
 
+  function step(by) {
+    show((at + by + count) % count);
+  }
+
   function start() {
     if (stopped || timer !== null) return;
-    timer = window.setInterval(function () { show((at + 1) % count); }, EVERY);
+    root.classList.remove('is-held');
+    timer = window.setInterval(function () { step(1); }, EVERY);
   }
 
   function pause() {
     if (timer !== null) { window.clearInterval(timer); timer = null; }
+    if (!stopped) root.classList.add('is-held');
+  }
+
+  /* The reader is driving from here on: stop rotating rather than yanking them
+     onward a few seconds later, and start announcing changes, because a change
+     they asked for is one they should be told about. */
+  function takeOver() {
+    stopped = true;
+    pause();
+    root.classList.remove('is-held');
+    root.classList.add('is-stopped');
+    if (copy) copy.setAttribute('aria-live', 'polite');
   }
 
   /* Reading the slide you are on should not have it snatched away. */
@@ -77,18 +110,53 @@
     if (document.hidden) { pause(); } else if (!stopped) { start(); }
   });
 
-  /* Choosing a slide by hand means the reader is driving now; stop rotating
-     rather than yanking them onward a few seconds later. */
   Array.prototype.forEach.call(dots, function (dot, i) {
-    dot.addEventListener('click', function () {
-      stopped = true;
-      pause();
-      // From here the reader is choosing slides, so announcing them is help
-      // rather than interruption.
-      if (copy) copy.setAttribute('aria-live', 'polite');
-      show(i);
-    });
+    dot.addEventListener('click', function () { takeOver(); show(i); });
   });
+
+  /* Arrow keys, once something in the hero has focus. Left and right are what
+     a reader already expects of anything with these bars under it. */
+  root.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
+    // Never steal the arrow keys from somewhere they already mean something.
+    var el = ev.target;
+    if (el && el.closest && el.closest('input, textarea, select, [contenteditable]')) return;
+    ev.preventDefault();
+    takeOver();
+    step(ev.key === 'ArrowRight' ? 1 : -1);
+  });
+
+  /* Swipe, on the photograph. The gesture is only claimed once it is clearly
+     sideways — a mostly-vertical drag is the reader scrolling the page, and
+     taking that would make the hero a trap on a phone. CSS declares
+     touch-action: pan-y on the frame for the same reason, so the browser keeps
+     scrolling smooth rather than waiting to see what this handler decides. */
+  if (frame && window.PointerEvent) {
+    var startX = 0, startY = 0, tracking = false, decided = false;
+    var THRESHOLD = 45;   // px across before it counts as a swipe
+    var SLOPE = 1.2;      // and how much more sideways than vertical
+
+    frame.addEventListener('pointerdown', function (ev) {
+      if (ev.pointerType === 'mouse') return;   // dragging a picture with a mouse means nothing here
+      tracking = true; decided = false;
+      startX = ev.clientX; startY = ev.clientY;
+    });
+
+    frame.addEventListener('pointermove', function (ev) {
+      if (!tracking || decided) return;
+      var dx = ev.clientX - startX;
+      var dy = ev.clientY - startY;
+      if (Math.abs(dx) < THRESHOLD || Math.abs(dx) < Math.abs(dy) * SLOPE) return;
+      decided = true;
+      takeOver();
+      step(dx < 0 ? 1 : -1);
+    });
+
+    var release = function () { tracking = false; decided = false; };
+    frame.addEventListener('pointerup', release);
+    frame.addEventListener('pointercancel', release);
+    frame.addEventListener('pointerleave', release);
+  }
 
   /* If the preference changes mid-visit, honour it. */
   var onChange = function () { if (still.matches) { stopped = true; pause(); } };

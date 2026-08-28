@@ -1611,30 +1611,146 @@ body { padding-bottom: 30px; }
 .nowrap { white-space: nowrap; }
 
 /* --------------------------------------------------------------------------
-   Home hero — crossfading slideshow
+   Home hero — the words on paper, the photograph beside them
 
-   The stage is a stack of absolutely-placed picture layers, so only opacity
-   and scale ever animate: no layout property is touched, and the section's
-   height never depends on which slide is showing. The text block is a grid
-   with every slide stacked in cell 1/1, which means the hero is as tall as its
-   longest slide from the first paint and never jumps as the copy changes.
+   Two halves rather than one picture with writing across it. Words over a
+   photograph only ever end one of two ways: the picture is darkened until it
+   is wallpaper, or the words sit at a contrast nobody can read. This hero
+   carries an emergency number, so the second was never available, and the
+   first stopped being worth it once the pictures were worth showing. Each
+   half now does one job — and the photograph carries nothing at all: no tint,
+   no gradient, no text.
+
+   The left column's padding is the page gutter, computed rather than guessed,
+   so the headline starts on the same vertical line as every heading further
+   down the page while the photograph runs clean off the right edge.
+
+   Everything that moves is opacity or a transform on the frame, so no slide
+   change can touch layout. The drift lives on the frame, not on the layers:
+   one movement shared by all five means two pictures mid-crossfade are always
+   at exactly the same size, which is what stops the change from lurching.
    -------------------------------------------------------------------------- */
 .hero-show {
+  --hs-gutter: max(clamp(18px, 4vw, 40px), calc((100vw - var(--wrap)) / 2));
+
   position: relative; isolation: isolate;
-  display: flex; align-items: center;
-  min-height: clamp(30rem, 26rem + 18vw, 40rem);
-  padding: clamp(3rem, 6vw, 5rem) 0 clamp(2.5rem, 5vw, 4rem);
-  overflow: hidden;
-  background: var(--navy-950);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  align-items: center;
+  background: var(--ground);
+  overflow: clip;
+  /* The shared .hero rule pads itself and paints a tinted gradient, both of
+     which belong to the older banner. Here the words carry their own spacing
+     and the photograph runs to the edges, so both are cleared rather than
+     leaving a band of ground above and below the picture. */
+  padding: 0;
 }
 
-.hs-stage { position: absolute; inset: 0; z-index: -1; }
+/* The words. Ordinary dark type on the site's own ground — the same reading
+   conditions as the rest of the page, which is the whole point. */
+.hs-words {
+  position: relative; z-index: 1;
+  /* Both halves are pinned to the same row. Without the explicit row the
+     photograph comes first in the markup, takes row 1 column 2, and grid's
+     forward-only auto-placement then has nowhere to put the words but a
+     second row — which silently doubles the hero's height. */
+  grid-column: 1; grid-row: 1;
+  padding: clamp(2.6rem, 5vw, 4.6rem) clamp(1.6rem, 3.4vw, 3.2rem)
+           clamp(2.6rem, 5vw, 4.6rem) var(--hs-gutter);
+}
+
+/* A hairline where paper meets photograph, so the join reads as deliberate
+   rather than as an image that happens to stop. */
+.hs-words::after {
+  content: ''; position: absolute; top: 0; right: 0; bottom: 0;
+  width: 1px; background: var(--rule);
+}
+
+.hs-place {
+  display: inline-flex; align-items: center; gap: .45rem;
+  /* ink-500 was right when this line sat on a dark photograph; on the ivory
+     ground it measures 4.06:1, under the 4.5:1 small text needs. */
+  color: var(--ink-600); margin: 0 0 1.15rem;
+  font-size: .875rem; font-weight: 600; letter-spacing: .01em;
+}
+.hs-place svg { width: 17px; height: 17px; color: var(--red-600); }
+
+/* Every slide's text occupies the same grid cell, so the tallest one sets the
+   height once and the rest fade in and out inside it — the hero is as tall as
+   its longest slide from the first paint and never jumps as the copy changes. */
+.hs-copy { display: grid; }
+.hs-text { grid-area: 1 / 1; }
+.hs-text[hidden] { display: none; }
+
+.hs-mark {
+  display: inline-grid; place-items: center;
+  width: 46px; height: 46px; margin-bottom: 1.05rem;
+  border-radius: 14px;
+  background: var(--gold-50);
+  border: 1px solid var(--gold-100);
+}
+.hs-mark svg { width: 24px; height: 24px; color: var(--gold-600); }
+
+.hero-show .hs-title {
+  color: var(--navy-900); margin: 0 0 .42em;
+  font-size: clamp(2rem, 1.1rem + 2.6vw, 3.15rem); line-height: 1.07;
+  letter-spacing: -.026em; text-wrap: balance;
+}
+.hero-show .hs-lede {
+  color: var(--ink-700); margin: 0;
+  font-size: clamp(1rem, .95rem + .28vw, 1.13rem); line-height: 1.62;
+  max-width: 34rem;
+}
+
+/* Entrance: each line arrives from slightly behind and slightly small, one
+   after another. Only opacity, scale and translate, so it composites on the
+   GPU and cannot disturb the layout. */
+.hs-text.is-on .hs-mark,
+.hs-text.is-on .hs-title,
+.hs-text.is-on .hs-lede {
+  animation: hs-rise .82s cubic-bezier(.16, .84, .28, 1) both;
+  transform-origin: 0% 60%;
+}
+.hs-text.is-on .hs-title { animation-delay: .09s; }
+.hs-text.is-on .hs-lede  { animation-delay: .18s; }
+@keyframes hs-rise {
+  from { opacity: 0; scale: .94; translate: 0 10px; filter: blur(3px); }
+  60%  { opacity: 1; }
+  to   { opacity: 1; scale: 1; translate: 0 0; filter: blur(0); }
+}
+
+/* --------------------------------------------------------------------------
+   The photograph
+   -------------------------------------------------------------------------- */
+.hs-frame {
+  grid-column: 2; grid-row: 1;
+  position: relative;
+  align-self: stretch;
+  min-height: clamp(26rem, 21rem + 20vw, 37rem);
+  overflow: hidden;
+  background: var(--ground-deep);
+  /* The swipe handler reads horizontal gestures here and lets vertical ones
+     through, so the page still scrolls normally under a finger. */
+  touch-action: pan-y;
+}
+
+/* One movement for all five pictures. Because the scale sits here and not on
+   the layers, nothing resets when a layer's class changes: the outgoing and
+   incoming pictures are always at identical size, and the slow travel never
+   snaps back to its start. */
+.hs-stage {
+  position: absolute; inset: 0;
+  animation: hs-drift 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes hs-drift { from { scale: 1.02; } to { scale: 1.09; } }
+
 .hs-layer {
-  position: absolute; inset: 0; z-index: 0;
+  position: absolute; inset: 0;
   background-image: var(--hs-img);
   background-size: cover; background-position: center;
   opacity: 0;
-  transition: opacity 1.8s cubic-bezier(.4, 0, .3, 1);
+  transition: opacity 1.5s cubic-bezier(.4, 0, .3, 1);
   will-change: opacity;
 }
 @media (max-width: 700px) {
@@ -1642,234 +1758,159 @@ body { padding-bottom: 30px; }
 }
 .hs-layer.is-on { opacity: 1; }
 
-/* The picture drifts while it is the one showing — enough to feel alive, far
-   too slow to read as movement competing with the text. The drift outlasts the
-   3.5s turn deliberately: the outgoing picture is still moving as it dissolves,
-   so the two never look like separate stills being swapped. */
-.hs-layer.is-on { animation: hs-drift 11s ease-out both; }
-@keyframes hs-drift { from { scale: 1.004; } to { scale: 1.06; } }
-
-/* The photograph is meant to be seen, so the veil over the frame as a whole is
-   5% — barely a tint. Legibility is bought only where it is needed: a gradient
-   anchored to the left edge, gone by about two thirds across, so the subject of
-   every picture stays untouched while the column the words occupy is dark
-   enough to read on. Measured against the real pixels of all five photographs
-   rather than assumed; the 5% alone left small text at 1.9:1 over the bright
-   maternity picture, which is why the left-hand ramp exists. */
-.hs-scrim {
-  position: absolute; inset: 0; z-index: 1;
-  background:
-    linear-gradient(96deg,
-      rgba(3, 14, 26, .92) 0%,
-      rgba(3, 14, 26, .88) 26%,
-      rgba(3, 14, 26, .74) 46%,
-      rgba(3, 14, 26, .44) 62%,
-      rgba(3, 14, 26, .12) 74%,
-      rgba(3, 14, 26, 0)   82%),
-    /* a little weight at the foot, for the dots and the live line */
-    linear-gradient(to top, rgba(3, 14, 26, .5), rgba(3, 14, 26, 0) 32%),
-    /* the 5% wash over everything */
-    linear-gradient(rgba(6, 22, 38, .05), rgba(6, 22, 38, .05));
-}
-
-.hs-inner { position: relative; }
-.hs-place {
-  color: #dbe6f2; margin-bottom: 1rem;
-  text-shadow: 0 1px 10px rgba(2, 10, 20, .6);
-}
-.hs-place svg { color: var(--red-500); }
-
-/* Every slide's text occupies the same grid cell, so the tallest one sets the
-   height once and the rest fade in and out inside it. */
-.hs-copy { display: grid; max-width: 46rem; }
-.hs-text { grid-area: 1 / 1; }
-.hs-text[hidden] { display: none; }
-
-/* A small gold mark rather than a pill repeating the headline underneath it. */
-.hs-mark {
-  display: inline-grid; place-items: center;
-  width: 46px; height: 46px; margin-bottom: 1.1rem;
-  border-radius: 14px;
-  background: rgba(224, 182, 78, .14);
-  border: 1px solid rgba(224, 182, 78, .38);
-}
-.hs-mark svg { width: 24px; height: 24px; color: var(--gold-400); }
-
-.hero-show .hs-title {
-  color: #fff; margin: 0 0 .5em;
-  text-shadow: 0 2px 18px rgba(2, 10, 20, .55), 0 1px 3px rgba(2, 10, 20, .45);
-  font-size: clamp(2.1rem, 1.3rem + 3.4vw, 3.5rem); line-height: 1.06;
-  letter-spacing: -.028em;
-}
-.hero-show .hs-lede {
-  color: #eaf1f8; margin: 0;
-  text-shadow: 0 1px 12px rgba(2, 10, 20, .6), 0 1px 2px rgba(2, 10, 20, .5);
-  font-size: clamp(1rem, .94rem + .3vw, 1.15rem); line-height: 1.62;
-  max-width: 40rem;
-}
-
-/* Entrance: the three lines rise a little, one after another. Only opacity and
-   translate, so it composites on the GPU and cannot disturb the layout. */
-.hs-text.is-on .hs-mark,
-.hs-text.is-on .hs-title,
-.hs-text.is-on .hs-lede {
-  animation: hs-rise .82s cubic-bezier(.16, .84, .28, 1) both;
-  transform-origin: 0% 60%;   /* grows out of the left margin, not the centre */
-}
-.hs-text.is-on .hs-title { animation-delay: .09s; }
-.hs-text.is-on .hs-lede  { animation-delay: .18s; }
-@keyframes hs-rise {
-  from { opacity: 0; scale: .92; translate: 0 10px; filter: blur(3px); }
-  60%  { opacity: 1; }
-  to   { opacity: 1; scale: 1;   translate: 0 0;    filter: blur(0); }
-}
-
-.hs-actions {
-  display: flex; flex-wrap: wrap; gap: .9rem;
-  margin-top: clamp(1.8rem, 3vw, 2.4rem);
-}
-
 /* --------------------------------------------------------------------------
-   Hero buttons
-
-   Three things move, all of them cheap to composite: two SVG corner brackets
-   draw themselves in, a sheen crosses once, and the whole button lifts. The
-   brackets are the reason these read as drawn rather than filled — the shape
-   is line work that assembles, not a rectangle that changes colour.
+   Actions
    -------------------------------------------------------------------------- */
+.hs-actions {
+  display: flex; flex-wrap: wrap; gap: .75rem;
+  margin: 1.9rem 0 0;
+}
+
+/* The buttons are drawn rather than filled: a pair of corner brackets that
+   draw themselves in on hover, a sheen that crosses once, an arrow that
+   slides. The brackets are fixed-size SVGs pinned to each corner rather than
+   one frame stretched around the button — a stretched rounded rect turns its
+   corners into ellipses at every width but the one it was drawn for. */
 .hbtn {
-  position: relative; isolation: isolate; overflow: hidden;
-  display: inline-flex; align-items: center; gap: .7rem;
-  padding: 1rem 1.5rem; border-radius: 15px;
-  font-family: var(--font-sans); font-size: 1rem; font-weight: 650;
-  letter-spacing: -.005em; text-decoration: none; cursor: pointer;
-  transition: transform .32s cubic-bezier(.22,.85,.3,1),
-              box-shadow .32s ease, background-color .32s ease;
+  position: relative; overflow: hidden;
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: 1.02rem 1.5rem;
+  border-radius: 15px;
+  font-weight: 650; font-size: 1rem; letter-spacing: .002em;
+  text-decoration: none; white-space: nowrap;
+  transition: transform .22s cubic-bezier(.2, .7, .3, 1),
+              box-shadow .22s ease, background-color .22s ease, border-color .22s ease;
 }
 .hbtn:hover { transform: translateY(-2px); }
 .hbtn:active { transform: translateY(0); transition-duration: .08s; }
-.hbtn:focus-visible { outline: 2px solid var(--gold-400); outline-offset: 3px; }
+.hbtn:focus-visible { outline: 2px solid var(--gold-500); outline-offset: 3px; }
 
 .hbtn-label { display: inline-flex; align-items: center; gap: .6rem; }
 .hbtn svg { width: 20px; height: 20px; flex: none; }
 
-/* The arrow sits in reserved space and slides into it, so nothing reflows. */
 .hbtn-go {
-  display: inline-flex; width: 20px;
-  opacity: 0; translate: -8px 0;
-  transition: opacity .3s ease, translate .34s cubic-bezier(.22,.85,.3,1);
+  display: inline-flex; opacity: 0; translate: -6px 0;
+  transition: opacity .24s ease, translate .24s cubic-bezier(.2, .7, .3, 1);
 }
 .hbtn:hover .hbtn-go { opacity: 1; translate: 0 0; }
 
-/* Corner brackets. Each is pinned to its own corner at a fixed 40px, so the
-   arc never stretches; the dash offset runs to zero to draw them in. */
 .hbtn-corner {
-  position: absolute; width: 40px; height: 40px; z-index: 2;
-  fill: none; stroke-width: 2; stroke-linecap: round;
-  pointer-events: none;
+  position: absolute; width: 40px; height: 40px;
+  fill: none; pointer-events: none;
 }
 .hbtn-corner path {
+  stroke-width: 2; stroke-linecap: round;
   stroke-dasharray: 1; stroke-dashoffset: 1;
-  transition: stroke-dashoffset .55s cubic-bezier(.22,.85,.3,1);
+  transition: stroke-dashoffset .5s cubic-bezier(.25, .8, .3, 1);
 }
 .hbtn:hover .hbtn-corner path { stroke-dashoffset: 0; }
 .hbtn-corner-tl { top: 3px; left: 3px; }
 .hbtn-corner-br { bottom: 3px; right: 3px; }
 
-/* One pass of light, and only on hover — a sheen that loops on its own is a
-   distraction sitting in the corner of the eye. */
+/* One pass, on hover only — a sheen that loops is a casino, not a hospital. */
 .hbtn-sheen {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  background: linear-gradient(105deg, transparent 38%,
-              rgba(255,255,255,.28) 50%, transparent 62%);
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(100deg, transparent 38%,
+              rgba(255, 255, 255, .3) 50%, transparent 62%);
   translate: -130% 0;
 }
-.hbtn:hover .hbtn-sheen { animation: hbtn-sheen .85s cubic-bezier(.3,0,.2,1); }
+.hbtn:hover .hbtn-sheen { animation: hbtn-sheen .85s cubic-bezier(.3, 0, .2, 1); }
 @keyframes hbtn-sheen { from { translate: -130% 0; } to { translate: 130% 0; } }
 
 .hbtn-primary {
-  background: linear-gradient(135deg, var(--red-600) 0%, var(--red-700) 100%);
+  background: linear-gradient(135deg, var(--red-600), var(--red-700));
   color: #fff;
-  box-shadow: 0 12px 30px -12px rgba(190, 22, 34, .9),
-              inset 0 1px 0 rgba(255, 255, 255, .16);
+  box-shadow: 0 2px 4px rgba(124, 15, 20, .18), 0 12px 26px -8px rgba(124, 15, 20, .42);
 }
 .hbtn-primary:hover {
-  color: #fff;
-  box-shadow: 0 18px 38px -14px rgba(190, 22, 34, 1),
-              inset 0 1px 0 rgba(255, 255, 255, .24);
+  background: linear-gradient(135deg, var(--red-500), var(--red-600));
+  box-shadow: 0 4px 8px rgba(124, 15, 20, .2), 0 18px 34px -10px rgba(124, 15, 20, .5);
 }
 .hbtn-primary .hbtn-corner { stroke: rgba(255, 226, 160, .95); }
 
+/* On paper the second button is an outline, not glass: the same shape, told
+   apart by weight rather than by colour, so the pair reads as one family. */
 .hbtn-ghost {
-  background: rgba(9, 24, 40, .42); color: #fff;
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22);
+  background: var(--paper);
+  color: var(--navy-900);
+  border: 1px solid var(--rule);
+  box-shadow: var(--shadow-xs);
 }
-.hbtn-ghost:hover {
-  color: #fff; background: rgba(9, 24, 40, .56);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .34);
-}
-.hbtn-ghost .hbtn-corner { stroke: rgba(255, 255, 255, .92); }
-.hbtn-ghost .hbtn-label svg { color: var(--red-500); }
+.hbtn-ghost:hover { border-color: var(--navy-200); box-shadow: var(--shadow-sm); }
+.hbtn-ghost .hbtn-label svg { color: var(--red-600); }
+.hbtn-ghost .hbtn-corner { stroke: var(--navy-700); }
 
-.hs-live { margin-top: 1.35rem; }
-.hero-show .hero-live { color: #dbe6f2; text-shadow: 0 1px 10px rgba(2, 10, 20, .6); }
-/* The classic hero puts this on ivory, so the emphasis is navy there. On the
-   slideshow it lands on a dark photograph and has to invert. */
-.hero-show .hero-live strong { color: #fff; }
-.hero-show .live-dot { box-shadow: 0 0 0 0 rgba(255, 255, 255, .5); }
+.hero-show .hero-live { color: var(--ink-600); margin-top: 1.5rem; }
+.hero-show .hero-live strong { color: var(--navy-900); }
 
-.hs-dots { display: flex; gap: .5rem; margin-top: 1.6rem; }
+/* --------------------------------------------------------------------------
+   Slide controls
+
+   The active one fills across its turn, so the wait is visible and a picture
+   never changes out of nowhere. The fill is a child element rather than a
+   background animation, so pausing it is one property on an ancestor.
+   -------------------------------------------------------------------------- */
+.hs-dots { display: flex; gap: .45rem; margin-top: 1.9rem; }
 .hs-dot {
-  width: 34px; height: 20px; padding: 0; border: 0; background: none;
-  cursor: pointer; display: grid; place-items: center;
+  padding: .5rem .18rem; background: none; border: 0; cursor: pointer;
+  line-height: 0;
 }
-.hs-dot span {
-  display: block; width: 100%; height: 4px; border-radius: 99px;
-  background: rgba(238, 244, 250, .32);
-  transition: background-color .25s ease, width .25s ease;
+.hs-dot > span {
+  display: block; position: relative; overflow: hidden;
+  width: 26px; height: 3px; border-radius: 2px;
+  background: var(--rule);
+  transition: width .3s ease, background-color .25s ease;
 }
-.hs-dot:hover span { background: rgba(238, 244, 250, .6); }
-.hs-dot.is-on span { background: var(--gold-400); }
-.hs-dot:focus-visible { outline: 2px solid var(--gold-400); outline-offset: 3px; border-radius: 4px; }
+.hs-dot:hover > span { background: var(--ink-300); }
+.hs-dot.is-on > span { width: 52px; background: var(--gold-100); }
+.hs-dot > span > i {
+  position: absolute; inset: 0 auto 0 0;
+  display: block; width: 0; border-radius: 2px;
+  background: var(--gold-500);
+}
+.hs-dot.is-on > span > i { animation: hs-fill var(--hs-turn, 3500ms) linear both; }
+@keyframes hs-fill { from { width: 0; } to { width: 100%; } }
+/* Paused while the reader is reading it; frozen once they take control. */
+.hero-show.is-held .hs-dot.is-on > span > i { animation-play-state: paused; }
+.hero-show.is-stopped .hs-dot.is-on > span > i { animation: none; width: 100%; }
+.hs-dot:focus-visible { outline: 2px solid var(--gold-500); outline-offset: 3px; border-radius: 4px; }
 
-/* Between the phone and the desktop the words fill nearly the whole frame — a
-   46rem column inside a 48rem viewport — so the left-anchored ramp has nothing
-   left to fade into and runs out under the last third of every line. Measured
-   at 768px it left the lede at 1.6:1 over the bright ambulance. In this band
-   the veil covers the frame instead, at the lightest alpha that still measured
-   past 4.5:1 under the actual glyph pixels of all five photographs. The band
-   reaches to 1160px because that is where the ramp measurably takes over: at
-   1180px the worst reading is 6.4:1, at 1100px it is 4.3:1, at 1024px 2.5:1. */
-@media (max-width: 1160px) {
-  .hs-scrim {
-    background:
-      linear-gradient(158deg,
-        rgba(3, 14, 26, .74) 0%,
-        rgba(3, 14, 26, .62) 52%,
-        rgba(3, 14, 26, .78) 100%);
+/* --------------------------------------------------------------------------
+   Narrow screens: the photograph on top, the words beneath it
+
+   Side by side stops working long before a phone — the words get a column too
+   narrow to set a headline in. Stacking keeps both at full width, and the
+   picture stays the first thing seen.
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .hero-show { grid-template-columns: 1fr; }
+  .hs-frame {
+    grid-column: 1; grid-row: 1;
+    min-height: 0; aspect-ratio: 16 / 10;
   }
+  .hs-words {
+    grid-column: 1; grid-row: 2;
+    padding: clamp(1.8rem, 5vw, 2.6rem) var(--hs-gutter) clamp(2.2rem, 6vw, 3rem);
+  }
+  .hs-words::after { display: none; }
 }
 
 @media (max-width: 620px) {
-  .hero-show { min-height: 0; padding-top: 2.2rem; }
+  .hs-frame { aspect-ratio: 4 / 3; }
   .hs-actions { flex-direction: column; align-items: stretch; gap: .7rem; }
   .hs-actions .hbtn { width: 100%; justify-content: center; }
   .hs-mark { width: 40px; height: 40px; margin-bottom: .9rem; }
-  .hs-scrim {
-    background:
-      linear-gradient(180deg, rgba(6,22,38,.88) 0%, rgba(6,22,38,.8) 45%, rgba(6,22,38,.92) 100%);
-  }
 }
 
 /* A reader who has asked for less motion gets the pictures and the words with
    no drift, no rise and no automatic changes — the script does not start. */
 @media (prefers-reduced-motion: reduce) {
-  .hs-layer { transition: none; animation: none; }
+  .hs-stage { animation: none; }
+  .hs-layer { transition: none; }
   .hs-text.is-on .hs-mark,
   .hs-text.is-on .hs-title,
   .hs-text.is-on .hs-lede { animation: none; }
+  .hs-dot.is-on > span > i { animation: none; width: 100%; }
   .hbtn, .hbtn-go, .hbtn-corner path { transition: none; }
   .hbtn:hover { transform: none; }
   .hbtn:hover .hbtn-sheen { animation: none; }
