@@ -171,13 +171,28 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 
 ::selection { background: var(--navy-900); color: #fff; }
 
+/* Collapsed to a single pixel rather than pushed somewhere off the page.
+   Parking it at left: -9999px, or moving it with a transform, both leave a
+   real full-size box outside the viewport, and whether that turns into
+   horizontal scroll depends on which element happens to be its containing
+   block — which is why it showed up as 12px of sideways scroll on Facilities
+   and nowhere else. A 1px box has nothing to overflow with. It still holds
+   its place in the tab order and still opens to full size on focus. */
 .skip-link {
-  position: absolute; left: -9999px; top: 0; z-index: 300;
+  position: absolute; left: 0; top: 0; z-index: 300;
+  /* Padding has to go too: under border-box a 1px width still leaves the
+     padding standing, which kept this a 42x27 box rather than the single
+     pixel intended. */
+  width: 1px; height: 1px; padding: 0; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
   background: var(--navy-900); color: #fff;
-  padding: .85rem 1.3rem; border-radius: 0 0 var(--r-sm) 0;
+  border-radius: 0 0 var(--r-sm) 0;
   font-weight: 600; font-size: var(--step--1);
 }
-.skip-link:focus { left: 0; color: #fff; }
+.skip-link:focus {
+  width: auto; height: auto; overflow: visible;
+  padding: .85rem 1.3rem; clip-path: none; color: #fff;
+}
 
 .sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -1325,10 +1340,25 @@ tbody tr:hover { background: var(--navy-50); }
 .table-card {
   border: 1px solid var(--rule);
   border-radius: var(--r-lg);
-  overflow: hidden; background: var(--paper);
+  /* The table below keeps a 380px floor so its columns stay readable, which is
+     wider than a phone's content column. Hiding that overflow clipped the last
+     column off the tariff and facilities tables with no way to reach it — and
+     still pushed the page sideways. Scrolling the card is what the rest of the
+     site already does with .table-wrap; the radius keeps clipping either way. */
+  overflow-x: auto; overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  background: var(--paper);
   box-shadow: var(--shadow-xs);
 }
 .table-card table { min-width: 380px; }
+/* On a phone the 380px floor is wider than the content column, which pushed
+   the amount off the card edge and made reading a price a swipe. These tables
+   are two columns of short text; letting them use the width available fits
+   them whole, and the scroll above stays as the safety net for anything that
+   still cannot. */
+@media (max-width: 620px) {
+  .table-card table { min-width: 0; }
+}
 
 /* --------------------------------------------------------------------------
    Notices
@@ -1708,11 +1738,11 @@ body { padding-bottom: 30px; }
 .hs-text.is-on .hs-mark,
 .hs-text.is-on .hs-title,
 .hs-text.is-on .hs-lede {
-  animation: hs-rise .82s cubic-bezier(.16, .84, .28, 1) both;
+  animation: hs-rise .7s cubic-bezier(.16, .84, .28, 1) both;
   transform-origin: 0% 60%;
 }
-.hs-text.is-on .hs-title { animation-delay: .09s; }
-.hs-text.is-on .hs-lede  { animation-delay: .18s; }
+.hs-text.is-on .hs-title { animation-delay: .07s; }
+.hs-text.is-on .hs-lede  { animation-delay: .14s; }
 @keyframes hs-rise {
   from { opacity: 0; scale: .94; translate: 0 10px; filter: blur(3px); }
   60%  { opacity: 1; }
@@ -1750,7 +1780,7 @@ body { padding-bottom: 30px; }
   background-image: var(--hs-src);
   background-size: cover; background-position: center;
   opacity: 0;
-  transition: opacity 1.5s cubic-bezier(.4, 0, .3, 1);
+  transition: opacity .9s cubic-bezier(.4, 0, .3, 1);
   will-change: opacity;
 }
 @media (max-width: 700px) {
@@ -1876,10 +1906,22 @@ body { padding-bottom: 30px; }
    never changes out of nowhere. The fill is a child element rather than a
    background animation, so pausing it is one property on an ancestor.
    -------------------------------------------------------------------------- */
-.hs-dots { display: flex; gap: .45rem; margin-top: 1.9rem; }
+/* The gap is 12px because the hit areas below reach 6px past each bar: any
+   tighter and neighbouring targets would overlap, so a tap near a boundary
+   would select the wrong slide. */
+.hs-dots { display: flex; gap: .875rem; margin-top: 1.9rem; }
 .hs-dot {
+  position: relative;
   padding: .5rem .18rem; background: none; border: 0; cursor: pointer;
   line-height: 0;
+}
+/* A 3px bar is the right thing to look at and the wrong thing to hit: the
+   button measured 32x19, well under the 44px a fingertip needs. The hit area
+   is extended with a pseudo-element rather than padding, so the target grows
+   without the row growing with it — which matters on a phone, where every
+   pixel here pushes the booking button further down the screen. */
+.hs-dot::after {
+  content: ''; position: absolute; inset: -13px -7px;
 }
 .hs-dot > span {
   display: block; position: relative; overflow: hidden;
@@ -1921,17 +1963,34 @@ body { padding-bottom: 30px; }
   .hs-words::after { display: none; }
 }
 
+/* --------------------------------------------------------------------------
+   The phone hero
+
+   Measured rather than guessed: at 390px the hero stood 969px tall — 115% of
+   the screen — which put "Book an OP Token" 35px below the fold, and 258px
+   below it on a 360px phone. A hero whose whole purpose is that button must
+   not hide it, so every part of this block is buying vertical space back.
+
+   The frame is 5:4 rather than square. It was square so the diagrams could be
+   read, but that reasoning expired when they gained their blurred surround:
+   the sharp picture is sized to fit inside the frame, so the wider of the two
+   renders at exactly the same size in a 5:4 frame as in a square one, and only
+   the square picture gives up anything. 78px for that is a good trade.
+   -------------------------------------------------------------------------- */
 @media (max-width: 620px) {
-  /* Square on a phone. The frame's shape has to be the same for every slide —
-     a frame that resized per picture is the jumping this was built to stop —
-     so it is chosen for the tightest case: the diagrams are square, and at 4:3
-     they came out 293px tall with their labels too small to read. Square gives
-     them the full width of the screen. The photographs are cropped a little
-     harder in return, which costs a scene nothing. */
-  .hs-frame { aspect-ratio: 1 / 1; }
-  .hs-actions { flex-direction: column; align-items: stretch; gap: .7rem; }
+  .hs-frame { aspect-ratio: 5 / 4; }
+
+  .hs-words { padding-top: 1.35rem; padding-bottom: 1.5rem; }
+  .hs-place { margin-bottom: .8rem; }
+
+  /* The gold mark is decorative and already aria-hidden. On a phone it costs
+     54px above the headline, which is a button's worth of screen. */
+  .hs-mark { display: none; }
+
+  .hs-actions { flex-direction: column; align-items: stretch; gap: .6rem; margin-top: 1.3rem; }
   .hs-actions .hbtn { width: 100%; justify-content: center; }
-  .hs-mark { width: 40px; height: 40px; margin-bottom: .9rem; }
+  .hero-show .hero-live { margin-top: 1rem; }
+  .hs-dots { margin-top: 1.15rem; }
 }
 
 /* A reader who has asked for less motion gets the pictures and the words with

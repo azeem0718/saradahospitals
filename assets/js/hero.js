@@ -28,10 +28,13 @@
   var count  = texts.length;
   if (count < 2) return;
 
-  /* 3.5s a slide. The pictures take 1.5s to cross, so for a good part of every
-     turn two of them are on screen together — which is the point. The bar
-     under the words is told the same number, so what it draws is the truth. */
-  var EVERY = 3500;
+  /* 2s a slide. That is fast for a crossfade, so the budget is spent
+     deliberately: the pictures take 0.9s to cross and the words settle by
+     about 0.85s, leaving roughly a second where the slide is simply still and
+     readable. Anything slower to cross and the hero would never stop moving.
+     The bar under the words is told the same number, so what it draws is the
+     truth rather than a guess. */
+  var EVERY = 2000;
   root.style.setProperty('--hs-turn', EVERY + 'ms');
 
   var at = 0;
