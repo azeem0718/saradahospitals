@@ -58,6 +58,32 @@ body.admin { background: var(--ground); padding-bottom: 0; }
 }
 .admin-nav svg { width: 16px; height: 16px; }
 
+/* The section bar above the menu. Darker than the menu it introduces, so the
+   two read as an outer and an inner rather than two rows competing. Only ever
+   three entries, so it never needs to scroll. */
+.admin-sections {
+  background: var(--navy-950, #061626);
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  /* Three entries fit anywhere, but "View Site" sits out at the right and on a
+     360px phone the row is a few pixels wider than the screen. Scrolling here
+     rather than letting it push means the page itself never moves sideways. */
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.admin-sections::-webkit-scrollbar { display: none; }
+.admin-sections .wrap { display: flex; gap: .15rem; max-width: 1440px; align-items: center; }
+.admin-sections a {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .6rem .85rem;
+  color: #8fa6bf; text-decoration: none;
+  font-size: .82rem; font-weight: 600; letter-spacing: .01em; white-space: nowrap;
+  transition: color .15s ease, background-color .15s ease;
+}
+.admin-sections a:hover { color: #fff; background: rgba(255, 255, 255, .05); }
+.admin-sections a[aria-current="true"] { color: #fff; background: var(--navy-900); }
+.admin-sections svg { width: 15px; height: 15px; }
+.admin-sections-out { margin-left: auto; }
+
 .admin-main { padding: 1.85rem 0 4rem; }
 .admin-main > .wrap { max-width: 1440px; }
 
@@ -171,6 +197,42 @@ body.admin { background: var(--ground); padding-bottom: 0; }
 .empty-state { padding: 3.25rem 1.5rem; text-align: center; color: var(--ink-500); }
 .empty-state svg { width: 40px; height: 40px; margin: 0 auto 1rem; color: var(--ink-300); }
 .empty-state p { margin: 0; }
+
+/* --------------------------------------------------------------------------
+   Content overview
+   -------------------------------------------------------------------------- */
+.stat .stat-note {
+  display: block; margin-top: .3rem;
+  font-size: .78rem; color: var(--ink-400);
+}
+
+.ov-area { border-bottom: 1px solid var(--rule); padding: .95rem 1.3rem; }
+.ov-area:last-child { border-bottom: 0; }
+.ov-area.is-changed { background: var(--gold-50, #fdf8ec); }
+
+.ov-area-head {
+  display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+}
+.ov-area-name { font-weight: 650; color: var(--navy-900); }
+.ov-area-head .btn { margin-left: auto; }
+.ov-quiet, .ov-count { font-size: .82rem; color: var(--ink-400); }
+.ov-count::before { content: '·'; margin-right: .5rem; }
+
+.ov-items { list-style: none; margin: .85rem 0 0; padding: 0; display: grid; gap: .55rem; }
+.ov-items > li {
+  display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap;
+  background: var(--paper); border: 1px solid var(--rule); border-radius: 10px;
+  padding: .7rem .85rem;
+}
+.ov-item-text { flex: 1 1 22rem; min-width: 0; display: grid; gap: .15rem; }
+.ov-item-text strong { font-size: .9rem; color: var(--navy-900); }
+/* The old wording and the new one, one above the other rather than side by
+   side: they are rarely the same length, and a column that ragged is harder to
+   read than two plain lines. */
+.ov-was, .ov-now { font-size: .84rem; overflow-wrap: anywhere; }
+.ov-was { color: var(--ink-400); text-decoration: line-through; }
+.ov-now { color: var(--ink-700, var(--ink-500)); }
+.ov-revert { margin-left: auto; }
 
 /* --------------------------------------------------------------------------
    Status pills

@@ -159,18 +159,12 @@ function schema_migrations(): array
         // slideshow arrives looking finished; reception can swap any of them
         // afterwards without touching the cards they were borrowed from.
         10 => static function (PDO $pdo): void {
+            require_once __DIR__ . '/site-images.php';
             $stmt = $pdo->prepare('INSERT IGNORE INTO site_images (slot, file, alt) VALUES (?,?,?)');
             $dir  = dirname(__DIR__) . '/assets/img/site/';
-            $seed = [
-                ['hero-slide-1', 'card-emergency.jpg', 'An ambulance outside the hospital'],
-                ['hero-slide-2', 'card-medicine.jpg',  'A doctor holding a stethoscope'],
-                ['hero-slide-3', 'card-diabetes.jpg',  'A blood glucose meter being read'],
-                ['hero-slide-4', 'card-maternity.jpg', 'Maternity care'],
-                ['hero-slide-5', 'card-lab.jpg',       'A laboratory technician examining a sample'],
-            ];
-            foreach ($seed as [$slot, $file, $alt]) {
-                if (is_file($dir . $file)) {
-                    $stmt->execute([$slot, $file, $alt]);
+            foreach (site_image_seeds() as $slot => $seed) {
+                if (is_file($dir . $seed['file'])) {
+                    $stmt->execute([$slot, $seed['file'], $seed['alt']]);
                 }
             }
         },

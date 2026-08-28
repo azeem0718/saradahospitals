@@ -133,6 +133,7 @@ function content_pages(): array
         'home' => [
             'label'  => 'Home',
             'url'    => 'index.php',
+            'lists'  => ['hero.slides'],
             'blocks' => [
                 'home.hero.place' => [
                     'label' => 'Hero — location line', 'type' => 'text',
@@ -1292,6 +1293,246 @@ function list_shaped(string $key): array
     $shape = content_lists()[$key]['shape'] ?? null;
     $rows  = list_editable($key);
     return $shape === null ? $rows : array_map($shape, $rows);
+}
+
+/* --------------------------------------------------------------------------
+   What has been changed
+
+   Everything editable, gathered into the areas reception actually thinks in —
+   a page, a tariff table, a set of photographs — each knowing how much of it
+   has been changed from what the site shipped with, and where it is edited.
+
+   This exists because the defaults live in the code: a field nobody has
+   touched keeps improving as the site does, and a field somebody has touched
+   is frozen at their wording. That is the right behaviour, but it is invisible
+   from any single editing screen, so this is the one place that answers "what
+   have we changed, and what is still as it came".
+   -------------------------------------------------------------------------- */
+
+/** Enough of a value to recognise it in a list, without filling the page. */
+function content_excerpt(string $value, int $limit = 90): string
+{
+    $value = trim(preg_replace('/\s+/u', ' ', $value) ?? '');
+    return mb_strlen($value) > $limit ? mb_substr($value, 0, $limit - 1) . '…' : $value;
+}
+
+/**
+ * Which admin screen edits a given list. Lists belong to the screen that shows
+ * them, so this is derived from those screens rather than declared twice.
+ *
+ * @return array<string, array{url:string, section:string}>
+ */
+function content_list_homes(): array
+{
+    static $homes = null;
+    if ($homes !== null) {
+        return $homes;
+    }
+
+    $homes = [];
+    foreach (['tariff.consultation', 'tariff.rooms', 'offers'] as $key) {
+        $homes[$key] = ['url' => 'tariff.php', 'section' => 'Tariff and offers'];
+    }
+    foreach (['services.medicine', 'services.obg', 'facilities'] as $key) {
+        $homes[$key] = ['url' => 'services.php', 'section' => 'Services and facilities'];
+    }
+    foreach (content_pages() as $slug => $page) {
+        foreach ($page['lists'] ?? [] as $key) {
+            $homes[$key] = [
+                'url'     => 'pages.php?page=' . urlencode($slug),
+                'section' => 'Page text',
+            ];
+        }
+    }
+    return $homes;
+}
+
+/**
+ * Every editable area with its tally of changes.
+ *
+ * @return list<array{key:string, section:string, label:string, url:string,
+ *                    total:int, changed:int, items:list<array>}>
+ */
+function content_areas(): array
+{
+    $areas = [];
+
+    /* Hospital details, one area per group of fields. */
+    foreach (content_groups() as $key => $group) {
+        $items = [];
+        foreach ($group['fields'] as $field => $spec) {
+            if (content_is_edited($field)) {
+                $items[] = [
+                    'kind'  => 'text',
+                    'key'   => $field,
+                    'label' => $spec['label'],
+                    'now'   => content_excerpt(text($field)),
+                    'was'   => content_excerpt(content_default($field)),
+                ];
+            }
+        }
+        $areas[] = [
+            'key'     => 'hospital.' . $key,
+            'section' => 'Hospital details',
+            'label'   => $group['label'],
+            'url'     => 'hospital.php',
+            'total'   => count($group['fields']),
+            'changed' => count($items),
+            'items'   => $items,
+        ];
+    }
+
+    /* Page wording, one area per public page. Its lists are counted with it,
+       because on the editing screen they sit on the same page. */
+    $listHomes = content_list_homes();
+    $lists     = content_lists();
+
+    foreach (content_pages() as $slug => $page) {
+        $items = [];
+        foreach ($page['blocks'] as $key => $spec) {
+            if (content_is_edited($key)) {
+                $items[] = [
+                    'kind'  => 'text',
+                    'key'   => $key,
+                    'label' => $spec['label'],
+                    'now'   => content_excerpt(text($key)),
+                    'was'   => content_excerpt(content_default($key)),
+                ];
+            }
+        }
+        $total = count($page['blocks']);
+        foreach ($page['lists'] ?? [] as $listKey) {
+            $total++;
+            if (list_is_edited($listKey)) {
+                $items[] = [
+                    'kind'  => 'list',
+                    'key'   => $listKey,
+                    'label' => $lists[$listKey]['label'] ?? $listKey,
+                    'now'   => count(list_editable($listKey)) . ' rows',
+                    'was'   => count($lists[$listKey]['default'] ?? []) . ' rows as shipped',
+                ];
+            }
+        }
+        $areas[] = [
+            'key'     => 'page.' . $slug,
+            'section' => 'Page text',
+            'label'   => $page['label'],
+            'url'     => 'pages.php?page=' . urlencode($slug),
+            'total'   => $total,
+            'changed' => count($items),
+            'items'   => $items,
+        ];
+    }
+
+    /* The lists edited on their own screens rather than alongside a page. */
+    $standalone = [];
+    foreach ($lists as $key => $list) {
+        $home = $listHomes[$key] ?? null;
+        if ($home === null || $home['section'] === 'Page text') {
+            continue;
+        }
+        $standalone[$home['section']][$key] = $list;
+    }
+    foreach ($standalone as $section => $group) {
+        $items = [];
+        foreach ($group as $key => $list) {
+            if (list_is_edited($key)) {
+                $items[] = [
+                    'kind'  => 'list',
+                    'key'   => $key,
+                    'label' => $list['label'],
+                    'now'   => count(list_editable($key)) . ' rows',
+                    'was'   => count($list['default'] ?? []) . ' rows as shipped',
+                ];
+            }
+        }
+        $areas[] = [
+            'key'     => 'lists.' . strtolower(str_replace(' ', '-', $section)),
+            'section' => $section,
+            'label'   => $section,
+            'url'     => $listHomes[array_key_first($group)]['url'],
+            'total'   => count($group),
+            'changed' => count($items),
+            'items'   => $items,
+        ];
+    }
+
+    /* Photographs. A slot holding the picture it shipped with does not count. */
+    require_once __DIR__ . '/site-images.php';
+    foreach (site_image_groups() as $key => $group) {
+        $items = [];
+        foreach ($group['slots'] as $slot => $label) {
+            if (site_image_is_custom($slot)) {
+                $stored = site_image($slot);
+                $seed   = site_image_seeds()[$slot] ?? null;
+                $items[] = [
+                    'kind'  => 'image',
+                    'key'   => $slot,
+                    'label' => $label,
+                    'now'   => (string) $stored['file'],
+                    'was'   => $seed === null ? 'the drawn artwork' : $seed['file'],
+                ];
+            }
+        }
+        $areas[] = [
+            'key'     => 'images.' . $key,
+            'section' => 'Pictures',
+            'label'   => $group['label'],
+            'url'     => 'images.php',
+            'total'   => count($group['slots']),
+            'changed' => count($items),
+            'items'   => $items,
+        ];
+    }
+
+    return $areas;
+}
+
+/**
+ * Undo one change, whatever kind it is, putting the item back to what the site
+ * shipped with. Returns false for anything not registered, so a tampered form
+ * cannot delete rows this never meant to expose.
+ */
+function content_revert(string $kind, string $key): bool
+{
+    switch ($kind) {
+        case 'text':
+            if (!isset(content_specs()[$key])) {
+                return false;
+            }
+            content_save([$key => '']);
+            return true;
+
+        case 'list':
+            if (!isset(content_lists()[$key])) {
+                return false;
+            }
+            list_reset($key);
+            return true;
+
+        case 'image':
+            require_once __DIR__ . '/site-images.php';
+            require_once __DIR__ . '/uploads.php';
+            if (!isset(site_image_slots()[$key])) {
+                return false;
+            }
+            $stored = site_image($key);
+            $seed   = site_image_seeds()[$key] ?? null;
+            if ($stored !== null) {
+                delete_upload($stored['file'], SITE_IMAGE_STORE);
+            }
+            db()->prepare('DELETE FROM site_images WHERE slot = ?')->execute([$key]);
+            // A slot that ships with a picture goes back to that picture, not
+            // to nothing — otherwise "reset" would quietly empty the slideshow.
+            if ($seed !== null) {
+                db()->prepare('INSERT INTO site_images (slot, file, alt) VALUES (?,?,?)')
+                    ->execute([$key, $seed['file'], $seed['alt']]);
+            }
+            site_images_forget();
+            return true;
+    }
+
+    return false;
 }
 
 /**

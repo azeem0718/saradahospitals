@@ -16,24 +16,56 @@ $adminTitle    = $adminTitle    ?? 'Reception';
 $adminSubtitle = $adminSubtitle ?? '';
 $adminNav      = $adminNav      ?? '';
 
-$adminMenu = [
-    'today'    => ['Today',     'index.php',    'list'],
-    'bookings' => ['Bookings',  'bookings.php', 'calendar'],
-    'new'      => ['New Token', 'new.php',      'plus'],
-    'schedule' => ['Schedule',  'schedule.php', 'clock'],
-    'leave'    => ['Leave',     'leave.php',    'close'],
-    'analytics' => ['Analytics', 'analytics.php', 'icu'],
+/*
+ * The menu in sections rather than one row.
+ *
+ * Reception sees only the desk, which is six entries and fits. An admin sees
+ * everything, which was thirteen and had begun to scroll sideways — the last
+ * few items were reachable only by dragging a bar most people never realise is
+ * draggable. Grouping puts a short row of sections on top and only that
+ * section's entries beneath, so nothing is ever hidden off the edge.
+ *
+ * The sections are the three different jobs this panel does: running today's
+ * clinic, saying what the website says, and administering the place. Somebody
+ * on the desk all day never leaves the first.
+ */
+$adminSections = [
+    'desk' => ['label' => 'Reception', 'icon' => 'list', 'items' => [
+        'today'     => ['Today',     'index.php',     'list'],
+        'bookings'  => ['Bookings',  'bookings.php',  'calendar'],
+        'new'       => ['New Token', 'new.php',       'plus'],
+        'schedule'  => ['Schedule',  'schedule.php',  'clock'],
+        'leave'     => ['Leave',     'leave.php',     'close'],
+        'analytics' => ['Analytics', 'analytics.php', 'icu'],
+    ]],
 ];
+
 if ($user['role'] === 'admin') {
-    $adminMenu['hospital'] = ['Hospital', 'hospital.php', 'building'];
-    $adminMenu['tariff']   = ['Tariff',   'tariff.php',   'discount'];
-    $adminMenu['pages']    = ['Page Text', 'pages.php',    'edit'];
-    $adminMenu['services'] = ['Services', 'services.php', 'heart'];
-    $adminMenu['doctors']  = ['Doctors',  'doctors.php',  'stethoscope'];
-    $adminMenu['images']   = ['Pictures', 'images.php',   'image'];
-    $adminMenu['users']    = ['Staff',    'users.php',    'users'];
-    $adminMenu['backup']   = ['Backups',  'backup.php',   'shield'];
-    $adminMenu['settings'] = ['Settings', 'settings.php', 'settings'];
+    $adminSections['website'] = ['label' => 'Website', 'icon' => 'edit', 'items' => [
+        'content'  => ['Overview',  'content.php',  'info'],
+        'pages'    => ['Page Text', 'pages.php',    'edit'],
+        'hospital' => ['Hospital',  'hospital.php', 'building'],
+        'tariff'   => ['Tariff',    'tariff.php',   'discount'],
+        'services' => ['Services',  'services.php', 'heart'],
+        'doctors'  => ['Doctors',   'doctors.php',  'stethoscope'],
+        'images'   => ['Pictures',  'images.php',   'image'],
+    ]];
+    $adminSections['system'] = ['label' => 'Admin', 'icon' => 'settings', 'items' => [
+        'users'    => ['Staff',    'users.php',    'users'],
+        'backup'   => ['Backups',  'backup.php',   'shield'],
+        'settings' => ['Settings', 'settings.php', 'settings'],
+    ]];
+}
+
+/* Which section the current page sits in. A page that does not name itself —
+   the password screen, say — falls back to the first, so the bar still renders
+   something sensible rather than an empty second row. */
+$adminSection = array_key_first($adminSections);
+foreach ($adminSections as $sectionKey => $section) {
+    if (isset($section['items'][$adminNav])) {
+        $adminSection = $sectionKey;
+        break;
+    }
 }
 
 $flash = flash();
@@ -71,14 +103,32 @@ $flash = flash();
   </div>
 </div>
 
-<nav class="admin-nav" aria-label="Admin">
+<?php if (count($adminSections) > 1): ?>
+<nav class="admin-sections" aria-label="Sections">
   <div class="wrap">
-    <?php foreach ($adminMenu as $key => [$label, $href, $ico]): ?>
+    <?php foreach ($adminSections as $key => $section): ?>
+      <?php $first = $section['items'][array_key_first($section['items'])]; ?>
+      <a href="<?= e($first[1]) ?>"<?= $adminSection === $key ? ' aria-current="true"' : '' ?>>
+        <?= icon($section['icon']) ?><?= e($section['label']) ?>
+      </a>
+    <?php endforeach; ?>
+    <a class="admin-sections-out" href="../index.php" target="_blank" rel="noopener">
+      <?= icon('arrow-right') ?>View Site
+    </a>
+  </div>
+</nav>
+<?php endif; ?>
+
+<nav class="admin-nav" aria-label="<?= e($adminSections[$adminSection]['label']) ?>">
+  <div class="wrap">
+    <?php foreach ($adminSections[$adminSection]['items'] as $key => [$label, $href, $ico]): ?>
       <a href="<?= e($href) ?>"<?= $adminNav === $key ? ' aria-current="page"' : '' ?>>
         <?= icon($ico) ?><?= e($label) ?>
       </a>
     <?php endforeach; ?>
-    <a href="../index.php" target="_blank" rel="noopener"><?= icon('arrow-right') ?>View Site</a>
+    <?php if (count($adminSections) === 1): ?>
+      <a href="../index.php" target="_blank" rel="noopener"><?= icon('arrow-right') ?>View Site</a>
+    <?php endif; ?>
   </div>
 </nav>
 

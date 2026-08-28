@@ -77,6 +77,43 @@ function site_image_groups(): array
     ];
 }
 
+/**
+ * Slots that ship with a photograph already in place, and the file and wording
+ * each arrives with.
+ *
+ * The hero slideshow borrows the department card photographs, which are already
+ * on disk and already credited, so the slideshow arrives looking finished. The
+ * migration seeds from this map and the content overview reads it, so there is
+ * one statement of what shipped rather than two that could drift apart — which
+ * is what lets the overview tell a shipped picture from one reception uploaded.
+ *
+ * @return array<string, array{file:string, alt:string}>
+ */
+function site_image_seeds(): array
+{
+    return [
+        'hero-slide-1' => ['file' => 'card-emergency.jpg', 'alt' => 'An ambulance outside the hospital'],
+        'hero-slide-2' => ['file' => 'card-medicine.jpg',  'alt' => 'A doctor holding a stethoscope'],
+        'hero-slide-3' => ['file' => 'card-diabetes.jpg',  'alt' => 'A blood glucose meter being read'],
+        'hero-slide-4' => ['file' => 'card-maternity.jpg', 'alt' => 'Maternity care'],
+        'hero-slide-5' => ['file' => 'card-lab.jpg',       'alt' => 'A laboratory technician examining a sample'],
+    ];
+}
+
+/**
+ * True when the picture in a slot is reception's rather than the one the site
+ * shipped with. A slot holding exactly its seeded file has not been touched.
+ */
+function site_image_is_custom(string $slot): bool
+{
+    $stored = site_image($slot);
+    if ($stored === null) {
+        return false;
+    }
+    $seed = site_image_seeds()[$slot] ?? null;
+    return $seed === null || $stored['file'] !== $seed['file'];
+}
+
 /** Flat slot => label map, for validating what a form submitted. */
 function site_image_slots(): array
 {
