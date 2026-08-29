@@ -890,6 +890,104 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 }
 
 /* --------------------------------------------------------------------------
+   Facility mosaic
+
+   Not a row of equals. The first tile is twice the size and carries the
+   hospital's navy, the next two are wide, the rest are compact — so the eye
+   is told where to start instead of being handed six identical boxes.
+
+   Three layouts rather than one squeezed three ways. On a phone the tiles lie
+   down: icon beside the text rather than above it, which is what turns six
+   full-height boxes into a list you can actually scroll past. From 520px they
+   stand up into a four-column mosaic, and from 900px into the full six-column
+   one where the feature tile occupies two rows.
+
+   The spans are written to survive a different number of tiles, because the
+   list is editable in the admin panel: whatever the count, the first is the
+   feature, the next two are wide, and everything after fills in two columns
+   at a time with dense packing closing the gaps.
+   -------------------------------------------------------------------------- */
+.fac-bento {
+  display: grid;
+  gap: clamp(.7rem, 1.5vw, 1.1rem);
+  grid-template-columns: 1fr;
+}
+
+.fac {
+  position: relative; overflow: hidden;
+  display: flex; gap: 1rem; align-items: flex-start;
+  padding: clamp(1.1rem, 2.1vw, 1.6rem);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-xs);
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.fac:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+  border-color: var(--navy-200);
+}
+
+.fac-icon {
+  display: grid; place-items: center; flex: none;
+  width: 46px; height: 46px; border-radius: 13px;
+  background: var(--navy-50);
+  border: 1px solid var(--navy-100);
+  color: var(--navy-700);
+  transition: background-color .22s ease, color .22s ease, transform .22s ease;
+}
+.fac-icon svg { width: 22px; height: 22px; }
+.fac:hover .fac-icon { background: var(--navy-800); border-color: var(--navy-800); color: var(--gold-400); }
+
+.fac-text { min-width: 0; }
+.fac h3 { font-size: 1.03rem; margin: 0 0 .32em; line-height: 1.3; }
+.fac p  { font-size: .88rem; color: var(--ink-600); margin: 0; line-height: 1.55; }
+
+/* The feature tile. Navy, so it reads as the hospital speaking rather than as
+   one more card, with a soft light behind the icon corner. */
+.fac:first-child {
+  background:
+    radial-gradient(120% 90% at 12% 0%, rgba(224, 182, 78, .16), transparent 60%),
+    linear-gradient(155deg, var(--navy-900), var(--navy-950));
+  border-color: transparent;
+}
+.fac:first-child h3 { color: #fff; font-size: clamp(1.15rem, 1.6vw, 1.45rem); }
+/* Measured on the navy: this is the lightest step that clears 4.5:1 there. */
+.fac:first-child p  { color: #b9cbdd; font-size: .95rem; }
+.fac:first-child .fac-icon {
+  width: 54px; height: 54px; border-radius: 15px;
+  background: rgba(255, 255, 255, .09);
+  border-color: rgba(255, 255, 255, .16);
+  color: var(--gold-400);
+}
+.fac:first-child .fac-icon svg { width: 26px; height: 26px; }
+.fac:first-child:hover .fac-icon {
+  background: var(--gold-400); border-color: var(--gold-400); color: var(--navy-950);
+}
+
+/* Standing up: from here the tiles are columns, not rows. */
+@media (min-width: 520px) {
+  .fac-bento {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-flow: dense;
+  }
+  .fac { grid-column: span 2; flex-direction: column; gap: 1.05rem; }
+  .fac:first-child { grid-column: 1 / -1; }
+}
+
+@media (min-width: 900px) {
+  .fac-bento { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .fac { grid-column: span 2; }
+  /* Two rows tall, and composed rather than centred: the mark sits at the top
+     of the tile and the words at the bottom, which reads as a poster instead
+     of a paragraph floating in a box. */
+  .fac:first-child { grid-column: span 3; grid-row: span 2; justify-content: space-between; }
+  .fac:nth-child(2),
+  .fac:nth-child(3) { grid-column: span 3; }
+}
+
+/* --------------------------------------------------------------------------
    Grids and cards
    -------------------------------------------------------------------------- */
 .grid { display: grid; gap: clamp(1rem, 2vw, 1.5rem); }

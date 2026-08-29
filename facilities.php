@@ -18,15 +18,7 @@ page_hero(
 
 <section class="section">
   <div class="wrap">
-    <div class="grid grid-3 grid-wave">
-      <?php foreach (FACILITIES as $f): ?>
-        <div class="card">
-          <span class="card-icon"><?= icon($f['icon']) ?></span>
-          <h3><?= e($f['title']) ?></h3>
-          <p><?= e($f['text']) ?></p>
-        </div>
-      <?php endforeach; ?>
-    </div>
+    <?php facility_bento(FACILITIES); ?>
   </div>
 </section>
 
@@ -67,15 +59,7 @@ page_hero(
       <span class="eyebrow"><?= e(text('facilities.diagnostics.eyebrow')) ?></span>
       <h2><?= e(text('facilities.diagnostics.title')) ?></h2>
     </div>
-    <div class="grid grid-3 grid-wave">
-      <?php foreach (list_shaped('facilities.diagnostics') as $d): ?>
-        <div class="card">
-          <span class="card-icon"><?= icon($d['icon']) ?></span>
-          <h3><?= e($d['title']) ?></h3>
-          <p><?= e($d['text']) ?></p>
-        </div>
-      <?php endforeach; ?>
-    </div>
+    <?php facility_bento(list_shaped('facilities.diagnostics')); ?>
 
     <div class="notice notice-success mt-3 mb-0">
       <?= icon('discount') ?>

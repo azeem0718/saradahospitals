@@ -164,15 +164,7 @@ $cardOpener = static function (string $slot, string $iconName, string $tone = ''
       <span class="eyebrow"><?= e(text('home.facilities.eyebrow')) ?></span>
       <h2><?= e(text('home.facilities.title')) ?></h2>
     </div>
-    <div class="grid grid-3 grid-wave">
-      <?php foreach (FACILITIES as $f): ?>
-        <div class="card">
-          <span class="card-icon"><?= icon($f['icon']) ?></span>
-          <h3><?= e($f['title']) ?></h3>
-          <p><?= e($f['text']) ?></p>
-        </div>
-      <?php endforeach; ?>
-    </div>
+    <?php facility_bento(FACILITIES); ?>
   </div>
 </section>
 

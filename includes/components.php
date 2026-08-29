@@ -238,6 +238,47 @@ function doctor_cards(array $doctors, bool $withLink = true): void
     <?php
 }
 
+/**
+ * Facility tiles, laid out as a mosaic rather than a row of equals.
+ *
+ * These used to be identical cards in a three-across grid, which is the same
+ * shape whether a hospital has an intensive care unit or a water cooler. Six
+ * of them stacked on a phone was six full-height boxes to scroll past, and on
+ * a laptop it was a wall of sameness with nothing telling a reader where to
+ * look first.
+ *
+ * A mosaic fixes both. The first facility takes a tile twice the size and the
+ * hospital's own navy — for this hospital that is round-the-clock emergency
+ * care, which is the one thing somebody choosing between hospitals at nine at
+ * night needs to see — the next two take wide tiles, and the rest sit in a row
+ * of compact ones. It reads as a floor of a building rather than a list.
+ *
+ * The spans are written so any number of items lands somewhere sensible: the
+ * list is editable in the admin panel, so a layout that only works for exactly
+ * six would be a trap for whoever edits it next.
+ *
+ * @param list<array{icon:string,title:string,text:string}> $items
+ */
+function facility_bento(array $items): void
+{
+    if (!$items) {
+        return;
+    }
+    ?>
+    <div class="fac-bento grid-wave">
+      <?php foreach ($items as $f): ?>
+        <article class="fac">
+          <span class="fac-icon"><?= icon($f['icon']) ?></span>
+          <div class="fac-text">
+            <h3><?= e($f['title']) ?></h3>
+            <p><?= e($f['text']) ?></p>
+          </div>
+        </article>
+      <?php endforeach; ?>
+    </div>
+    <?php
+}
+
 /** Standard emergency warning shown above booking forms. */
 function emergency_notice(): void
 {
