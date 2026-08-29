@@ -61,42 +61,6 @@ require __DIR__ . '/includes/'
   </div>
 </section>
 
-<!-- Fact band --------------------------------------------------------- -->
-<section class="fact-band">
-  <div class="wrap">
-    <div class="fact-grid">
-      <div class="fact">
-        <span class="fact-icon"><?= icon('clock') ?></span>
-        <span class="fact-text">
-          <strong>Open 24 Hours</strong>
-          <span>Including Sundays</span>
-        </span>
-      </div>
-      <div class="fact">
-        <span class="fact-icon"><?= icon('users') ?></span>
-        <span class="fact-text">
-          <strong>Two Consultants</strong>
-          <span>Medicine &amp; Gynaecology</span>
-        </span>
-      </div>
-      <div class="fact">
-        <span class="fact-icon"><?= icon('calendar') ?></span>
-        <span class="fact-text">
-          <strong>Free OP Fridays</strong>
-          <span>No consultation charge</span>
-        </span>
-      </div>
-      <div class="fact">
-        <span class="fact-icon"><?= icon('location') ?></span>
-        <span class="fact-text">
-          <strong>Pamuru Road</strong>
-          <span>Opposite ICICI Bank</span>
-        </span>
-      </div>
-    </div>
-  </div>
-</section>
-
 <?php offers_strip(); ?>
 
 <!-- Care departments ------------------------------------------------- -->

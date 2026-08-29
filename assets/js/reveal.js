@@ -30,7 +30,6 @@
     ['.hero-copy > *',        'up'],
     ['.hero-art',             'fade'],
     ['.quick',                'zoom'],
-    ['.fact',                 'up'],
     ['.section-head',         'up'],
     ['.card',                 'side-alt'],
     ['.dept',                 'up'],

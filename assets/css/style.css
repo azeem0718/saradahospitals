@@ -875,48 +875,6 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 }
 
 /* --------------------------------------------------------------------------
-   Fact band — sits directly beneath the hero
-   -------------------------------------------------------------------------- */
-.fact-band { background: var(--navy-950); border-bottom: 1px solid rgba(255,255,255,.07); }
-.fact-grid {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-}
-.fact {
-  display: flex; align-items: center; gap: .9rem;
-  padding: 1.5rem clamp(.75rem, 2vw, 1.5rem);
-  border-right: 1px solid rgba(255,255,255,.07);
-}
-.fact:last-child { border-right: 0; }
-.fact-icon {
-  display: grid; place-items: center; flex: none;
-  width: 40px; height: 40px; border-radius: 10px;
-  background: rgba(255,255,255,.07); color: var(--gold-400);
-  transition: transform var(--flip-time) var(--flip-ease),
-              background-color .18s ease, color .18s ease;
-}
-.fact-icon svg { width: 20px; height: 20px; }
-.fact-text strong {
-  display: block; font-family: var(--font-display);
-  font-size: 1.05rem; font-weight: 600; color: #fff; line-height: 1.25;
-}
-.fact-text span { display: block; font-size: .8rem; color: #7f95ad; line-height: 1.4; }
-
-@media (max-width: 620px) {
-  .fact-grid { grid-template-columns: 1fr 1fr; }
-  .fact { padding: 1.15rem .9rem; }
-  .fact:nth-child(2n) { border-right: 0; }
-  .fact:nth-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,.07); }
-}
-
-/* Below about 400px two columns leave roughly 70px for the label once the icon
-   and padding are taken out, which is not enough for "Open 24 Hours". */
-@media (max-width: 400px) {
-  .fact-grid { grid-template-columns: 1fr; }
-  .fact { border-right: 0; border-bottom: 1px solid rgba(255,255,255,.07); padding: .95rem .9rem; }
-  .fact:last-child { border-bottom: 0; }
-}
-
-/* --------------------------------------------------------------------------
    Grids and cards
    -------------------------------------------------------------------------- */
 .grid { display: grid; gap: clamp(1rem, 2vw, 1.5rem); }
@@ -2535,7 +2493,7 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
  * Hover and focus triggers. Kept as one list so a new component only has to be
  * added here rather than repeated against every icon.
  */
-:is(.quick, .card-link, .btn, .hero-doc, .fact, .offer-item, .doctor-card,
+:is(.quick, .card-link, .btn, .hero-doc, .offer-item, .doctor-card,
     .contact-list li, .service-list li, .stat, .token-slip):is(:hover, :focus-within) .ico-feature .ico-anim,
 .findbar-field:focus-within .ico-feature .ico-anim {
   animation-name: var(--ico-anim);
@@ -2550,9 +2508,9 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
  * on the card rather than a picture printed on it. A full 360 lands back where
  * it started, which means it plays the same on the way out as on the way in.
  */
-:is(.quick, .card-link, .doctor-card, .offer-item, .fact, .stat,
+:is(.quick, .card-link, .doctor-card, .offer-item, .stat,
     .contact-list li, .service-card):is(:hover, :focus-within)
-  :is(.quick-icon, .card-icon, .fact-icon) {
+  :is(.quick-icon, .card-icon) {
   transform: perspective(620px) rotateY(360deg);
 }
 
@@ -2639,10 +2597,10 @@ fieldset:last-of-type { margin-bottom: 1.25rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .ico-anim { animation: none !important; }
-  .quick-icon, .card-icon, .fact-icon { transition-duration: .01ms; }
-  :is(.quick, .card-link, .doctor-card, .offer-item, .fact, .stat,
+  .quick-icon, .card-icon { transition-duration: .01ms; }
+  :is(.quick, .card-link, .doctor-card, .offer-item, .stat,
       .contact-list li, .service-card):is(:hover, :focus-within)
-    :is(.quick-icon, .card-icon, .fact-icon) { transform: none; }
+    :is(.quick-icon, .card-icon) { transform: none; }
 }
 
 /* ==========================================================================
