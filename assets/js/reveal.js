@@ -12,14 +12,26 @@
  * seconds arriving. The scroll-linked parallax lives in CSS (scroll-driven
  * animations, where supported); this file only handles the reveals.
  *
- * Everything is opt-out by circumstance: no IntersectionObserver, or a reduced
- * motion preference, and the page simply stays still and visible.
+ * A reduced-motion preference does NOT switch this off, and that is a
+ * correction. It used to return here, which meant the preference did not
+ * reduce motion on this site — it removed every animation on every page and
+ * left a completely inert document. That is the wrong reading twice over. The
+ * preference asks for less motion, not for no animation, and a cross-fade is
+ * the substitution the guidance actually recommends: opacity is not motion,
+ * nothing travels and nothing scales. It also matters because Android turns
+ * the preference on by itself in battery saver, so a phone in power-saving
+ * mode was being served a site that looked broken rather than calm.
+ *
+ * So the tagging still happens and the stylesheet decides what a reveal means:
+ * a rise or a slide normally, a plain dissolve under the preference.
+ *
+ * The one genuine opt-out left is a browser with no IntersectionObserver,
+ * where the page simply stays still and visible.
  */
 (function () {
   'use strict';
 
-  if (!('IntersectionObserver' in window)
-      || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (!('IntersectionObserver' in window)) {
     return;
   }
 

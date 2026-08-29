@@ -108,9 +108,24 @@ html {
   scroll-padding-top: calc(var(--header-h) + 16px);
 }
 
+/* The blanket reduced-motion reset. It stops anything that was not written
+   with the preference in mind, which is the right default.
+
+   Two things are held out of it, and only two: the scroll reveals and the hero
+   pictures. Both are opacity and nothing else under this preference — they do
+   not travel, scale or spin — and both exist precisely to be what the site
+   does INSTEAD of moving. Sweeping them into the reset crushed a deliberate
+   half-second dissolve to a hundredth of a millisecond, which is a cut, and a
+   cut is not gentler than a fade. It also made the reset the reason the whole
+   site went inert for anyone with the preference on, rather than calm.
+
+   They are excluded rather than re-asserted with a louder !important, because
+   an exception that says "this rule does not apply to me" is easier to read
+   than two rules shouting at each other. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  *, *::before, *::after {
+  *:not([data-reveal]):not(.hs-layer),
+  *::before, *::after {
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
@@ -2939,12 +2954,32 @@ html.js-reveal body { overflow-x: clip; }
 @keyframes rv-left { from { opacity: 0; translate: -30px 0; } to { opacity: 1; translate: 0 0; } }
 @keyframes rv-right{ from { opacity: 0; translate: 30px 0; }  to { opacity: 1; translate: 0 0; } }
 
-/* Whatever the script believes, paper and reduced motion get a still page. */
+/* Whatever the script believes, paper gets a still page. */
 @media print {
   [data-reveal] { opacity: 1 !important; animation: none !important; }
 }
+
+/* Reduced motion keeps the reveals and takes the movement out of them.
+   Every variant becomes the same plain dissolve: no rise, no slide, no scale,
+   nothing that travels — a change of opacity, which is not motion and is the
+   substitution the guidance recommends rather than a page frozen solid.
+
+   This has to be stated at the variant rules' own specificity, not below it.
+   Each of those is `.js-reveal [data-reveal="x"].is-in` — three selectors —
+   so a rule written only as `.js-reveal [data-reveal]` loses to every one of
+   them and the slides would keep sliding. Matching the count and sitting later
+   in the file is what actually settles it, and it is worth writing down
+   because the same trap has already been walked into once here. */
 @media (prefers-reduced-motion: reduce) {
-  .js-reveal [data-reveal] { opacity: 1; animation: none; }
+  .js-reveal [data-reveal],
+  .js-reveal [data-reveal].is-in {
+    animation: none;
+    transition: opacity .55s linear;
+    translate: none;
+    scale: none;
+  }
+  .js-reveal [data-reveal] { opacity: 0; }
+  .js-reveal [data-reveal].is-in { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
