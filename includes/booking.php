@@ -86,6 +86,27 @@ function doctor_opd_summary(int $doctorId): array
 }
 
 /**
+ * Which days a doctor sits, as a phrase: "Every day", "Mon – Sat", "Tue, Thu".
+ *
+ * Separate from doctor_opd_summary() on purpose. That function answers "when
+ * are the sessions", times included, which is the right answer beside a name
+ * and nowhere else; a card that already lists today's sessions with their
+ * times only needs the days, and repeating the times under a table of the
+ * same times is how a card turns into a wall.
+ */
+function doctor_days_phrase(int $doctorId): string
+{
+    $stmt = db()->prepare(
+        'SELECT DISTINCT weekday FROM doctor_sessions
+          WHERE doctor_id = ? AND is_active = 1'
+    );
+    $stmt->execute([$doctorId]);
+    $days = array_map('intval', $stmt->fetchAll(PDO::FETCH_COLUMN));
+
+    return $days ? weekday_phrase($days) : '';
+}
+
+/**
  * Describe a set of weekday numbers: "Every day", "Mon – Sat", or a plain list.
  *
  * @param list<int> $days 0 = Sunday ... 6 = Saturday
@@ -267,6 +288,83 @@ function doctor_short_name(string $full): string
 }
 
 /**
+ * "Today", "Tomorrow", or "Fri 4 Sep".
+ *
+ * Shared rather than repeated: every place that names a booking date has to
+ * name it the same way, or the hero and a doctor card end up disagreeing about
+ * what to call the same day.
+ */
+function relative_day(string $date): string
+{
+    return match ($date) {
+        date('Y-m-d') => 'Today',
+        (new DateTimeImmutable('tomorrow'))->format('Y-m-d') => 'Tomorrow',
+        default => (new DateTimeImmutable($date))->format('D j M'),
+    };
+}
+
+/**
+ * What a patient needs to know about one doctor right now: whether they are
+ * sitting at this moment, what today's sessions still have in them, and — once
+ * today is finished — the next date and session that can actually be booked.
+ *
+ * Built on availability() rather than read from the schedule table directly,
+ * so a card can never advertise a session the booking page would then refuse.
+ * Leave, hospital closures, the token cap and the end-of-session cutoff are
+ * all already folded into that answer; re-deriving any of them here would be
+ * a second opinion, and the two would drift.
+ *
+ * Today's row is fetched once and reused as the first step of the forward
+ * walk, so the common case — a doctor with a session left today — costs one
+ * day's queries rather than two.
+ *
+ * @return array{today: list<array>, now: array|null, next: array|null, state: string}
+ */
+function doctor_outlook(int $doctorId): array
+{
+    $today = date('Y-m-d');
+    $rows  = availability($doctorId, $today);
+
+    /* "Sitting now" is a claim about the published schedule, so it is only
+       made for a session that is running AND is one the doctor is actually
+       taking. A session whose tokens have all gone is still one they are
+       sitting: full is not the same as absent, and a patient standing at the
+       desk can still be seen. */
+    $now   = null;
+    $clock = new DateTimeImmutable('now');
+    foreach ($rows as $row) {
+        if ($row['reason'] === 'No consultation this session'
+            || $row['reason'] === 'Doctor unavailable') {
+            continue;
+        }
+        $from = new DateTimeImmutable($today . ' ' . $row['start_time']);
+        $to   = new DateTimeImmutable($today . ' ' . $row['end_time']);
+        if ($clock >= $from && $clock < $to) {
+            $now = $row;
+            break;
+        }
+    }
+
+    $next = null;
+    foreach (bookable_dates() as $date) {
+        foreach ($date === $today ? $rows : availability($doctorId, $date) as $slot) {
+            if ($slot['available']) {
+                $next = $slot + ['date' => $date, 'when' => relative_day($date)];
+                break 2;
+            }
+        }
+    }
+
+    return [
+        'today' => $rows,
+        'now'   => $now,
+        'next'  => $next,
+        'state' => $now !== null ? 'now'
+                 : ($next === null ? 'none' : ($next['date'] === $today ? 'today' : 'later')),
+    ];
+}
+
+/**
  * The soonest session a patient could actually book, across all doctors.
  *
  * Drives the live status line in the hero: a card that says "Morning session,
@@ -284,7 +382,6 @@ function next_available(): ?array
     }
 
     $today    = date('Y-m-d');
-    $tomorrow = (new DateTimeImmutable('tomorrow'))->format('Y-m-d');
 
     foreach (bookable_dates() as $date) {
         $best = null;
@@ -314,11 +411,7 @@ function next_available(): ?array
                 'timing'    => $slot['timing'],
                 'remaining' => $slot['remaining'],
                 'doctor'    => (string) $best['doctor']['name'],
-                'when'      => match ($date) {
-                    $today    => 'Today',
-                    $tomorrow => 'Tomorrow',
-                    default   => (new DateTimeImmutable($date))->format('D j M'),
-                },
+                'when'      => relative_day($date),
                 'today'     => $date === $today,
             ];
         }

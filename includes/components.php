@@ -8,6 +8,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/icons.php';
 require_once __DIR__ . '/site-images.php';
+require_once __DIR__ . '/booking.php';
 
 /** Google Maps embed centred on the hospital, plus a directions link. */
 function map_block(): void
@@ -105,12 +106,53 @@ function offers_strip(): void
  * A circular portrait beside the name, rather than a wide image well. Until
  * real photographs are supplied an empty well looks like a broken image,
  * whereas a framed portrait reads as a deliberate placeholder.
+ *
+ * The card carries live state, and that is the point of it. A doctor card that
+ * lists a name, a degree and a speciality tells a patient nothing they cannot
+ * guess from the sign outside; what they actually came to find out is whether
+ * this doctor is sitting right now, whether there is still a token left today,
+ * and if not, when the next one is. All three come from availability(), which
+ * is the same function the booking page answers with — so the card cannot
+ * promise a session that book.php would then refuse.
+ *
+ * Everything optional degrades to nothing. The hospital has not filled in
+ * years of experience, languages or a registration number, so those lines are
+ * simply absent rather than rendered empty; the day they are entered in the
+ * admin panel they appear.
  */
 function doctor_cards(array $doctors, bool $withLink = true): void
 {
     ?>
     <div class="grid grid-2">
       <?php foreach ($doctors as $doc): ?>
+        <?php
+          $id      = (int) $doc['id'];
+          $out     = doctor_outlook($id);
+          $short   = doctor_short_name((string) $doc['name']);
+          /* The sessions table below already prints today's times, so this
+             line carries only what that table cannot: which days he sits. A
+             hospital that has typed its own timings string wins, as always. */
+          $week = '';
+          if (trim((string) ($doc['opd_timings'] ?? '')) !== '') {
+              $week = implode(' &middot; ', array_map('e', profile_lines((string) $doc['opd_timings'])));
+          } elseif (($days = doctor_days_phrase($id)) !== '') {
+              $week = e($days === 'Every day' ? 'Consults every day' : 'Consults ' . $days);
+          }
+
+          /* One line, in the patient's own terms. "In OP now" is a claim about
+             the published schedule and is only made when the session is one
+             the doctor is actually taking; the rest name a bookable session. */
+          $state = $out['state'];
+          $status = match ($state) {
+              'now'   => 'In OP now &middot; ' . e($out['now']['label'])
+                         . ' until ' . e(format_time($out['now']['end_time'])),
+              'today' => 'Next today &middot; ' . e($out['next']['label'])
+                         . ' &middot; ' . e($out['next']['timing']),
+              'later' => 'Next: ' . e($out['next']['when'])
+                         . ' &middot; ' . e($out['next']['label']),
+              default => 'No online tokens in the next few days',
+          };
+        ?>
         <article class="doctor-card">
           <div class="doctor-top">
             <div class="doctor-portrait">
@@ -122,18 +164,94 @@ function doctor_cards(array $doctors, bool $withLink = true): void
               <?php endif; ?>
             </div>
             <div class="doctor-head">
-              <h3><?= e($doc['name']) ?></h3>
+              <h3><a href="doctor.php?slug=<?= e($doc['slug']) ?>"><?= e($doc['name']) ?></a></h3>
               <p class="doctor-quals"><?= e($doc['qualifications']) ?></p>
             </div>
           </div>
 
-          <p class="doctor-spec"><?= e($doc['speciality']) ?></p>
+          <p class="doctor-spec">
+            <?= e($doc['designation'] !== '' ? $doc['designation'] : $doc['speciality']) ?>
+          </p>
 
-          <?php if ($withLink): ?>
-            <a class="btn btn-outline btn-block" href="book.php?doctor=<?= (int) $doc['id'] ?>">
-              <?= icon('ticket') ?> Book a Token
-            </a>
+          <?php
+            /* Only what the hospital has actually entered. An empty row here
+               would be worse than no row: it reads as missing data. */
+            $facts = [];
+            if (!empty($doc['experience_years'])) {
+                $facts[] = ['award', (int) $doc['experience_years'] . ' years experience'];
+            }
+            if (trim((string) $doc['languages']) !== '') {
+                $facts[] = ['users', (string) $doc['languages']];
+            }
+            if (trim((string) $doc['reg_no']) !== '') {
+                $facts[] = ['shield', 'Reg. ' . $doc['reg_no']];
+            }
+          ?>
+          <?php if ($facts): ?>
+            <ul class="doctor-facts">
+              <?php foreach ($facts as [$ic, $label]): ?>
+                <li><?= icon($ic) ?><span><?= e($label) ?></span></li>
+              <?php endforeach; ?>
+            </ul>
           <?php endif; ?>
+
+          <p class="doctor-state doctor-state-<?= e($state) ?>">
+            <span class="doctor-dot" aria-hidden="true"></span>
+            <span><?= $status ?></span>
+          </p>
+
+          <?php if ($out['today']): ?>
+            <ul class="doctor-sessions">
+              <?php foreach ($out['today'] as $slot): ?>
+                <?php
+                  /* The bar draws what is LEFT, not what is gone. Drawn the
+                     other way it says the opposite of the number beside it —
+                     an untouched session with all thirty tokens free showed a
+                     full-width empty track, which reads as "full".
+                     The colour is the same reading again: comfortable, going,
+                     nearly gone. Both are backed by the sentence beside them,
+                     so neither the length nor the hue is load-bearing. */
+                  $pct  = $slot['cap'] > 0
+                      ? max(0, min(100, (int) round($slot['remaining'] / $slot['cap'] * 100)))
+                      : 0;
+                  $band = $pct >= 50 ? 'ample' : ($pct >= 20 ? 'going' : 'last');
+                ?>
+                <li class="<?= $slot['available'] ? 'is-open' : 'is-shut' ?>">
+                  <span class="ds-name"><?= e($slot['label']) ?></span>
+                  <span class="ds-time"><?= e($slot['timing']) ?></span>
+                  <?php if ($slot['available']): ?>
+                    <span class="ds-meter ds-<?= $band ?>" aria-hidden="true">
+                      <i style="width: <?= $pct ?>%"></i>
+                    </span>
+                    <span class="ds-left">
+                      <strong><?= (int) $slot['remaining'] ?></strong> of
+                      <?= (int) $slot['cap'] ?> left
+                    </span>
+                  <?php else: ?>
+                    <span class="ds-why"><?= e($slot['reason'] ?? 'Not available') ?></span>
+                  <?php endif; ?>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          <?php endif; ?>
+
+          <?php if ($week !== ''): ?>
+            <p class="doctor-week">
+              <?= icon('calendar') ?>
+              <span><?= $week ?></span>
+            </p>
+          <?php endif; ?>
+
+          <div class="doctor-actions">
+            <?php if ($withLink): ?>
+              <a class="btn btn-primary" href="book.php?doctor=<?= $id ?>">
+                <?= icon('ticket') ?> Book with <?= e($short) ?>
+              </a>
+            <?php endif; ?>
+            <a class="btn btn-outline" href="doctor.php?slug=<?= e($doc['slug']) ?>">
+              Full profile
+            </a>
+          </div>
         </article>
       <?php endforeach; ?>
     </div>

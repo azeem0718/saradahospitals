@@ -998,15 +998,139 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
   padding: .16rem .5rem; border-radius: 4px;
   margin: 0;
 }
+.doctor-head h3 a { color: inherit; text-decoration: none; }
+.doctor-head h3 a:hover { color: var(--red-700); }
+
 .doctor-spec {
   font-size: .95rem; color: var(--ink-600);
-  margin: 0 0 1.25rem; line-height: 1.55;
+  margin: 0 0 1rem; line-height: 1.55;
 }
-.doctor-card .btn { margin-top: auto; }
+
+/* Only the fields the hospital has actually entered reach this list, so it is
+   either populated or absent — never a row of blanks. */
+.doctor-facts {
+  display: flex; flex-wrap: wrap; gap: .4rem .5rem;
+  list-style: none; margin: 0 0 1.05rem; padding: 0;
+}
+.doctor-facts li {
+  display: inline-flex; align-items: center; gap: .38rem;
+  font-size: .78rem; color: var(--ink-600);
+  background: var(--ground); border: 1px solid var(--rule);
+  padding: .26rem .55rem; border-radius: 999px;
+}
+.doctor-facts svg { width: 14px; height: 14px; color: var(--ink-500); flex: none; }
+
+/* --------------------------------------------------------------------------
+   Live state on a doctor card
+
+   The one line a patient came for. Three colours, and they are the ordinary
+   traffic reading: green means being seen now, gold means later today or
+   soon, grey means not through this website. Colour is never the only
+   carrier — the sentence beside it says the same thing in words.
+   -------------------------------------------------------------------------- */
+.doctor-state {
+  display: flex; align-items: center; gap: .55rem;
+  margin: 0 0 .9rem;
+  font-size: .875rem; font-weight: 600; line-height: 1.4;
+}
+.doctor-dot {
+  flex: none; width: 9px; height: 9px; border-radius: 50%;
+  background: currentColor;
+}
+/* Sitting right now is the only state that earns a pulse: it is the only one
+   that is true at this second and false a few hours later. */
+.doctor-state-now { color: var(--green-700); }
+.doctor-state-now .doctor-dot { animation: doc-pulse 2.4s ease-out infinite; }
+@keyframes doc-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(18, 102, 64, .45); }
+  70%  { box-shadow: 0 0 0 7px rgba(18, 102, 64, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(18, 102, 64, 0); }
+}
+.doctor-state-today { color: var(--gold-700); }
+.doctor-state-later { color: var(--ink-600); }
+/* ink-500 measures 4.31:1 on paper, just under AA for text this size. */
+.doctor-state-none  { color: var(--ink-600); font-weight: 500; }
+
+/* The dot still marks the state; it simply stops breathing. Nothing is lost,
+   because the colour was never carrying the meaning on its own. */
+@media (prefers-reduced-motion: reduce) {
+  .doctor-state-now .doctor-dot { animation: none; }
+}
+
+/* --------------------------------------------------------------------------
+   Today's sessions
+
+   A bar that fills as the session fills, with the count beside it. The bar is
+   aria-hidden and the count is real text, so nothing here depends on seeing
+   the graphic — the meter is the quick read and the number is the answer.
+   -------------------------------------------------------------------------- */
+.doctor-sessions {
+  list-style: none; margin: 0 0 1.05rem; padding: 0;
+  border: 1px solid var(--rule); border-radius: var(--r);
+  overflow: hidden;
+}
+.doctor-sessions li {
+  display: grid; align-items: center; gap: .15rem .8rem;
+  grid-template-columns: minmax(4.5rem, auto) 1fr;
+  padding: .6rem .8rem;
+  border-top: 1px solid var(--rule-soft);
+}
+.doctor-sessions li:first-child { border-top: 0; }
+.doctor-sessions li.is-shut { background: var(--ground); }
+
+.ds-name {
+  grid-column: 1; grid-row: 1;
+  font-size: .82rem; font-weight: 700; color: var(--navy-900);
+}
+.ds-time {
+  grid-column: 2; grid-row: 1;
+  font-size: .8rem; color: var(--ink-600);
+}
+.ds-meter {
+  grid-column: 1 / -1; grid-row: 2;
+  display: block; height: 4px; margin-top: .35rem;
+  border-radius: 2px; background: var(--rule-soft); overflow: hidden;
+}
+/* Width is set inline from the real remaining/cap figures, so what is drawn is
+   the number, not an impression of it. */
+.ds-meter > i { display: block; height: 100%; background: var(--gold-700); }
+.ds-ample > i { background: var(--green-600); }
+.ds-going > i { background: var(--gold-700); }
+.ds-last  > i { background: var(--red-600); }
+.ds-left {
+  grid-column: 1 / -1; grid-row: 3;
+  margin-top: .28rem;
+  font-size: .76rem; color: var(--ink-600);
+}
+.ds-left strong { color: var(--navy-900); }
+.ds-why {
+  grid-column: 1 / -1; grid-row: 2;
+  margin-top: .25rem;
+  /* ink-500 measures 4.06:1 on the closed row's ground, under the 4.5:1
+     small text needs — and this line is the reason a session cannot be
+     booked, which is the last thing that should be hard to read. */
+  font-size: .76rem; color: var(--ink-600);
+}
+
+.doctor-week {
+  display: flex; align-items: flex-start; gap: .45rem;
+  margin: 0 0 1.15rem;
+  font-size: .78rem; color: var(--ink-600); line-height: 1.5;
+}
+.doctor-week svg { width: 14px; height: 14px; flex: none; margin-top: .18rem; color: var(--ink-500); }
+
+/* Pinned to the bottom, so two cards whose bodies differ in height still line
+   their buttons up. */
+.doctor-actions {
+  display: flex; flex-wrap: wrap; gap: .55rem;
+  margin-top: auto;
+}
+.doctor-actions .btn { flex: 1 1 10rem; justify-content: center; }
 
 @media (max-width: 420px) {
   .doctor-top { flex-direction: column; align-items: flex-start; gap: .9rem; }
   .doctor-portrait { width: 72px; height: 72px; }
+  .doctor-actions .btn { flex-basis: 100%; }
 }
 
 /* --------------------------------------------------------------------------
