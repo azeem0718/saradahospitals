@@ -63,6 +63,9 @@
   --paper:  #ffffff;   /* cards sitting on the ground */
   --ground: #faf8f4;   /* the warm ivory page ground */
   --ground-deep: #f3efe8;
+  /* The same ivory as bare channels, for the places that need it at partial
+     alpha — a gradient fading paper over a photograph cannot take a hex. */
+  --ground-rgb: 250 248 244;
 
   /* Type */
   --font-display: 'Newsreader', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
@@ -1663,9 +1666,21 @@ body { padding-bottom: 30px; }
 .hero-show {
   --hs-gutter: max(clamp(18px, 4vw, 40px), calc((100vw - var(--wrap)) / 2));
 
+  /* How far the photograph reaches back under the words, and how wide the
+     dissolve is that covers that reach. The dissolve is the wider of the two,
+     so the picture is already indistinguishable from paper well before it
+     gets anywhere near a letter — and the words reserve the reach again in
+     their own right padding below, so the two never actually meet. */
+  --hs-reach: clamp(46px, 5.5vw, 120px);
+  --hs-fade-x: calc(var(--hs-reach) + clamp(80px, 9vw, 180px));
+  --hs-fade-y: clamp(34px, 5vw, 76px);
+
   position: relative; isolation: isolate;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.04fr);
+  /* The words take the slightly larger share now that they also carry the
+     reach in their padding: without that they would be setting a headline in
+     what is left after the photograph has had its share twice. */
+  grid-template-columns: minmax(0, 1.24fr) minmax(0, 1fr);
   align-items: center;
   background: var(--ground);
   overflow: clip;
@@ -1685,16 +1700,21 @@ body { padding-bottom: 30px; }
      forward-only auto-placement then has nowhere to put the words but a
      second row — which silently doubles the hero's height. */
   grid-column: 1; grid-row: 1;
-  padding: clamp(2.6rem, 5vw, 4.6rem) clamp(1.6rem, 3.4vw, 3.2rem)
+  /* The right padding carries the reach as well as its own gap, so widening
+     the dissolve can never walk the photograph into a line of type: whatever
+     the picture takes back, the words give up first. */
+  padding: clamp(2.6rem, 5vw, 4.6rem)
+           calc(var(--hs-reach) + clamp(1.4rem, 2.6vw, 2.4rem))
            clamp(2.6rem, 5vw, 4.6rem) var(--hs-gutter);
 }
 
-/* A hairline where paper meets photograph, so the join reads as deliberate
-   rather than as an image that happens to stop. */
-.hs-words::after {
-  content: ''; position: absolute; top: 0; right: 0; bottom: 0;
-  width: 1px; background: var(--rule);
-}
+/* There was a hairline here, on the theory that a ruled join reads as
+   deliberate. On a screen this wide it did the opposite: a razor edge down the
+   middle of the hero, with a photograph stopping dead against it, so the two
+   halves read as two unrelated panels rather than one hero. The join is now
+   a dissolve painted on the photograph itself (see .hs-frame::after), which
+   is the same idea done properly — the picture ends in paper instead of
+   ending at a line. */
 
 .hs-place {
   display: inline-flex; align-items: center; gap: .45rem;
@@ -1759,17 +1779,51 @@ body { padding-bottom: 30px; }
   min-height: clamp(26rem, 21rem + 20vw, 37rem);
   overflow: hidden;
   background: var(--ground-deep);
-  /* The swipe handler reads horizontal gestures here and lets vertical ones
-     through, so the page still scrolls normally under a finger. */
+  /* Reaching back into the words' column rather than starting where the
+     column does. Nothing of the picture is legible there — the dissolve below
+     is wider than the reach — but the light coming off it is, and that is what
+     makes the two halves read as one photograph lit from the right rather than
+     as an image pasted beside a paragraph. */
+  margin-left: calc(var(--hs-reach) * -1);
   touch-action: pan-y;
 }
 
-/* The pictures do not move. A slow drift was here and it was the wrong idea
-   twice over: a picture that is always changing size is the thing that made
-   the slideshow feel unsettled in the first place, and any zoom past 1.0 eats
-   the edges of the two diagrams, whose outer panels are their content. The
-   crossfade alone is enough — it is calm, and it is honest about the fact
-   that nothing here is actually moving. */
+/* The dissolve. Paper laid over the photograph — full strength at the left
+   edge, gone by the end of the ramp — plus a shallower version along the top
+   and bottom so the two corners nearest the words soften as well, which is
+   where a hard edge is most obvious. Painted on top of the pictures rather
+   than masked out of them, so it costs no compositing layer and there is no
+   version of it that can fail and leave a bare rectangle.
+
+   The stops are not evenly spaced: an even ramp reads as a visible band of
+   haze because the eye tracks the middle of a fade, not its ends. This one
+   holds near-opaque for the first fifth and then lets go quickly. */
+.hs-frame::after {
+  content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(to right,
+      rgb(var(--ground-rgb) / 1)    0%,
+      rgb(var(--ground-rgb) / .985) 20%,
+      rgb(var(--ground-rgb) / .82)  40%,
+      rgb(var(--ground-rgb) / .46)  62%,
+      rgb(var(--ground-rgb) / .15)  82%,
+      rgb(var(--ground-rgb) / 0)    100%),
+    linear-gradient(to bottom,
+      rgb(var(--ground-rgb) / .92) 0%,
+      rgb(var(--ground-rgb) / .38) 46%,
+      rgb(var(--ground-rgb) / 0)   100%),
+    linear-gradient(to top,
+      rgb(var(--ground-rgb) / .92) 0%,
+      rgb(var(--ground-rgb) / .38) 46%,
+      rgb(var(--ground-rgb) / 0)   100%);
+  background-size:
+    var(--hs-fade-x) 100%,
+    100% var(--hs-fade-y),
+    100% var(--hs-fade-y);
+  background-position: left top, left top, left bottom;
+}
+
 .hs-stage { position: absolute; inset: 0; }
 
 /* The one source picked here in a custom property, so the layer and both of
@@ -1781,12 +1835,45 @@ body { padding-bottom: 30px; }
   background-size: cover; background-position: center;
   opacity: 0;
   transition: opacity .9s cubic-bezier(.4, 0, .3, 1);
-  will-change: opacity;
+  will-change: opacity, transform;
 }
 @media (max-width: 700px) {
   .hs-layer { --hs-src: var(--hs-img-sm, var(--hs-img)); }
 }
-.hs-layer.is-on { opacity: 1; }
+
+/* The picture settles while it is being shown: it arrives fractionally large
+   and slightly off-centre and eases down to where it belongs. Two reasons it
+   is a settle rather than a loop. A loop has to turn around, and the turn is
+   always visible; this one only ever slows, so the slide reads as coming to
+   rest. And it is timed to run far longer than a slide lasts, so it is always
+   caught in its early, fastest part and never reaches the flat tail — the
+   picture is still arriving when the next one takes over, which is what makes
+   a two-second hero feel unhurried instead of clipped.
+
+   A previous version of this hero had no movement at all, on the reasoning
+   that a still picture is a calm one. On a phone that was true. Across half a
+   desktop screen it was not: a photograph that large simply looked frozen, and
+   the crossfade read as the page redrawing rather than as a hero.
+
+   Alternate slides drift the other way, so five slides in a row never build
+   up into one direction of travel. */
+.hs-layer.is-on {
+  opacity: 1;
+  animation: hs-drift calc(var(--hs-turn, 2000ms) * 3.2)
+             cubic-bezier(.17, .62, .3, 1) both;
+}
+.hs-layer:nth-child(even).is-on { animation-name: hs-drift-alt; }
+
+/* Ending fractionally over 1 rather than at 1: the translate would otherwise
+   pull a hairline of empty frame in at one edge on the last frame. */
+@keyframes hs-drift {
+  from { transform: scale(1.062) translate(1.15%, .55%); }
+  to   { transform: scale(1.006) translate(0, 0); }
+}
+@keyframes hs-drift-alt {
+  from { transform: scale(1.062) translate(-1.15%, -.55%); }
+  to   { transform: scale(1.006) translate(0, 0); }
+}
 
 /* A photograph fills the frame; losing the edges of a scene costs nothing.
    A diagram cannot afford that — its outer panels are its content — and
@@ -1813,6 +1900,19 @@ body { padding-bottom: 30px; }
   filter: blur(26px) saturate(1.05);
 }
 .hs-layer.hs-soft::after { inset: 0; background-size: contain; }
+
+/* A diagram settles the other way round — up from slightly small rather than
+   down from slightly large. Its sharp copy is sized to fit the frame exactly,
+   so anything over 1.0 would push the outer panels, which are the content,
+   past the edge. Growing into place costs nothing: the blurred surround
+   reaches 64px beyond the frame, far more than the few pixels this pulls in,
+   so no gap can open at the border. */
+.hs-layer.hs-soft.is-on,
+.hs-layer.hs-soft:nth-child(even).is-on { animation-name: hs-drift-soft; }
+@keyframes hs-drift-soft {
+  from { transform: scale(.972); }
+  to   { transform: scale(1); }
+}
 
 /* --------------------------------------------------------------------------
    Actions
@@ -1955,12 +2055,27 @@ body { padding-bottom: 30px; }
   .hs-frame {
     grid-column: 1; grid-row: 1;
     min-height: 0; aspect-ratio: 16 / 10;
+    /* Nothing to reach back under once the words are below rather than
+       beside: the reach would only pull the picture off the left edge. */
+    margin-left: 0;
+  }
+  /* Stacked, the join that matters is the bottom one. The picture keeps its
+     own left and right edges, which are the screen's edges, and dissolves
+     into the paper the words sit on. */
+  .hs-frame::after {
+    background-image:
+      linear-gradient(to top,
+        rgb(var(--ground-rgb) / 1)   0%,
+        rgb(var(--ground-rgb) / .78) 26%,
+        rgb(var(--ground-rgb) / .34) 58%,
+        rgb(var(--ground-rgb) / 0)   100%);
+    background-size: 100% clamp(52px, 13vw, 108px);
+    background-position: left bottom;
   }
   .hs-words {
     grid-column: 1; grid-row: 2;
     padding: clamp(1.8rem, 5vw, 2.6rem) var(--hs-gutter) clamp(2.2rem, 6vw, 3rem);
   }
-  .hs-words::after { display: none; }
 }
 
 /* --------------------------------------------------------------------------
@@ -2006,6 +2121,8 @@ body { padding-bottom: 30px; }
    what WCAG 2.2.2 actually asks for. */
 @media (prefers-reduced-motion: reduce) {
   .hs-layer { transition: opacity 1.1s linear; }
+  /* The settle is the one thing here that genuinely travels, so it goes. */
+  .hs-layer.is-on { animation: none; transform: none; }
   .hs-text.is-on .hs-mark,
   .hs-text.is-on .hs-title,
   .hs-text.is-on .hs-lede { animation: none; }
