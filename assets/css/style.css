@@ -989,11 +989,31 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 }
 .doctor-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); border-color: var(--navy-200); }
 
-.doctor-top { display: flex; gap: 1.15rem; align-items: center; margin-bottom: 1.15rem; }
+/* A hairline of the hospital's own colours along the top edge, drawn in on
+   hover. Scaled from the left rather than faded in, so it reads as the card
+   being underlined rather than as a border blinking on. */
+.doctor-card::before {
+  content: ''; position: absolute; inset: 0 0 auto; height: 3px;
+  border-radius: var(--r-lg) var(--r-lg) 0 0;
+  background: linear-gradient(90deg, var(--red-600), var(--gold-500));
+  transform: scaleX(0); transform-origin: 0 50%;
+  transition: transform .32s cubic-bezier(.2, .8, .3, 1);
+}
+.doctor-card:hover::before,
+.doctor-card:focus-within::before { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .doctor-card::before { transition: none; }
+}
+
+.doctor-top {
+  display: flex; gap: 1.15rem; align-items: center;
+  padding-bottom: 1.15rem; margin-bottom: 1.15rem;
+  border-bottom: 1px solid var(--rule-soft);
+}
 
 .doctor-portrait {
   position: relative; flex: none;
-  width: 88px; height: 88px; border-radius: 50%;
+  width: 104px; height: 104px; border-radius: 50%;
   overflow: hidden;
   background: var(--navy-50);
   border: 1px solid var(--navy-100);
@@ -1003,7 +1023,7 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .doctor-portrait > svg { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .doctor-head { min-width: 0; }
-.doctor-head h3 { margin-bottom: .25em; font-size: var(--step-1); }
+.doctor-head h3 { margin-bottom: .3em; font-size: var(--step-1); line-height: 1.2; }
 .doctor-quals {
   display: inline-block;
   font-family: var(--font-sans);
@@ -1016,9 +1036,11 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .doctor-head h3 a { color: inherit; text-decoration: none; }
 .doctor-head h3 a:hover { color: var(--red-700); }
 
+/* The speciality sits inside the head now rather than below the whole block,
+   so name, degree and field read as one identity. */
 .doctor-spec {
-  font-size: .95rem; color: var(--ink-600);
-  margin: 0 0 1rem; line-height: 1.55;
+  font-size: .92rem; color: var(--ink-600);
+  margin: .5rem 0 0; line-height: 1.5;
 }
 
 /* Only the fields the hospital has actually entered reach this list, so it is
@@ -1036,103 +1058,58 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 .doctor-facts svg { width: 14px; height: 14px; color: var(--ink-500); flex: none; }
 
 /* --------------------------------------------------------------------------
-   Live state on a doctor card
+   Doctor card body
 
-   The one line a patient came for. Three colours, and they are the ordinary
-   traffic reading: green means being seen now, gold means later today or
-   soon, grey means not through this website. Colour is never the only
-   carrier — the sentence beside it says the same thing in words.
+   A line of the doctor's own background, then the conditions patients come to
+   them for. A session timetable and token meters used to sit here — accurate,
+   but they turned a "meet our doctors" section into the reception desk's own
+   screen. Availability belongs on the booking page; this card is for choosing
+   who, not when.
    -------------------------------------------------------------------------- */
-.doctor-state {
-  display: flex; align-items: center; gap: .55rem;
+.doctor-bio {
+  font-size: .92rem; color: var(--ink-600); line-height: 1.62;
+  margin: 0 0 1.05rem;
+}
+
+.doctor-treats { margin: 0 0 1.15rem; }
+.doctor-treats h4 {
+  font-family: var(--font-sans);
+  font-size: .7rem; font-weight: 700; letter-spacing: .11em;
+  text-transform: uppercase; color: var(--ink-500);
+  margin: 0 0 .5rem;
+}
+.doctor-treats ul {
+  display: flex; flex-wrap: wrap; gap: .38rem;
+  list-style: none; margin: 0; padding: 0;
+}
+.doctor-treats li {
+  font-size: .8rem; color: var(--navy-800);
+  background: var(--navy-50); border: 1px solid var(--navy-100);
+  padding: .3rem .6rem; border-radius: 999px;
+}
+/* The overflow count is a quieter thing than a condition, so it is drawn as
+   one: no fill, just a count pointing at the profile. */
+.doctor-treats li.is-more {
+  background: none; border-color: var(--rule); color: var(--ink-600);
+}
+
+/* Pinned to the bottom, so two cards whose bodies differ in length still line
+   their buttons up with each other. */
+.doctor-foot { margin-top: auto; }
+
+/* The one piece of live state left on the card: whether they are consulting
+   today. A day, and nothing finer — the moment this names a session or a time
+   it is the timetable again. */
+.doctor-avail {
+  display: flex; align-items: center; gap: .5rem;
   margin: 0 0 .9rem;
-  font-size: .875rem; font-weight: 600; line-height: 1.4;
+  font-size: .84rem; font-weight: 600; color: var(--ink-600);
 }
 .doctor-dot {
-  flex: none; width: 9px; height: 9px; border-radius: 50%;
+  flex: none; width: 8px; height: 8px; border-radius: 50%;
   background: currentColor;
 }
-/* Sitting right now is the only state that earns a pulse: it is the only one
-   that is true at this second and false a few hours later. */
-.doctor-state-now { color: var(--green-700); }
-.doctor-state-now .doctor-dot { animation: doc-pulse 2.4s ease-out infinite; }
-@keyframes doc-pulse {
-  0%   { box-shadow: 0 0 0 0 rgba(18, 102, 64, .45); }
-  70%  { box-shadow: 0 0 0 7px rgba(18, 102, 64, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(18, 102, 64, 0); }
-}
-.doctor-state-today { color: var(--gold-700); }
-.doctor-state-later { color: var(--ink-600); }
-/* ink-500 measures 4.31:1 on paper, just under AA for text this size. */
-.doctor-state-none  { color: var(--ink-600); font-weight: 500; }
-
-/* The dot still marks the state; it simply stops breathing. Nothing is lost,
-   because the colour was never carrying the meaning on its own. */
-@media (prefers-reduced-motion: reduce) {
-  .doctor-state-now .doctor-dot { animation: none; }
-}
-
-/* --------------------------------------------------------------------------
-   Today's sessions
-
-   A bar that fills as the session fills, with the count beside it. The bar is
-   aria-hidden and the count is real text, so nothing here depends on seeing
-   the graphic — the meter is the quick read and the number is the answer.
-   -------------------------------------------------------------------------- */
-.doctor-sessions {
-  list-style: none; margin: 0 0 1.05rem; padding: 0;
-  border: 1px solid var(--rule); border-radius: var(--r);
-  overflow: hidden;
-}
-.doctor-sessions li {
-  display: grid; align-items: center; gap: .15rem .8rem;
-  grid-template-columns: minmax(4.5rem, auto) 1fr;
-  padding: .6rem .8rem;
-  border-top: 1px solid var(--rule-soft);
-}
-.doctor-sessions li:first-child { border-top: 0; }
-.doctor-sessions li.is-shut { background: var(--ground); }
-
-.ds-name {
-  grid-column: 1; grid-row: 1;
-  font-size: .82rem; font-weight: 700; color: var(--navy-900);
-}
-.ds-time {
-  grid-column: 2; grid-row: 1;
-  font-size: .8rem; color: var(--ink-600);
-}
-.ds-meter {
-  grid-column: 1 / -1; grid-row: 2;
-  display: block; height: 4px; margin-top: .35rem;
-  border-radius: 2px; background: var(--rule-soft); overflow: hidden;
-}
-/* Width is set inline from the real remaining/cap figures, so what is drawn is
-   the number, not an impression of it. */
-.ds-meter > i { display: block; height: 100%; background: var(--gold-700); }
-.ds-ample > i { background: var(--green-600); }
-.ds-going > i { background: var(--gold-700); }
-.ds-last  > i { background: var(--red-600); }
-.ds-left {
-  grid-column: 1 / -1; grid-row: 3;
-  margin-top: .28rem;
-  font-size: .76rem; color: var(--ink-600);
-}
-.ds-left strong { color: var(--navy-900); }
-.ds-why {
-  grid-column: 1 / -1; grid-row: 2;
-  margin-top: .25rem;
-  /* ink-500 measures 4.06:1 on the closed row's ground, under the 4.5:1
-     small text needs — and this line is the reason a session cannot be
-     booked, which is the last thing that should be hard to read. */
-  font-size: .76rem; color: var(--ink-600);
-}
-
-.doctor-week {
-  display: flex; align-items: flex-start; gap: .45rem;
-  margin: 0 0 1.15rem;
-  font-size: .78rem; color: var(--ink-600); line-height: 1.5;
-}
-.doctor-week svg { width: 14px; height: 14px; flex: none; margin-top: .18rem; color: var(--ink-500); }
+.doctor-avail.is-today { color: var(--green-700); }
 
 /* Pinned to the bottom, so two cards whose bodies differ in height still line
    their buttons up. */
@@ -1142,9 +1119,12 @@ hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
 }
 .doctor-actions .btn { flex: 1 1 10rem; justify-content: center; }
 
-@media (max-width: 420px) {
+/* On a phone the head stacks: side by side leaves the name a column too
+   narrow, and "Dr. Gundavarapu Venkatesh" breaks across three lines beside a
+   104px portrait. Stacked it gets the full width and reads in two. */
+@media (max-width: 520px) {
   .doctor-top { flex-direction: column; align-items: flex-start; gap: .9rem; }
-  .doctor-portrait { width: 72px; height: 72px; }
+  .doctor-portrait { width: 84px; height: 84px; }
   .doctor-actions .btn { flex-basis: 100%; }
 }
 
