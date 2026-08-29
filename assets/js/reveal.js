@@ -27,6 +27,9 @@
      selector will not re-tag it, and a container is skipped when something
      inside it is already animating — two nested reveals read as a wobble. */
   var TARGETS = [
+    /* Before the generic '.card' rule below, so the facilities grids take the
+       wave instead of the alternating side-slide every other card grid uses. */
+    ['.grid-wave > *',        'wave'],
     ['.hero-copy > *',        'up'],
     ['.hero-art',             'fade'],
     ['.quick',                'zoom'],
@@ -48,6 +51,12 @@
 
   var MAX_STAGGER = 7;   /* the eighth sibling onwards arrives with the seventh */
   var STEP_MS     = 75;
+
+  /* The wave is the one variant whose whole point is the gap between cards, so
+     it steps wider and is not capped: capping it would land the last three
+     cards together and the wave would stop being a wave halfway across. Nine
+     cards at 110ms is under a second from first to last. */
+  var WAVE_STEP_MS = 110;
 
   try {
     var tagged = [];
@@ -88,7 +97,12 @@
       var parent = el.parentElement || document.body;
       var i = counters.get(parent) || 0;
       counters.set(parent, i + 1);
-      if (i > 0) {
+      if (i === 0) {
+        return;
+      }
+      if (el.getAttribute('data-reveal') === 'wave') {
+        el.style.setProperty('--rv-d', (i * WAVE_STEP_MS) + 'ms');
+      } else {
         el.style.setProperty('--rv-d', (Math.min(i, MAX_STAGGER) * STEP_MS) + 'ms');
       }
     });

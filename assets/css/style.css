@@ -2873,6 +2873,66 @@ html.js-reveal body { overflow-x: clip; }
   to   { opacity: 1; translate: 0 0; }
 }
 
+/* --------------------------------------------------------------------------
+   The facilities wave
+
+   Every other card grid on the site enters from alternating sides. The
+   facilities grids instead rise one after another, and — where the browser can
+   do it — keep rising and sinking with the scroll rather than playing once.
+
+   Two layers, and the order matters. The first is a plain staggered rise on a
+   clock, which every browser gets and which is a complete answer on its own.
+   The second replaces it with the same movement scrubbed by scroll position,
+   so the cards come up as the section arrives and go back down as it leaves,
+   at exactly the pace the reader is scrolling. Nothing is lost without it.
+   -------------------------------------------------------------------------- */
+.js-reveal [data-reveal="wave"].is-in {
+  animation-name: rv-wave;
+  animation-duration: .82s;
+  /* Lands a hair past its resting place and settles back — the difference
+     between a card that arrives and a card that is placed. */
+  animation-timing-function: cubic-bezier(.2, .8, .25, 1.06);
+}
+@keyframes rv-wave {
+  from { opacity: 0; translate: 0 52px; scale: .965; }
+  55%  { opacity: 1; }
+  to   { opacity: 1; translate: 0 0; scale: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* The phase is a repeating 0-1-2 rather than the card's position in the
+       whole grid, and that is deliberate: an ever-growing offset would push
+       the ninth card's range past the end of its own entry, and a card whose
+       range never completes is a card left half-faded on the page. Cycling
+       keeps every range inside `entry`, so every card always finishes.
+
+       It also survives the grid reflowing. At three columns the phases line up
+       with the columns and the crest sweeps left to right; at two or one they
+       fall out of step with the rows, which reads as a looser, less mechanical
+       ripple rather than as a bug. */
+    .grid-wave > [data-reveal="wave"] { --rv-p: 0; }
+    .grid-wave > [data-reveal="wave"]:nth-child(3n + 2) { --rv-p: 1; }
+    .grid-wave > [data-reveal="wave"]:nth-child(3n + 3) { --rv-p: 2; }
+
+    .js-reveal .grid-wave > [data-reveal="wave"] {
+      /* The observer's class no longer decides anything here: the timeline
+         holds the card at the start of the movement until it is genuinely on
+         screen, which is a better answer than a class toggling at a threshold. */
+      opacity: 1;
+      animation: rv-wave-scrub linear both;
+      animation-timeline: view();
+      animation-delay: 0s;
+      animation-range: entry calc(4% + 9% * var(--rv-p, 0))
+                       entry calc(64% + 9% * var(--rv-p, 0));
+    }
+  }
+}
+@keyframes rv-wave-scrub {
+  from { opacity: 0; translate: 0 58px; scale: .955; }
+  to   { opacity: 1; translate: 0 0; scale: 1; }
+}
+
 @keyframes rv-up   { from { opacity: 0; translate: 0 26px; }  to { opacity: 1; translate: 0 0; } }
 @keyframes rv-fade { from { opacity: 0; }                     to { opacity: 1; } }
 @keyframes rv-zoom { from { opacity: 0; scale: .93; }         to { opacity: 1; scale: 1; } }
