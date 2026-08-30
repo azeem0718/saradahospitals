@@ -69,10 +69,7 @@ require __DIR__ . '/includes/'
     <div class="section-head center">
       <span class="eyebrow"><?= e(text('home.departments.eyebrow')) ?></span>
       <h2><?= e(text('home.departments.title')) ?></h2>
-      <p class="lede">
-        From everyday fevers and long-term diabetes management to safe deliveries
-        and emergency treatment, we look after the whole family.
-      </p>
+      <p class="lede"><?= e(text('home.departments.lede')) ?></p>
     </div>
 
 <?php
@@ -145,10 +142,7 @@ $cardOpener = static function (string $slot, string $iconName, string $tone = ''
     <div class="section-head center">
       <span class="eyebrow"><?= e(text('home.doctors.eyebrow')) ?></span>
       <h2><?= e(text('home.doctors.title')) ?></h2>
-      <p class="lede">
-        Two resident consultants covering medicine and women's health, available
-        for outpatient consultation every day.
-      </p>
+      <p class="lede"><?= e(text('home.doctors.lede')) ?></p>
     </div>
     <?php doctor_cards($doctors); ?>
     <p class="text-center mt-3 mb-0">
@@ -175,10 +169,7 @@ $cardOpener = static function (string $slot, string $iconName, string $tone = ''
       <div>
         <span class="eyebrow"><?= e(text('home.find.eyebrow')) ?></span>
         <h2><?= e(text('home.find.title')) ?></h2>
-        <p class="lede mb-2">
-          We are on Pamuru Road, directly opposite ICICI Bank and close to
-          Thyagarajaswamy Temple.
-        </p>
+        <p class="lede mb-2"><?= e(text('home.find.lede')) ?></p>
         <?php contact_details(); ?>
         <div class="btn-row mt-3">
           <a class="btn btn-primary" href="<?= e(HOSPITAL['map']['link']) ?>" target="_blank" rel="noopener">

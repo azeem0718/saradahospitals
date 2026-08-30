@@ -62,6 +62,21 @@ if (is_post() && post('page') !== '') {
     }
 }
 
+/**
+ * Whether a field is actually in play right now.
+ *
+ * A couple of blocks belong to the classic hero, which the site only renders
+ * when Settings says so. They are still editable — the hospital may switch
+ * back — but a field that cannot change anything today has to say that on its
+ * face rather than silently swallowing an edit.
+ */
+$applies = static function (array $spec): bool {
+    if (($spec['only'] ?? '') === 'classic-hero') {
+        return setting('hero_style', 'slides') === 'classic';
+    }
+    return true;
+};
+
 /** What to show in a field: the rejected attempt if there was one, else live. */
 $shown = static function (string $key) use ($errors): string {
     $field = str_replace('.', '_', $key);
@@ -143,7 +158,22 @@ require __DIR__ . '/_header.php';
             <?php if (content_is_edited($key)): ?>
               <span class="pill pill-gold">Changed</span>
             <?php endif; ?>
+            <?php if (!$applies($spec)): ?>
+              <span class="pill pill-grey">Not in use</span>
+            <?php endif; ?>
           </label>
+
+          <?php if (!$applies($spec)): ?>
+            <?php /* Saying so beside the field is the whole point: a box that
+                      accepts your words and changes nothing on the site is how
+                      an editor decides the panel is broken. */ ?>
+            <p class="hint">
+              This belongs to the classic hero. The home page is currently using
+              the slideshow, whose headlines are edited in the
+              <strong>Home page slideshow</strong> list below — switch the hero
+              in <a href="settings.php">Settings</a> to use this instead.
+            </p>
+          <?php endif; ?>
 
           <?php if ($type === 'area'): ?>
             <textarea id="<?= e($field) ?>" name="<?= e($field) ?>" rows="3"

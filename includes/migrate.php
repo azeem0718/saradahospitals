@@ -18,7 +18,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/db.php';
 
 /** Bump this when a migration is added below. */
-const SCHEMA_VERSION = 12;
+const SCHEMA_VERSION = 13;
 
 /**
  * Put the shipped picture into each of the named slots, if it is not already
@@ -57,6 +57,18 @@ function seed_site_images(PDO $pdo, array $slots): void
 function schema_migrations(): array
 {
     return [
+        // free_op_label was seeded and never read by a single line of code.
+        // A settings row nothing consumes is worse than no row: it shows up in
+        // a database dump as though it configures something, and the day
+        // somebody wires a control to it they will be surprised the wording it
+        // holds has never been what the site displays. The free-OP wording that
+        // does reach the page lives in the editable offers list, which is the
+        // one place it should be.
+        13 => static function (PDO $pdo): void {
+            $pdo->prepare('DELETE FROM settings WHERE setting_key = ?')
+                ->execute(['free_op_label']);
+        },
+
         // Doctor profiles: the fields a patient wants before choosing a
         // consultant, all editable from the admin panel.
         2 => static function (PDO $pdo): void {

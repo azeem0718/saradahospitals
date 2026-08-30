@@ -139,13 +139,21 @@ function content_pages(): array
                     'label' => 'Hero — location line', 'type' => 'text',
                     'default' => 'Pamuru Road, Kandukur · Prakasam District',
                 ],
+                /* These two belong to the classic hero. With the slideshow
+                   selected the page takes its headline from the slides
+                   instead, so editing them changes nothing until the hero is
+                   switched over in Settings — which is what 'only' says, and
+                   why the editing screen prints a notice rather than letting
+                   somebody type into a field that quietly does nothing. */
                 'home.hero.title' => [
                     'label' => 'Hero — headline', 'type' => 'area',
                     'hint'  => 'Each new line becomes a line break on the page.',
+                    'only'  => 'classic-hero',
                     'default' => "Let’s find you\na doctor.",
                 ],
                 'home.hero.lede' => [
                     'label' => 'Hero — opening sentence', 'type' => 'area',
+                    'only'  => 'classic-hero',
                     'default' => 'General Medicine, Diabetology and Obstetrics & Gynaecology under one '
                                . 'roof — open every hour of every day.',
                 ],
@@ -162,6 +170,17 @@ function content_pages(): array
                     'label' => 'Departments — intro', 'type' => 'area',
                     'default' => 'From everyday fevers and long-term diabetes management to safe '
                                . 'deliveries and emergency treatment, we look after the whole family.',
+                ],
+
+                'home.doctors.lede' => [
+                    'label' => 'Doctors — intro', 'type' => 'area',
+                    'default' => "Two resident consultants covering medicine and women's health, "
+                               . 'available for outpatient consultation every day.',
+                ],
+                'home.find.lede' => [
+                    'label' => 'Find us — intro', 'type' => 'area',
+                    'default' => 'We are on Pamuru Road, directly opposite ICICI Bank and close to '
+                               . 'Thyagarajaswamy Temple.',
                 ],
 
                 'home.card.medicine.title' => [

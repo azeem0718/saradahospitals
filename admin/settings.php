@@ -17,6 +17,7 @@ if (is_post()) {
     $window   = filter_input(INPUT_POST, 'booking_window_days', FILTER_VALIDATE_INT);
     $cutoff   = filter_input(INPUT_POST, 'booking_cutoff_minutes', FILTER_VALIDATE_INT);
     $freeDay  = filter_input(INPUT_POST, 'free_op_weekday', FILTER_VALIDATE_INT);
+    $cap      = filter_input(INPUT_POST, 'default_token_cap', FILTER_VALIDATE_INT);
     $enabled  = isset($_POST['bookings_enabled']) ? '1' : '0';
     $heroPick = post('hero_style') === 'classic' ? 'classic' : 'slides';
     $announce = post('announcement');
@@ -29,6 +30,9 @@ if (is_post()) {
     }
     if ($freeDay === false || $freeDay < -1 || $freeDay > 6) {
         $errors['free_op_weekday'] = 'Choose a valid day.';
+    }
+    if ($cap === false || $cap < 1 || $cap > 500) {
+        $errors['default_token_cap'] = 'Choose between 1 and 500 tokens.';
     }
     if (mb_strlen($announce) > 300) {
         $errors['announcement'] = 'Please keep the announcement under 300 characters.';
@@ -43,6 +47,7 @@ if (is_post()) {
             'booking_window_days'    => (string) $window,
             'booking_cutoff_minutes' => (string) $cutoff,
             'free_op_weekday'        => (string) $freeDay,
+            'default_token_cap'      => (string) $cap,
             'bookings_enabled'       => $enabled,
             'hero_style'             => $heroPick,
             'announcement'           => $announce,
@@ -125,6 +130,20 @@ require __DIR__ . '/_header.php';
             <span class="error"><?= e($errors['booking_cutoff_minutes']) ?></span>
           <?php endif; ?>
         </div>
+      </div>
+
+      <div class="field">
+        <label for="default_token_cap">Default tokens per session</label>
+        <span class="hint">
+          The number a new schedule row starts with. Sessions already set up
+          keep their own cap — change those on the Schedule screen.
+        </span>
+        <input type="number" id="default_token_cap" name="default_token_cap"
+               min="1" max="500" inputmode="numeric"
+               value="<?= (int) setting_int('default_token_cap', 30) ?>">
+        <?php if (isset($errors['default_token_cap'])): ?>
+          <span class="error"><?= e($errors['default_token_cap']) ?></span>
+        <?php endif; ?>
       </div>
 
       <div class="field">

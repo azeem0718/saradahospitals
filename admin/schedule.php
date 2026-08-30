@@ -150,7 +150,7 @@ require __DIR__ . '/_header.php';
                   </td>
                   <td>
                     <input type="number" name="<?= e($base) ?>[cap]" min="1" max="500" required
-                           value="<?= (int) ($row['token_cap'] ?? 30) ?>">
+                           value="<?= (int) ($row['token_cap'] ?? setting_int('default_token_cap', 30)) ?>">
                   </td>
                 </tr>
               <?php endforeach; ?>
