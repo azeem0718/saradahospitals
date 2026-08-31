@@ -15,6 +15,9 @@ $credits = photo_credits();
 
 $pageTitle       = 'Photo Credits';
 $pageDescription = 'Attribution for the openly licensed photographs used on this website.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['Photo Credits', null]];
 $activeNav       = '';
 
 require __DIR__ . '/includes/header.php';

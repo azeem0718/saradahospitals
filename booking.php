@@ -25,6 +25,9 @@ if ($ref !== '') {
 $pageTitle       = $booking ? 'Your Token' : 'Find Your Token';
 $pageDescription = 'View your outpatient token for Sarada Nursing Home, Kandukur.';
 
+/* BREADCRUMB-SEO */
+$pageNoIndex     = true;
+
 require __DIR__ . '/includes/header.php';
 ?>
 

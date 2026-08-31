@@ -67,6 +67,9 @@ $pageTitle       = 'Cancel a Booking';
 $pageDescription = 'Cancel an OP token at Sarada Nursing Home, Kandukur, so the '
                  . 'slot can go to another patient.';
 
+/* BREADCRUMB-SEO */
+$pageNoIndex     = true;
+
 require __DIR__ . '/includes/header.php';
 ?>
 

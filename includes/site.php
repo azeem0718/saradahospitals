@@ -21,6 +21,9 @@ const HOSPITAL_DEFAULTS = [
         'line1'    => 'Opposite ICICI Bank, Near Thyagarajaswamy Temple',
         'line2'    => 'Pamuru Road, Kandukur',
         'district' => 'Prakasam District, Andhra Pradesh',
+        // Feeds the postal code in the search-engine markup, where a wrong one
+        // is worse than none. Clear it if it is ever in doubt.
+        'pin'      => '523105',
     ],
     // Emergency / mobile — shown as the primary 24x7 call button
     'mobile'      => '+918341254590',

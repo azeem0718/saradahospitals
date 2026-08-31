@@ -68,6 +68,12 @@ function content_groups(): array
                 'hospital.address.district' => [
                     'label' => 'District and state', 'type' => 'text', 'default' => $h['address']['district'],
                 ],
+                'hospital.address.pin' => [
+                    'label' => 'PIN code', 'type' => 'text', 'default' => $h['address']['pin'] ?? '',
+                    'hint'  => 'Not shown on the page. It goes into the data Google reads '
+                             . 'about where this hospital is, which is worth getting right '
+                             . 'and worth clearing if it is wrong.',
+                ],
             ],
         ],
 
@@ -1575,7 +1581,7 @@ function hospital_boot(): void
                   'whatsapp'] as $field) {
             $h[$field] = text('hospital.' . $field);
         }
-        foreach (['line1', 'line2', 'district'] as $field) {
+        foreach (['line1', 'line2', 'district', 'pin'] as $field) {
             $h['address'][$field] = text('hospital.address.' . $field);
         }
         $h['map']['link'] = text('hospital.map.link');

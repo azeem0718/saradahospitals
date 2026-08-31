@@ -5,6 +5,10 @@ require_once __DIR__ . '/includes/components.php';
 
 $pageTitle       = '24/7 Emergency & ICU';
 $pageDescription = '24-hour emergency treatment at Sarada Nursing Home, Kandukur — accidents, chest pain, breathlessness, snake bite, scorpion sting and sudden illness, with ICU care.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['24/7 Emergency & ICU', null]];
+$pageType        = 'MedicalWebPage';
 $activeNav       = 'emergency';
 $bodyClass       = 'page-emergency';
 

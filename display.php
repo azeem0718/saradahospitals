@@ -25,9 +25,12 @@ foreach (get_doctors() as $doctor) {
 }
 ?>
 <!doctype html>
-<html lang="en">
+<html lang="en-IN">
 <head>
 <meta charset="utf-8">
+<!-- The screen on the waiting-room wall, not a page anyone should find
+     in a search result. -->
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Now Serving — <?= e(HOSPITAL['name']) ?></title>

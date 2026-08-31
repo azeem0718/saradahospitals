@@ -5,6 +5,10 @@ require_once __DIR__ . '/includes/components.php';
 
 $pageTitle       = 'Good Health Diabetic Centre';
 $pageDescription = 'Good Health Diabetic Centre at Sarada Nursing Home, Kandukur — dedicated diabetes care led by Dr. Gundavarapu Venkatesh, MD, Diploma in Endocrinology & Diabetology.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['Good Health Diabetic Centre', null]];
+$pageType        = 'MedicalWebPage';
 $activeNav       = 'diabetic';
 
 require __DIR__ . '/includes/header.php';

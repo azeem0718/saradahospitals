@@ -5,6 +5,10 @@ require_once __DIR__ . '/includes/components.php';
 
 $pageTitle       = 'Maternity & Women\'s Health';
 $pageDescription = 'Maternity care at Sarada Nursing Home, Kandukur — normal delivery, caesarean, high-risk pregnancy, maternity scans, PCOD, laparoscopic surgery and infertility treatment.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [["Maternity & Women's Health", null]];
+$pageType        = 'MedicalWebPage';
 $activeNav       = 'maternity';
 
 require __DIR__ . '/includes/header.php';

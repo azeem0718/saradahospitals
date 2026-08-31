@@ -6,6 +6,9 @@ require_once __DIR__ . '/includes/booking.php';
 
 $pageTitle       = 'Our Doctors';
 $pageDescription = 'Meet the doctors at Sarada Nursing Home, Kandukur — Dr. Gundavarapu Venkatesh (General Medicine, Diabetology) and Dr. Maddipudi Brahmani (Obstetrics & Gynaecology).';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['Our Doctors', null]];
 $activeNav       = 'doctors';
 
 $doctors = get_doctors();

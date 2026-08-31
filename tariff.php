@@ -5,6 +5,9 @@ require_once __DIR__ . '/includes/components.php';
 
 $pageTitle       = 'Tariff & Charges';
 $pageDescription = 'Published consultation fees and room charges at Sarada Nursing Home, Kandukur — OP consultation ₹200, ICU ₹3,000 per day, A/C rooms from ₹1,400 per day.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['Tariff & Charges', null]];
 $activeNav       = 'tariff';
 
 require __DIR__ . '/includes/header.php';

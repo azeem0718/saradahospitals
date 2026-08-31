@@ -2,9 +2,25 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/includes/components.php';
+/* Needed before the header, because this page hands the head its own
+   structured data rather than taking only the site-wide graph. */
+require_once __DIR__ . '/includes/seo.php';
 
 $pageTitle       = 'Contact Us';
 $pageDescription = 'Contact Sarada Nursing Home, Kandukur — opposite ICICI Bank, near Thyagarajaswamy Temple, Pamuru Road. Phone 08598-222299, emergency 83412 54590.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['Contact Us', null]];
+$pageType        = 'ContactPage';
+
+/* Loaded here rather than in the template below because the same questions
+   feed the FAQPage markup in the head, and the head is written first. This is
+   the most valuable structured data on the site: these are the things people
+   actually type into Google about a hospital, already answered, already
+   editable in the panel. */
+$faqs            = list_shaped('contact.faq');
+$faqSchema       = seo_faq($faqs, canonical_url());
+$pageSchema      = $faqSchema ? [$faqSchema] : [];
 $activeNav       = 'contact';
 
 require __DIR__ . '/includes/header.php';
@@ -59,7 +75,6 @@ page_hero(
       <h2><?= e(text('contact.faq.title')) ?></h2>
     </div>
 
-    <?php $faqs = list_shaped('contact.faq'); ?>
     <?php foreach ($faqs as $i => $faq): ?>
       <div class="card <?= $i === count($faqs) - 1 ? 'mb-0' : 'mb-2' ?>">
         <h3><?= e($faq['title']) ?></h3>

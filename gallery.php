@@ -11,6 +11,9 @@ require_once __DIR__ . '/includes/components.php';
 
 $pageTitle       = 'Gallery';
 $pageDescription = 'Photographs of Sarada Nursing Home, Kandukur — building, reception, ICU, wards and laboratory.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['Gallery', null]];
 $activeNav       = '';
 
 $galleryDir = __DIR__ . '/assets/img/gallery';

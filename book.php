@@ -14,6 +14,9 @@ require_once __DIR__ . '/includes/booking.php';
 
 $pageTitle       = 'Book an OP Token';
 $pageDescription = 'Book an outpatient consultation token at Sarada Nursing Home, Kandukur. Choose your doctor and session and get your token number instantly.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['Book an OP Token', null]];
 $activeNav       = '';
 
 $doctors = get_doctors();

@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/components.php';
 require_once __DIR__ . '/includes/booking.php';
+/* Needed before the header, because this page hands the head its own
+   structured data rather than taking only the site-wide graph. */
+require_once __DIR__ . '/includes/seo.php';
 
 $doctor = get_doctor_by_slug(query('slug'));
 
@@ -31,6 +34,12 @@ $pageTitle       = $doctor['name'];
 $pageDescription = trim(($doctor['name'] . ' — ' . $doctor['speciality'] . ' at Sarada Nursing Home, Kandukur. '
                        . mb_substr((string) $doctor['bio'], 0, 130)));
 $activeNav       = 'doctors';
+
+/* The trail Google prints in place of the URL, matching the one drawn on the
+   page below — a breadcrumb that disagrees with the visible one is a defect. */
+$breadcrumb      = [['Our Doctors', 'doctors.php'], [$doctor['name'], null]];
+$pageType        = 'MedicalWebPage';
+$pageSchema      = [seo_physician($doctor, canonical_url())];
 
 require __DIR__ . '/includes/header.php';
 ?>

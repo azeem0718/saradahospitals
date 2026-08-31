@@ -6,6 +6,10 @@ require_once __DIR__ . '/includes/booking.php';
 
 $pageTitle       = 'About Us';
 $pageDescription = 'About Sarada Nursing Home, Kandukur — a 24-hour nursing home offering General Medicine, Diabetology and Obstetrics & Gynaecology with ICU and laboratory facilities.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['About Us', null]];
+$pageType        = 'AboutPage';
 $activeNav       = 'about';
 
 $doctors = get_doctors();

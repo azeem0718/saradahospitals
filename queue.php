@@ -54,6 +54,9 @@ $pageTitle       = 'Live Queue';
 $pageDescription = 'See which token is being served right now at Sarada Nursing Home, '
                  . 'Kandukur, and how many patients are ahead of you.';
 
+/* BREADCRUMB-SEO */
+$pageNoIndex     = true;
+
 require __DIR__ . '/includes/header.php';
 page_hero(
     'Live Queue',

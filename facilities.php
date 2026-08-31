@@ -5,6 +5,9 @@ require_once __DIR__ . '/includes/components.php';
 
 $pageTitle       = 'Our Facilities';
 $pageDescription = 'Facilities at Sarada Nursing Home, Kandukur — ICU care, modern laboratory, 2D Echo scan, maternity scanning, oxygen support and air-conditioned rooms and wards.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['Facilities', null]];
 $activeNav       = '';
 
 require __DIR__ . '/includes/header.php';

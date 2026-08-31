@@ -6,6 +6,10 @@ require_once __DIR__ . '/includes/booking.php';
 
 $pageTitle       = 'Our Services';
 $pageDescription = 'Medical services at Sarada Nursing Home, Kandukur — diabetes, blood pressure, heart and kidney problems, fevers, dengue, snake bite, plus complete obstetrics and gynaecology care.';
+
+/* BREADCRUMB-SEO */
+$breadcrumb      = [['Our Services', null]];
+$pageType        = 'MedicalWebPage';
 $activeNav       = 'services';
 
 /**

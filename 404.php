@@ -7,6 +7,9 @@ require_once __DIR__ . '/includes/components.php';
 
 $pageTitle       = 'Page Not Found';
 $pageDescription = 'The page you were looking for could not be found.';
+
+/* BREADCRUMB-SEO */
+$pageNoIndex     = true;
 $activeNav       = '';
 
 require __DIR__ . '/includes/header.php';
