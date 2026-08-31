@@ -123,11 +123,37 @@
      show for as long as it sat there. What that produced was not courtesy but
      a slideshow that looked broken, which is exactly how it was reported.
 
-     Pausing on focus stays: that means somebody is tabbing through the hero
-     and is about to act on it. So does pausing a hidden tab. And the dots,
-     swipe and arrow keys still stop the rotation for good, which is the
+     Pausing on KEYBOARD focus stays: that means somebody is tabbing through
+     the hero and is about to act on it. So does pausing a hidden tab. And the
+     dots, swipe and arrow keys still stop the rotation for good, which is the
      mechanism WCAG 2.2.2 actually asks for — hover was never it. */
-  root.addEventListener('focusin', pause);
+
+  /* That word "keyboard" is load-bearing, and it is the second correction.
+
+     This used to pause on any focus at all, which on a phone is a trap. Tap
+     the emergency number and the browser focuses that link; then focus has
+     nowhere to go, because there is no pointer to move away and no next click
+     to blur it. focusout never fires, start() is never reached, and the hero
+     sits on one picture for the rest of the visit. That is hover-pause all
+     over again — a courtesy that reads as a broken slideshow — arriving by a
+     different door on a device nobody was testing on.
+
+     A tap is not a reader tabbing toward a control, so it should not freeze
+     anything. :focus-visible is the browser's own answer to "did this focus
+     come from the keyboard?", so let it decide rather than guessing from
+     pointer events. A browser too old to know the selector throws on
+     matches(); those are desktops, where pausing on focus was never the
+     problem, so they keep the old behaviour. */
+  var FOCUS_VISIBLE = (function () {
+    try { document.createElement('i').matches(':focus-visible'); return true; }
+    catch (err) { return false; }
+  })();
+
+  root.addEventListener('focusin', function (ev) {
+    if (!FOCUS_VISIBLE) { pause(); return; }
+    var el = ev.target;
+    if (el && el.matches && el.matches(':focus-visible')) { pause(); }
+  });
   root.addEventListener('focusout', function () {
     if (!stopped && !root.contains(document.activeElement)) start();
   });
