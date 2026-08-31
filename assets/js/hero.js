@@ -3,9 +3,10 @@
  *
  * The markup already shows slide one in full, so this file's only job is to
  * turn one slide off and the next one on. If it never runs — no JavaScript, a
- * script error, a reader who prefers no motion — the hero stays a perfectly
- * good static banner, which is why nothing here is required for the page to
- * make sense.
+ * script error — the hero stays a perfectly good static banner, which is why
+ * nothing here is required for the page to make sense. A reader who prefers
+ * reduced motion is NOT one of those cases: they get the same rotation at the
+ * same pace, and the stylesheet gives them a dissolve instead of a drift.
  *
  * Three ways to drive it: the bars underneath, a swipe across the photograph,
  * and the arrow keys once anything in the hero has focus. All three mean the
@@ -28,22 +29,31 @@
   var count  = texts.length;
   if (count < 2) return;
 
-  /* 2s a slide. That is fast for a crossfade, so the budget is spent
-     deliberately: the pictures take 0.9s to cross and the words settle by
-     about 0.85s, leaving roughly a second where the slide is simply still and
-     readable. Anything slower to cross and the hero would never stop moving.
-     The bar under the words is told the same number, so what it draws is the
-     truth rather than a guess. */
-  var still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  /* 2s a slide, for everybody. That is fast for a crossfade, so the budget is
+     spent deliberately: the pictures take 0.9s to cross and the words settle
+     by about 0.85s, leaving roughly a second where the slide is simply still
+     and readable. Anything slower to cross and the hero would never stop
+     moving. The bar under the words is told the same number, so what it draws
+     is the truth rather than a guess.
 
-  /* A reader who asked for less motion still gets the pictures, just slowly
-     and with nothing that travels: the stylesheet drops every animation and
-     leaves a long cross-dissolve, which changes opacity and moves nothing.
-     Switching the show off for them was the old behaviour and it was wrong on
-     two counts — the preference asks to reduce motion rather than to freeze
-     content, and Android turns it on by itself in battery saver, so a phone in
-     power-saving mode showed a hero that simply never changed. */
-  var EVERY = still.matches ? 6000 : 2000;
+     "For everybody" is the correction. A reader who asks for less motion used
+     to get 6s a slide instead of 2s. The intention was kind and the effect was
+     not: by then the stylesheet has already taken the motion away — every
+     .hs-layer rule drops to `animation: none; transform: none`, so nothing
+     scales and nothing travels, and what is left is a 1.1s dissolve in opacity
+     alone. Slowing a dissolve that no longer moves protects nobody. It only
+     holds one picture on screen long enough to read as broken, which is
+     exactly how it was reported.
+
+     That reaches far past the readers who chose the preference. Android turns
+     it on by itself in battery saver, so any phone low on charge — most
+     phones, most afternoons — was served a hero that looked stuck.
+
+     A cross-fade is not motion; it is what the guidance recommends putting in
+     motion's place. So the preference decides how a slide arrives, never how
+     long it stays. The pause mechanism WCAG 2.2.2 asks for is the row of dots,
+     which stops the rotation for good on the first tap. */
+  var EVERY = 2000;
   root.style.setProperty('--hs-turn', EVERY + 'ms');
 
   var at = 0;
@@ -174,17 +184,6 @@
     frame.addEventListener('pointercancel', release);
     frame.addEventListener('pointerleave', release);
   }
-
-  /* If the preference changes mid-visit, re-pace rather than stop. */
-  var onChange = function () {
-    if (stopped) return;
-    EVERY = still.matches ? 6000 : 2000;
-    root.style.setProperty('--hs-turn', EVERY + 'ms');
-    pause();
-    start();
-  };
-  if (still.addEventListener) { still.addEventListener('change', onChange); }
-  else if (still.addListener) { still.addListener(onChange); }
 
   start();
 })();
