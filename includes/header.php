@@ -65,6 +65,7 @@ $announcement = setting('announcement', '');
 <html lang="en-IN">
 <head>
 <meta charset="utf-8">
+<meta name="google-site-verification" content="fZubF43kpPLs3F0yc5u8Tk3wjcpfhS9bH8VDxB1hZhc" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title><?= e($fullTitle) ?></title>
 <meta name="description" content="<?= e($pageDescription) ?>">
