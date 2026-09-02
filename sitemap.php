@@ -85,6 +85,22 @@ function sitemap_lastmod(string $path, ?int $contentTouched): string
 
 $base = rtrim(SITE_URL, '/');
 
+/**
+ * The address to advertise for a page.
+ *
+ * Only the front page needs thinking about, and it needed it: this listed
+ * https://saradahospitals.com/index.php while that very page's canonical says
+ * https://saradahospitals.com/ — the sitemap asking for one URL to be indexed
+ * and the page answering "no, the other one". Google resolves that by
+ * believing the page and filing the sitemap entry under "alternate page with
+ * proper canonical tag", which is a warning earned for nothing. The two now
+ * say the same thing.
+ */
+function sitemap_loc(string $base, string $path): string
+{
+    return $path === 'index.php' ? $base . '/' : $base . '/' . $path;
+}
+
 /* The pictures, declared against the page they appear on. An image sitemap is
    how a photograph of this building becomes findable as a photograph of this
    building, which for a hospital being chosen off a search page matters more
@@ -103,7 +119,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>', "\n";
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 <?php foreach ($pages as [$path, $priority, $freq]): ?>
   <url>
-    <loc><?= htmlspecialchars($base . '/' . $path, ENT_XML1) ?></loc>
+    <loc><?= htmlspecialchars(sitemap_loc($base, $path), ENT_XML1) ?></loc>
     <lastmod><?= sitemap_lastmod($path, $contentTouched) ?></lastmod>
     <changefreq><?= $freq ?></changefreq>
     <priority><?= $priority ?></priority>
