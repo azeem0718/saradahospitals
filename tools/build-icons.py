@@ -70,6 +70,7 @@ UTILITY = {
     "print":         "printer",
     "undo":          "undo-2",
     "image":         "image",
+    "trash":         "trash-2",
 }
 
 # WhatsApp is a brand mark, not a UI icon, so Lucide does not carry it. Kept as

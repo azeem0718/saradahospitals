@@ -64,6 +64,29 @@ if (is_post()) {
             ->execute([$action === 'activate' ? 1 : 0, $id]);
         flash('Account ' . ($action === 'activate' ? 'reactivated' : 'deactivated') . '.');
         redirect('users.php');
+    } elseif ($action === 'delete' && $id > 0) {
+        /* Deactivating is the reversible one and stays the everyday button. This
+           is for handover: clearing out the accounts a site was built and tested
+           with, so the hospital's database ends up holding only the hospital's
+           own staff. A deactivated account still keeps a username and a password
+           hash on file, which is exactly what you do not want to leave behind.
+
+           Two things already make it safe to offer. An admin cannot delete their
+           own account — refused above — so this table can never be emptied, and
+           that matters more than it looks: setup.php reads "no accounts exist"
+           as "not installed yet" and would offer to reconfigure the site to
+           whoever asked for it. And nothing else in the schema refers to a user
+           id, so removing a row orphans no booking and rewrites no history. */
+        $target = find_user($id);
+        db()->prepare('DELETE FROM users WHERE id = ?')->execute([$id]);
+
+        /* current_user() re-reads the row on every request, so if that person is
+           signed in somewhere their session ends at their next click rather than
+           running on until it happens to time out. */
+        flash($target
+            ? 'Removed the account for ' . $target['full_name'] . '.'
+            : 'Account removed.');
+        redirect('users.php');
     } elseif ($action === 'reset' && $id > 0) {
         $pw = (string) ($_POST['new_password'] ?? '');
         if ($problem = password_problem($pw)) {
@@ -136,6 +159,15 @@ require __DIR__ . '/_header.php';
                     <button class="btn-icon <?= $s['is_active'] ? 'danger' : 'good' ?>" type="submit"
                             title="<?= $s['is_active'] ? 'Deactivate' : 'Reactivate' ?>">
                       <?= icon($s['is_active'] ? 'close' : 'check') ?>
+                    </button>
+                  </form>
+                  <form method="post" action="users.php"
+                        data-confirm="Permanently remove <?= e($s['full_name']) ?>? This cannot be undone.">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="<?= (int) $s['id'] ?>">
+                    <button class="btn-icon danger" type="submit" title="Remove permanently">
+                      <?= icon('trash') ?>
                     </button>
                   </form>
                 <?php else: ?>
