@@ -1,0 +1,22 @@
+# Sarada Nursing Home — https://saradahospitals.com
+#
+# What is blocked here is only what a crawler has no business fetching at all:
+# the reception panel, the installer, and the two endpoints that answer with
+# JSON rather than a page.
+#
+# The patient-specific pages — a token slip, a queue position, a cancellation —
+# are deliberately NOT listed. They used to be, and that was the wrong tool.
+# Disallow stops a crawler reading a page; it does not stop the URL being
+# listed, because a URL found in a link elsewhere can be indexed without ever
+# being fetched — and once it is forbidden, the noindex inside it can never be
+# read. Those pages now carry <meta name="robots" content="noindex"> and are
+# left crawlable so that instruction is actually seen and obeyed.
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /setup.php
+Disallow: /availability.php
+Disallow: /queue-status.php
+
+Sitemap: https://saradahospitals.com/sitemap.xml

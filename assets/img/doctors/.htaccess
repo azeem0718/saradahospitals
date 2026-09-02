@@ -1,0 +1,23 @@
+# Uploaded portraits live here. Nothing in this folder should ever be executed,
+# whatever it ends up being called.
+#
+# php_flag is guarded: it is only understood by mod_php, and an unguarded
+# directive returns 500 on a server running PHP through FPM or LiteSpeed.
+<IfModule mod_php.c>
+  php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+  php_flag engine off
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+# Serve only the image types the uploader produces.
+<FilesMatch "\.(?i:jpe?g|png|webp)$">
+  Require all granted
+</FilesMatch>
+<FilesMatch "\.(?i:ph(p[0-9]?|tml|ar)|cgi|pl|py|s?html?|htaccess)$">
+  Require all denied
+</FilesMatch>

@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    name: PHP syntax
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # The runner image ships PHP 8.3 with the extensions this site uses,
+      # so no third-party setup action is needed.
+      - name: php -l every file
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            php -l "$f" > /dev/null || fail=1
+          done < <(find . -name '*.php' -not -path './node_modules/*' -print0)
+          exit $fail
+
+  smoke:
+    name: Smoke test
+    runs-on: ubuntu-latest
+    services:
+      db:
+        image: mariadb:10.6
+        env:
+          MARIADB_DATABASE: snh
+          MARIADB_USER: snh
+          MARIADB_PASSWORD: snh
+          MARIADB_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the preinstalled PHP has what the site needs
+        run: |
+          php -v
+          php -m | grep -iE 'pdo_mysql|gd|mbstring'
+
+      # Throwaway CI-only credentials for the job's disposable database —
+      # nothing here exists outside this run.
+      - name: Configure the site for the CI database
+        run: |
+          cat > includes/config.php <<'PHP'
+          <?php
+          define('DB_HOST', '127.0.0.1');
+          define('DB_NAME', 'snh');
+          define('DB_USER', 'snh');
+          define('DB_PASS', 'snh');
+          define('SITE_URL', 'http://127.0.0.1:8080');
+          define('DEBUG_MODE', false);
+          PHP
+
+      - name: Import schema and seed data
+        run: |
+          mysql -h 127.0.0.1 -u snh -psnh snh < sql/schema.sql
+          mysql -h 127.0.0.1 -u snh -psnh snh < sql/seed.sql
+
+      # setup.php creates the real admin interactively; CI seeds its own so
+      # the signed-in pages can be exercised. PHP does the insert so the
+      # bcrypt hash never meets shell quoting.
+      - name: Create the CI admin account
+        run: |
+          php -r '
+            require "includes/db.php";
+            db()->prepare("INSERT INTO users
+                             (username, password_hash, full_name, role, must_change_pw)
+                           VALUES (?, ?, ?, ?, 0)")
+                ->execute(["ci", password_hash("CiSmoke!2026", PASSWORD_DEFAULT), "CI Smoke", "admin"]);
+          '
+
+      - name: Serve and smoke-test
+        run: |
+          php -S 127.0.0.1:8080 -t . > php-server.log 2>&1 &
+          for i in $(seq 1 20); do
+            curl -sf http://127.0.0.1:8080/robots.txt > /dev/null && break
+            sleep 1
+          done
+          BASE=http://127.0.0.1:8080 ADMIN_USER=ci ADMIN_PASS='CiSmoke!2026' bash tests/smoke.sh
+
+      - name: Server log on failure
+        if: failure()
+        run: cat php-server.log
