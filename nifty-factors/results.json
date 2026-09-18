@@ -1,0 +1,124 @@
+{
+  "start": "2016-09-20",
+  "end": "2026-09-18",
+  "sessions": 2466,
+  "up_days_pct": 53.8,
+  "factors": [
+    {
+      "factor": "spx",
+      "n": 2465,
+      "gap_corr": 0.476,
+      "gap_hit": 68.4,
+      "intraday_corr": -0.043,
+      "intraday_hit": 48.8,
+      "c2c_corr": 0.272,
+      "c2c_hit": 59.2
+    },
+    {
+      "factor": "crude",
+      "n": 2465,
+      "gap_corr": 0.093,
+      "gap_hit": 53.0,
+      "intraday_corr": 0.004,
+      "intraday_hit": 50.9,
+      "c2c_corr": 0.063,
+      "c2c_hit": 52.9
+    },
+    {
+      "factor": "brent",
+      "n": 2465,
+      "gap_corr": 0.055,
+      "gap_hit": 53.7,
+      "intraday_corr": -0.009,
+      "intraday_hit": 50.6,
+      "c2c_corr": 0.029,
+      "c2c_hit": 52.1
+    },
+    {
+      "factor": "dxy",
+      "n": 2465,
+      "gap_corr": -0.184,
+      "gap_hit": 43.5,
+      "intraday_corr": 0.008,
+      "intraday_hit": 50.0,
+      "c2c_corr": -0.112,
+      "c2c_hit": 45.6
+    },
+    {
+      "factor": "usdinr",
+      "n": 2464,
+      "gap_corr": 0.029,
+      "gap_hit": 48.4,
+      "intraday_corr": -0.007,
+      "intraday_hit": 49.9,
+      "c2c_corr": 0.012,
+      "c2c_hit": 48.4
+    },
+    {
+      "factor": "gold",
+      "n": 2465,
+      "gap_corr": 0.09,
+      "gap_hit": 55.1,
+      "intraday_corr": 0.025,
+      "intraday_hit": 50.2,
+      "c2c_corr": 0.079,
+      "c2c_hit": 53.2
+    },
+    {
+      "factor": "copper",
+      "n": 2465,
+      "gap_corr": 0.127,
+      "gap_hit": 56.6,
+      "intraday_corr": 0.021,
+      "intraday_hit": 49.5,
+      "c2c_corr": 0.099,
+      "c2c_hit": 53.5
+    },
+    {
+      "factor": "nikkei",
+      "n": 2432,
+      "gap_corr": 0.044,
+      "gap_hit": 51.3,
+      "intraday_corr": 0.059,
+      "intraday_hit": 50.0,
+      "c2c_corr": 0.076,
+      "c2c_hit": 50.8
+    },
+    {
+      "factor": "vix",
+      "n": 2465,
+      "gap_corr": -0.394,
+      "gap_hit": 34.1,
+      "intraday_corr": 0.064,
+      "intraday_hit": 50.8,
+      "c2c_corr": -0.203,
+      "c2c_hit": 42.3
+    }
+  ],
+  "baselines": [
+    {
+      "factor": "nifty_prev_day",
+      "target": "gap",
+      "corr": -0.007,
+      "hit": 55.4
+    },
+    {
+      "factor": "nifty_prev_day",
+      "target": "intraday",
+      "corr": -0.053,
+      "hit": 49.1
+    },
+    {
+      "factor": "nifty_prev_day",
+      "target": "c2c",
+      "corr": -0.044,
+      "hit": 54.0
+    },
+    {
+      "factor": "todays_gap",
+      "target": "intraday",
+      "corr": -0.06,
+      "hit": 49.3
+    }
+  ]
+}
