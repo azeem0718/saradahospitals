@@ -127,6 +127,56 @@ Run it between about 07:00 and 09:15 IST for the cleanest read, after the US
 close and before India opens. Run after 15:45 IST it targets the next session,
 and the US inputs will still be the previous night's until the US closes.
 
+### How much score confirms the call, and can you trade it?
+
+Walk-forward test: the models are refitted at the start of each year on all
+earlier data and scored on that year, 2020 to 2026, 1,640 sessions the
+models never saw while fitting. "Right" means Nifty closed in the called
+direction versus the previous close. The last two columns are the only
+trade you can actually place: enter at 9:15 in the score's direction, exit
+at the close.
+
+| score band       | days/yr | right, close vs prev close | avg move that way | right, open to close | avg open-to-close |
+|------------------|---------|----------------------------|-------------------|----------------------|-------------------|
+| 30 or below      | 12      | 71.6%                      | +0.44%            | 45.7%                | -0.21%            |
+| 31-35            | 10      | 62.1%                      | +0.50%            | 54.5%                | +0.05%            |
+| 36-43            | 34      | 61.6%                      | +0.20%            | 53.1%                | +0.07%            |
+| 44-57 sideways   | 109     | 53.9%                      | +0.03%            | 48.5%                | -0.01%            |
+| 58-65            | 47      | 60.8%                      | +0.23%            | 45.3%                | -0.08%            |
+| 66-70            | 19      | 64.8%                      | +0.26%            | 48.8%                | -0.08%            |
+| above 70         | 18      | 74.8%                      | +0.47%            | 48.7%                | -0.11%            |
+
+Two things follow.
+
+1. **The score is honest.** Above 70 or at 30 and below it was right about
+   three days in four; 58-65 about six in ten; the sideways band is a coin
+   flip as designed.
+2. **You cannot trade it from the open.** The whole edge is the gap, which
+   is in the price at 9:15. Buying the open on a high score, or selling the
+   open on a low score, was right less than half the time and lost money on
+   average before costs. If anything, strong gaps gave a little back during
+   the day.
+
+So the rule "take the trade when the score is above X" does not exist for
+an intraday entry, at any X. What the score is good for:
+
+- knowing the likely opening gap and its size before the bell, so you are
+  not surprised and can plan levels;
+- deciding whether to hold or hedge an overnight position (the score for
+  tomorrow is known around 02:00 IST, after the US close, but the position
+  has to be on from today's close);
+- context for CPR and pivot levels: an expected open above R1 with a high
+  score is a gap-and-hold setup to watch, not a buy signal.
+
+Year by year, confident calls (58 and above, 42 and below) were right
+between 57% (2025) and 69% (2023-24) on close vs previous close. It never
+fell to a coin flip, and it never approached the certainty a fixed
+"take every trade" rule would need.
+
+The gap score prints separately and is much sharper: above 80 it called the
+gap direction right 91% of the time, 20 and below 84%. It is not tradeable
+for the same reason, but it is the number to trust for "which way will we open".
+
 Be honest with yourself about the score. Almost all of the edge is the S&P 500
 predicting the opening gap. The close-to-close forecast has an error sd of
 about 1%, so scores rarely leave the 40-60 band and a 64 means roughly 6 days

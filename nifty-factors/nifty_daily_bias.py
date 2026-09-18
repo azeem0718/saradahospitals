@@ -295,6 +295,9 @@ def main():
         print(f"\nNote: {', '.join(stale)} have not closed since Nifty's last session, so their moves are already in the price.")
     print(f"\nModel: {len(hist)} sessions. Close-forecast error sd {s_c2c*100:.2f}%, gap-forecast error sd {s_gap*100:.2f}%.")
     print("A score of 60 means roughly 6 days in 10. Treat 43-57 as no edge.")
+    print("Walk-forward 2020-2026: score >70 or <=30 was right ~3 days in 4 on close vs previous close, but that")
+    print("edge is the opening gap. Entering at 9:15 in the score's direction was right <50% at every score level.")
+    print("Do not use the score as an intraday entry signal. See README for the calibration table.")
 
     if args.json:
         json.dump(out, open(args.json, "w"), indent=2)
@@ -327,6 +330,7 @@ table{{border-collapse:collapse;width:100%;margin-top:16px;font-size:.9rem}} td,
 <span>Expected open sits</span><b>{o['cpr']['expected_open_vs_cpr']}</b>
 <span>CPR read</span><b>{o['cpr']['cpr_read']} · {'agrees' if o['cpr']['agrees_with_bias'] else 'disagrees' if o['cpr']['agrees_with_bias'] is False else 'n/a'}</b></div>
 <table><tr><th>Input</th><th style='text-align:right'>Move</th><th style='text-align:right'>Push</th><th>As of</th></tr>{rows}</table>
+<p class="sub"><b>Not an entry signal:</b> the edge is in the opening gap. Entering at 9:15 in the score's direction was right under 50% of the time out of sample at every score level.</p>
 <p class="sub">Score is the model's probability that Nifty closes up. 43–57 is no edge. Range is expected close ± half the 14-day ATR ({o['atr14']:,.0f} pts).</p>
 </body></html>"""
     open(path, "w").write(html)
