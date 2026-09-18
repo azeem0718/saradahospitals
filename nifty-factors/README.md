@@ -182,6 +182,69 @@ predicting the opening gap. The close-to-close forecast has an error sd of
 about 1%, so scores rarely leave the 40-60 band and a 64 means roughly 6 days
 in 10, not a sure thing.
 
+## After 9:15: intraday rules
+
+`nifty_intraday_rules.py` tests what you can do once the session is open,
+on intraday bars:
+
+| rule       | entry                                                                  | exit  |
+|------------|------------------------------------------------------------------------|-------|
+| ORB15/30   | first bar close above the 15/30-min opening range high (long) or below its low (short) | close, or `+stop` at the range midpoint |
+| FH         | at 10:15, long if price is above the day's open, else short            | close |
+| CPR        | at 9:30, long if price is above TC, short if below BC, nothing inside  | close |
+| GAPGO      | gap over 0.3% and price still on the gap side of the open at 10:15: trade with the gap | close |
+| GAPFADE    | same gap, price has come back through the open: trade against the gap  | close |
+
+Every rule is reported for all trades, for trades in the direction of the
+pre-market bias only (score 58+ or 42-), and for trades against it, so you can
+see whether the score has any role once you are inside the session. Costs
+default to 0.03% per round trip (`--cost`).
+
+### Preliminary result on Yahoo data
+
+Yahoo only serves 60 days of 5-minute bars and about two years of hourly bars,
+so this is a pipeline check, not a verdict.
+
+| data                     | rule    | trades | win % | avg net % | profit factor |
+|--------------------------|---------|--------|-------|-----------|---------------|
+| hourly, Oct 2023-Sep 2026 | CPR     | 648    | 48.5  | -0.02     | 0.89          |
+| hourly                   | FH      | 721    | 47.7  | -0.02     | 0.89          |
+| hourly                   | GAPGO   | 118    | 46.6  | -0.02     | 0.91          |
+| hourly                   | GAPFADE | 157    | 44.6  | -0.04     | 0.84          |
+| 5-min, last 60 days      | ORB15   | 59     | 45.8  | -0.01     | 0.93          |
+| 5-min, last 60 days      | ORB30   | 54     | 40.7  | -0.02     | 0.86          |
+
+Nothing above a profit factor of 1.0 after costs, and filtering by the
+pre-market bias did not help any rule. Every year from 2023 to 2026 looks the
+same on the hourly rules. This matches the daily finding: the overnight
+information is in the open, and the rest of the day has to be earned from
+price action that no morning checklist knows.
+
+### Running it on ten years of your own spot data
+
+1. Install Claude Code on the desktop (or just Python 3 with pandas, numpy,
+   requests), clone this repo and check out branch
+   `claude/nifty-intraday-prediction-zemnpg`.
+2. Copy your intraday file to `nifty-factors/data/` (that folder is
+   git-ignored). See `data/README.md` for the accepted column layouts; 1- or
+   5-minute bars are ideal, anything up to 60-minute works.
+3. From `nifty-factors/` run
+
+   ```
+   python3 nifty_intraday_rules.py --csv data/nifty_spot_intraday.csv --json intraday_results.json
+   ```
+
+   It prints the table above for your data, plus a year-by-year breakdown,
+   and writes the numbers to `intraday_results.json`.
+4. If you are in Claude Code, ask it to read `intraday_results.json` and
+   update this README and the results page. The scripts and their outputs are
+   the shared state; the branch carries them between the phone, the cloud
+   and the desktop.
+
+Ten years of 5-minute bars gives roughly 2,400 sessions per rule, enough to
+tell a 52% rule from a 55% one and to see whether it survives every year.
+That is the test the Yahoo sample cannot run.
+
 ## Ten-year factor check
 
 `nifty_factor_check.py` pulls ~10 years of daily closes from Yahoo Finance

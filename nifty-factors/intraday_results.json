@@ -1,0 +1,338 @@
+{
+  "Yahoo 5-minute, last 60 days": {
+    "bars_minutes": 5,
+    "sessions": 59,
+    "summary": {
+      "CPR | all trades": {
+        "avg_loss": -0.34331247709009316,
+        "avg_net_pct": -0.06289879545381193,
+        "avg_win": 0.2525665963870044,
+        "profit_factor": 0.6539338247644808,
+        "total_net_pct": -3.207838568144408,
+        "trades": 51.0,
+        "win_pct": 47.05882352941176
+      },
+      "CPR | with bias only": {
+        "avg_loss": -0.3740944181669687,
+        "avg_net_pct": -0.005604868473660051,
+        "avg_win": 0.3260357262503178,
+        "profit_factor": 0.9683702842479225,
+        "total_net_pct": -0.10649250099954097,
+        "trades": 19.0,
+        "win_pct": 52.63157894736842
+      },
+      "CPR | against bias": {
+        "avg_loss": -0.21915365914124568,
+        "avg_net_pct": -0.01555958479354523,
+        "avg_win": 0.18803448955415525,
+        "profit_factor": 0.8580029660055369,
+        "total_net_pct": -0.1555958479354523,
+        "trades": 10.0,
+        "win_pct": 50.0
+      },
+      "FH | all trades": {
+        "avg_loss": -0.23239891561261963,
+        "avg_net_pct": -0.02019116992056335,
+        "avg_win": 0.31196008420613336,
+        "profit_factor": 0.8576108500797068,
+        "total_net_pct": -1.1912790253132377,
+        "trades": 59.0,
+        "win_pct": 38.983050847457626
+      },
+      "FH | with bias only": {
+        "avg_loss": -0.34708147211475304,
+        "avg_net_pct": -0.0611740823313045,
+        "avg_win": 0.5106406972355927,
+        "profit_factor": 0.7356207954925973,
+        "total_net_pct": -0.9176112349695675,
+        "trades": 15.0,
+        "win_pct": 33.33333333333333
+      },
+      "FH | against bias": {
+        "avg_loss": -0.12763077099012535,
+        "avg_net_pct": -0.019788942625107102,
+        "avg_win": 0.17792107604409302,
+        "profit_factor": 0.7603797964044491,
+        "total_net_pct": -0.33641202462682074,
+        "trades": 17.0,
+        "win_pct": 35.294117647058826
+      },
+      "GAPFADE | all trades": {
+        "avg_loss": -0.19234556130768818,
+        "avg_net_pct": 0.08860363978110378,
+        "avg_win": 0.4257426810876542,
+        "profit_factor": 1.8445217303741552,
+        "total_net_pct": 0.9746400375921416,
+        "trades": 11.0,
+        "win_pct": 45.45454545454545
+      },
+      "GAPFADE | with bias only": {
+        "avg_loss": NaN,
+        "avg_net_pct": NaN,
+        "avg_win": NaN,
+        "profit_factor": NaN,
+        "total_net_pct": NaN,
+        "trades": 0.0,
+        "win_pct": NaN
+      },
+      "GAPFADE | against bias": {
+        "avg_loss": -0.14217964177399064,
+        "avg_net_pct": -0.06256261320498943,
+        "avg_win": 0.017054415364011782,
+        "profit_factor": 0.11994977024292656,
+        "total_net_pct": -0.12512522640997886,
+        "trades": 2.0,
+        "win_pct": 50.0
+      },
+      "GAPGO | all trades": {
+        "avg_loss": -0.33143542059676956,
+        "avg_net_pct": 0.09135290659362139,
+        "avg_win": 0.5141412337840123,
+        "profit_factor": 1.5512561477535196,
+        "total_net_pct": 0.9135290659362139,
+        "trades": 10.0,
+        "win_pct": 50.0
+      },
+      "GAPGO | with bias only": {
+        "avg_loss": -0.4081133544077997,
+        "avg_net_pct": 0.10970357330318203,
+        "avg_win": 0.6275205010141638,
+        "profit_factor": 1.5376132494481558,
+        "total_net_pct": 0.8776285864254563,
+        "trades": 8.0,
+        "win_pct": 50.0
+      },
+      "GAPGO | against bias": {
+        "avg_loss": -0.024723685352648878,
+        "avg_net_pct": 0.017950239755378822,
+        "avg_win": 0.06062416486340652,
+        "profit_factor": 2.4520682899287625,
+        "total_net_pct": 0.035900479510757644,
+        "trades": 2.0,
+        "win_pct": 50.0
+      },
+      "ORB15 | all trades": {
+        "avg_loss": -0.26706972012569263,
+        "avg_net_pct": -0.010374390657559171,
+        "avg_win": 0.2938571109343027,
+        "profit_factor": 0.9283790660885386,
+        "total_net_pct": -0.6120890487959911,
+        "trades": 59.0,
+        "win_pct": 45.76271186440678
+      },
+      "ORB15 | with bias only": {
+        "avg_loss": -0.3486147429061079,
+        "avg_net_pct": -0.0011558462544461467,
+        "avg_win": 0.3463030503972156,
+        "profit_factor": 0.9933689192556182,
+        "total_net_pct": -0.018493540071138348,
+        "trades": 16.0,
+        "win_pct": 50.0
+      },
+      "ORB15 | against bias": {
+        "avg_loss": -0.18346613628008518,
+        "avg_net_pct": 0.006626084811642442,
+        "avg_win": 0.19671830590337003,
+        "profit_factor": 1.0722322380139606,
+        "total_net_pct": 0.10601735698627907,
+        "trades": 16.0,
+        "win_pct": 50.0
+      },
+      "ORB15+stop | all trades": {
+        "avg_loss": -0.2450759983449361,
+        "avg_net_pct": -0.07236241958300427,
+        "avg_win": 0.321040732041396,
+        "profit_factor": 0.5751061408696378,
+        "total_net_pct": -4.269382755397252,
+        "trades": 59.0,
+        "win_pct": 30.508474576271187
+      },
+      "ORB15+stop | with bias only": {
+        "avg_loss": -0.2523108454526547,
+        "avg_net_pct": -0.11682586806949558,
+        "avg_win": 0.289629064079982,
+        "profit_factor": 0.38263524180576686,
+        "total_net_pct": -1.8692138891119292,
+        "trades": 16.0,
+        "win_pct": 25.0
+      },
+      "ORB15+stop | against bias": {
+        "avg_loss": -0.26141729037786104,
+        "avg_net_pct": -0.08798189158403509,
+        "avg_win": 0.2010771064056749,
+        "profit_factor": 0.4615083557366037,
+        "total_net_pct": -1.4077102653445615,
+        "trades": 16.0,
+        "win_pct": 37.5
+      },
+      "ORB30 | all trades": {
+        "avg_loss": -0.25348401657420544,
+        "avg_net_pct": -0.02076811436523318,
+        "avg_win": 0.31772774339327187,
+        "profit_factor": 0.8617420006792754,
+        "total_net_pct": -1.1214781757225918,
+        "trades": 54.0,
+        "win_pct": 40.74074074074074
+      },
+      "ORB30 | with bias only": {
+        "avg_loss": -0.24737794879075714,
+        "avg_net_pct": 0.01779242004351164,
+        "avg_win": 0.41554797329491494,
+        "profit_factor": 1.1198733902953308,
+        "total_net_pct": 0.2668863006526746,
+        "trades": 15.0,
+        "win_pct": 40.0
+      },
+      "ORB30 | against bias": {
+        "avg_loss": -0.20371000535769204,
+        "avg_net_pct": 0.0038793082064612805,
+        "avg_win": 0.21146862177061457,
+        "profit_factor": 1.03808657507666,
+        "total_net_pct": 0.05431031489045793,
+        "trades": 14.0,
+        "win_pct": 50.0
+      },
+      "ORB30+stop | all trades": {
+        "avg_loss": -0.22066908880621777,
+        "avg_net_pct": -0.022996499717322913,
+        "avg_win": 0.3723486784604667,
+        "profit_factor": 0.8436810984148476,
+        "total_net_pct": -1.2418109847354373,
+        "trades": 54.0,
+        "win_pct": 33.33333333333333
+      },
+      "ORB30+stop | with bias only": {
+        "avg_loss": -0.2107260575787173,
+        "avg_net_pct": -0.0003156551988203693,
+        "avg_win": 0.5783129513458962,
+        "profit_factor": 0.9979573531986118,
+        "total_net_pct": -0.0047348279823055395,
+        "trades": 15.0,
+        "win_pct": 26.666666666666668
+      },
+      "ORB30+stop | against bias": {
+        "avg_loss": -0.2512544789816931,
+        "avg_net_pct": -0.04517742797642372,
+        "avg_win": 0.22959197336393547,
+        "profit_factor": 0.685336956860769,
+        "total_net_pct": -0.6324839916699321,
+        "trades": 14.0,
+        "win_pct": 42.857142857142854
+      }
+    }
+  },
+  "Yahoo hourly, last 2 years": {
+    "bars_minutes": 60,
+    "sessions": 721,
+    "summary": {
+      "CPR | all trades": {
+        "trades": 648.0,
+        "win_pct": 48.45679012345679,
+        "avg_net_pct": -0.022146243616093703,
+        "avg_win": 0.3865994145413652,
+        "avg_loss": -0.4064161138599323,
+        "profit_factor": 0.8942798688469961,
+        "total_net_pct": -14.35076586322872
+      },
+      "CPR | with bias only": {
+        "trades": 211.0,
+        "win_pct": 45.023696682464454,
+        "avg_net_pct": -0.021893251059790078,
+        "avg_win": 0.4029373404413134,
+        "avg_loss": -0.36981485616845233,
+        "profit_factor": 0.8923162007317338,
+        "total_net_pct": -4.619475973615707
+      },
+      "CPR | against bias": {
+        "trades": 106.0,
+        "win_pct": 50.0,
+        "avg_net_pct": -0.02271110915221867,
+        "avg_win": 0.38435181707105337,
+        "avg_loss": -0.42977403537549075,
+        "profit_factor": 0.8943113949060411,
+        "total_net_pct": -2.407377570135179
+      },
+      "FH | all trades": {
+        "trades": 721.0,
+        "win_pct": 47.71151178918169,
+        "avg_net_pct": -0.023732005977781294,
+        "avg_win": 0.3882741795146962,
+        "avg_loss": -0.39967398955712424,
+        "profit_factor": 0.8864407598488591,
+        "total_net_pct": -17.110776309980313
+      },
+      "FH | with bias only": {
+        "trades": 171.0,
+        "win_pct": 46.198830409356724,
+        "avg_net_pct": -0.0382586105867556,
+        "avg_win": 0.3650713475115395,
+        "avg_loss": -0.38459629199724804,
+        "profit_factor": 0.815101927305305,
+        "total_net_pct": -6.542222410335208
+      },
+      "FH | against bias": {
+        "trades": 185.0,
+        "win_pct": 49.72972972972973,
+        "avg_net_pct": -0.038208750483077564,
+        "avg_win": 0.3712367731733358,
+        "avg_loss": -0.4432516341001746,
+        "profit_factor": 0.8285248189979832,
+        "total_net_pct": -7.068618839369349
+      },
+      "GAPFADE | all trades": {
+        "trades": 157.0,
+        "win_pct": 44.5859872611465,
+        "avg_net_pct": -0.03918198036241773,
+        "avg_win": 0.45946411567368944,
+        "avg_loss": -0.4403914829202051,
+        "profit_factor": 0.839443507808909,
+        "total_net_pct": -6.151570916899584
+      },
+      "GAPFADE | with bias only": {
+        "trades": 13.0,
+        "win_pct": 38.46153846153847,
+        "avg_net_pct": -0.06157359731276863,
+        "avg_win": 0.3900392948799236,
+        "avg_loss": -0.3438316549332013,
+        "profit_factor": 0.7089939387556161,
+        "total_net_pct": -0.8004567650659922
+      },
+      "GAPFADE | against bias": {
+        "trades": 75.0,
+        "win_pct": 48.0,
+        "avg_net_pct": -0.07989149751004872,
+        "avg_win": 0.42356748270727484,
+        "avg_loss": -0.5446228638645011,
+        "profit_factor": 0.7179011286425607,
+        "total_net_pct": -5.9918623132536535
+      },
+      "GAPGO | all trades": {
+        "trades": 118.0,
+        "win_pct": 46.61016949152542,
+        "avg_net_pct": -0.02174389013613246,
+        "avg_win": 0.4465501943362166,
+        "avg_loss": -0.4305720591199293,
+        "profit_factor": 0.9054126934076194,
+        "total_net_pct": -2.5657790360636303
+      },
+      "GAPGO | with bias only": {
+        "trades": 64.0,
+        "win_pct": 42.1875,
+        "avg_net_pct": -0.048268831378018615,
+        "avg_win": 0.4382102591259184,
+        "avg_loss": -0.40326708661062133,
+        "profit_factor": 0.7929609545980958,
+        "total_net_pct": -3.0892052081931913
+      },
+      "GAPGO | against bias": {
+        "trades": 16.0,
+        "win_pct": 50.0,
+        "avg_net_pct": -0.15360498207919096,
+        "avg_win": 0.33874606671376956,
+        "avg_loss": -0.6459560308721515,
+        "profit_factor": 0.5244104095698344,
+        "total_net_pct": -2.4576797132670554
+      }
+    }
+  }
+}
