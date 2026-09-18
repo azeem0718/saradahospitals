@@ -47,6 +47,58 @@ How the call is made:
 4. **Range** = expected close +/- half the 14-day average true range. The wider
    band is +/- one standard deviation of the close model's error.
 
+It also prints the CPR (central pivot range) and floor pivots for the session:
+
+```
+CPR for the session (from 2026-09-17 H / L / C)
+  TC ...   Pivot ...   BC ...   width 0.xxx% -> NARROW / AVERAGE / WIDE (percentile of the last year)
+  R2 ...   R1 ...   S1 ...   S2 ...
+  Expected open ... is above / inside / below the CPR.
+```
+
+### Narrow vs wide CPR: what ten years of Nifty say
+
+The popular rule is "narrow CPR means a trending day, wide CPR means a
+sideways day". The data does not support it. Bucketing each session by
+its CPR width against the trailing year (2,216 sessions, 2017 to 2026):
+
+| CPR width bucket   | days | median day range | median close-to-close move | trend days* |
+|--------------------|------|------------------|----------------------------|-------------|
+| narrow (<33rd pct) | 719  | 0.86%            | 0.47%                      | 30.5%       |
+| average            | 766  | 0.86%            | 0.51%                      | 33.8%       |
+| wide (>67th pct)   | 731  | 1.04%            | 0.61%                      | 35.0%       |
+
+By fixed width:
+
+| CPR width  | days | median day range | median move | trend days* |
+|------------|------|------------------|-------------|-------------|
+| < 0.25%    | 1575 | 0.85%            | 0.49%       | 32.0%       |
+| 0.25-0.5%  | 498  | 1.03%            | 0.56%       | 34.9%       |
+| 0.5-1%     | 120  | 1.35%            | 0.80%       | 38.3%       |
+| > 1%       | 23   | 3.64%            | 2.50%       | 43.5%       |
+
+\* a trend day closes in the top or bottom fifth of its own range and moves more than 0.5%.
+
+Wide CPR days ranged **more** and trended slightly **more**, not less. CPR
+width is just yesterday's high-low range in disguise, and volatility
+persists from one day to the next. So: use the CPR and pivot levels as
+reference points for the open and for intraday support and resistance, and
+read the width as "expect a quiet day" or "expect a big day", never as a
+trend-or-chop call.
+
+Where the open lands relative to the CPR does line up with the day's close,
+but only because it is the gap in another form:
+
+| open location    | days | closed above prev close | closed above its open |
+|------------------|------|-------------------------|-----------------------|
+| above TC         | 1435 | 66.2%                   | 47.2%                 |
+| inside the CPR   | 98   | 36.7%                   | 46.9%                 |
+| below BC         | 882  | 37.5%                   | 49.0%                 |
+
+An open above the CPR closed above the previous close two-thirds of the
+time, but closed above its own open less than half the time. The gap
+carries the information; the intraday leg is still a coin flip.
+
 Run it between about 07:00 and 09:15 IST for the cleanest read, after the US
 close and before India opens. Run after 15:45 IST it targets the next session,
 and the US inputs will still be the previous night's until the US closes.

@@ -192,6 +192,32 @@ def main():
     # wider band: 1 sd of the close model's error
     lo1, hi1 = prev_close * (1 + c2c_hat - s_c2c), prev_close * (1 + c2c_hat + s_c2c)
 
+    # --- CPR (central pivot range) and floor pivots from the last completed session
+    H, L, C = float(n["high"].iloc[-1]), float(n["low"].iloc[-1]), prev_close
+    piv = (H + L + C) / 3
+    bc = (H + L) / 2
+    tc = 2 * piv - bc
+    tc, bc = max(tc, bc), min(tc, bc)
+    cpr_width = (tc - bc) / piv * 100
+    r1, s1 = 2 * piv - L, 2 * piv - H
+    r2, s2 = piv + (H - L), piv - (H - L)
+    hist_w = ((2 * (n["high"] + n["low"] + n["close"]) / 3 - (n["high"] + n["low"]) / 2)
+              - (n["high"] + n["low"]) / 2).abs() / ((n["high"] + n["low"] + n["close"]) / 3) * 100
+    trailing = hist_w.iloc[-251:-1]
+    cpr_pctile = float((trailing < cpr_width).mean() * 100)
+    cpr_label = "narrow" if cpr_pctile < 33 else "wide" if cpr_pctile > 67 else "average"
+    if exp_open > tc:
+        open_vs_cpr = "above the CPR"
+    elif exp_open < bc:
+        open_vs_cpr = "below the CPR"
+    else:
+        open_vs_cpr = "inside the CPR"
+    cpr = {"tc": round(tc, 0), "pivot": round(piv, 0), "bc": round(bc, 0),
+           "width_pct": round(cpr_width, 3), "width_percentile_1y": round(cpr_pctile, 0),
+           "label": cpr_label, "expected_open_vs_cpr": open_vs_cpr,
+           "r1": round(r1, 0), "r2": round(r2, 0), "s1": round(s1, 0), "s2": round(s2, 0),
+           "prev_high": round(H, 0), "prev_low": round(L, 0)}
+
     stale = [latest[f]["label"] for f in factors if latest[f]["already_priced_in"]]
 
     out = {
@@ -207,6 +233,7 @@ def main():
         "range_typical": [round(lo, 0), round(hi, 0)],
         "range_1sd": [round(lo1, 0), round(hi1, 0)],
         "atr14": round(atr14, 0),
+        "cpr": cpr,
         "factors": latest,
         "already_priced_in": stale,
         "model": {"sessions": int(len(hist)), "gap_error_sd_pct": round(s_gap * 100, 2),
@@ -220,6 +247,13 @@ def main():
     print(f"Expected close      {exp_close:,.0f}   ({c2c_hat*100:+.2f}%)")
     print(f"Typical range       {lo:,.0f} to {hi:,.0f}   (expected close +/- half the 14-day ATR of {atr14:,.0f})")
     print(f"Wider range (1 sd)  {lo1:,.0f} to {hi1:,.0f}")
+    print(f"\nCPR for the session (from {out['last_completed_session']} H {H:,.0f} / L {L:,.0f} / C {C:,.0f})")
+    print(f"  TC {tc:,.0f}   Pivot {piv:,.0f}   BC {bc:,.0f}   width {cpr_width:.3f}% -> {cpr_label.upper()} "
+          f"({cpr_pctile:.0f}th percentile of the last year)")
+    print(f"  R2 {r2:,.0f}   R1 {r1:,.0f}   S1 {s1:,.0f}   S2 {s2:,.0f}")
+    print(f"  Expected open {exp_open:,.0f} is {open_vs_cpr}.")
+    print("  Note: over ten years narrow CPR did not mean a trending day for Nifty; wide CPR days actually")
+    print("  ranged more, because CPR width just tracks yesterday's volatility. Use the levels, not the label.")
     print("\nOvernight inputs (previous-session move, and its push on today's close in basis points)")
     for f in factors:
         L = latest[f]
@@ -254,6 +288,11 @@ table{{border-collapse:collapse;width:100%;margin-top:16px;font-size:.9rem}} td,
 <span>Expected close</span><b>{o['expected_close']:,.0f} ({o['expected_move_pct']:+.2f}%)</b>
 <span>Typical range</span><b>{o['range_typical'][0]:,.0f} – {o['range_typical'][1]:,.0f}</b>
 <span>Wider range (1 sd)</span><b>{o['range_1sd'][0]:,.0f} – {o['range_1sd'][1]:,.0f}</b></div>
+<div class="kv" style="margin-top:14px"><span>CPR width</span><b>{o['cpr']['width_pct']:.3f}% · {o['cpr']['label']}</b>
+<span>TC / Pivot / BC</span><b>{o['cpr']['tc']:,.0f} / {o['cpr']['pivot']:,.0f} / {o['cpr']['bc']:,.0f}</b>
+<span>R1 / R2</span><b>{o['cpr']['r1']:,.0f} / {o['cpr']['r2']:,.0f}</b>
+<span>S1 / S2</span><b>{o['cpr']['s1']:,.0f} / {o['cpr']['s2']:,.0f}</b>
+<span>Expected open sits</span><b>{o['cpr']['expected_open_vs_cpr']}</b></div>
 <table><tr><th>Input</th><th style='text-align:right'>Move</th><th style='text-align:right'>Push</th><th>As of</th></tr>{rows}</table>
 <p class="sub">Score is the model's probability that Nifty closes up. 43–57 is no edge. Range is expected close ± half the 14-day ATR ({o['atr14']:,.0f} pts).</p>
 </body></html>"""

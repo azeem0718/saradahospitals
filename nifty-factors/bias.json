@@ -1,5 +1,5 @@
 {
-  "computed_at_ist": "2026-09-18 11:37",
+  "computed_at_ist": "2026-09-18 11:43",
   "for_session": "2026-09-18",
   "last_completed_session": "2026-09-17",
   "prev_close": 23270.6,
@@ -20,6 +20,21 @@
     23579.0
   ],
   "atr14": 195.0,
+  "cpr": {
+    "tc": 23279.0,
+    "pivot": 23276.0,
+    "bc": 23273.0,
+    "width_pct": 0.023,
+    "width_percentile_1y": 6.0,
+    "label": "narrow",
+    "expected_open_vs_cpr": "above the CPR",
+    "r1": 23358.0,
+    "r2": 23446.0,
+    "s1": 23188.0,
+    "s2": 23106.0,
+    "prev_high": 23364.0,
+    "prev_low": 23194.0
+  },
   "factors": {
     "spx": {
       "label": "S&P 500",
