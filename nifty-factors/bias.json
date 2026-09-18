@@ -1,0 +1,90 @@
+{
+  "computed_at_ist": "2026-09-18 11:37",
+  "for_session": "2026-09-18",
+  "last_completed_session": "2026-09-17",
+  "prev_close": 23270.6,
+  "bias": "UP",
+  "score": 64,
+  "prob_close_up_pct": 63.8,
+  "prob_gap_up_pct": 79.2,
+  "expected_open": 23378.0,
+  "expected_gap_pct": 0.46,
+  "expected_close": 23351.0,
+  "expected_move_pct": 0.35,
+  "range_typical": [
+    23254.0,
+    23449.0
+  ],
+  "range_1sd": [
+    23124.0,
+    23579.0
+  ],
+  "atr14": 195.0,
+  "factors": {
+    "spx": {
+      "label": "S&P 500",
+      "move_pct": 1.14,
+      "as_of": "2026-09-17",
+      "already_priced_in": false,
+      "contribution_bp": 30.9
+    },
+    "vix": {
+      "label": "VIX",
+      "move_pct": -12.82,
+      "as_of": "2026-09-17",
+      "already_priced_in": false,
+      "contribution_bp": -2.5
+    },
+    "dxy": {
+      "label": "Dollar index",
+      "move_pct": -0.09,
+      "as_of": "2026-09-17",
+      "already_priced_in": false,
+      "contribution_bp": 1.4
+    },
+    "crude": {
+      "label": "WTI crude",
+      "move_pct": -0.51,
+      "as_of": "2026-09-17",
+      "already_priced_in": false,
+      "contribution_bp": -0.3
+    },
+    "gold": {
+      "label": "Gold",
+      "move_pct": 0.28,
+      "as_of": "2026-09-17",
+      "already_priced_in": false,
+      "contribution_bp": 0.8
+    },
+    "copper": {
+      "label": "Copper",
+      "move_pct": 2.41,
+      "as_of": "2026-09-17",
+      "already_priced_in": false,
+      "contribution_bp": -1.2
+    },
+    "nikkei": {
+      "label": "Nikkei 225",
+      "move_pct": 0.33,
+      "as_of": "2026-09-17",
+      "already_priced_in": true,
+      "contribution_bp": 0.4
+    },
+    "usdinr": {
+      "label": "USD/INR",
+      "move_pct": 0.15,
+      "as_of": "2026-09-17",
+      "already_priced_in": true,
+      "contribution_bp": 0.5
+    }
+  },
+  "already_priced_in": [
+    "Nikkei 225",
+    "USD/INR"
+  ],
+  "model": {
+    "sessions": 2430,
+    "gap_error_sd_pct": 0.56,
+    "close_error_sd_pct": 0.98
+  }
+}
