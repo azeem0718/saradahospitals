@@ -143,12 +143,24 @@ def main():
     }).dropna()
     rets = {f: data[f]["close"].pct_change().dropna() for f in factors}
     X = align_factors(hist.index, rets).dropna()
+    # CPR-derived features of the previous session (all known before the open).
+    # Out of sample they add ~0.5 pt of hit rate to the close forecast and slightly hurt the
+    # gap forecast, so they go into the close model only.
+    pv = (n["high"] + n["low"] + n["close"]) / 3
+    cprf = pd.DataFrame({
+        "cpr_width":      (((2 * pv - (n["high"] + n["low"]) / 2) - (n["high"] + n["low"]) / 2).abs() / pv).shift(1),
+        "close_vs_pivot": ((n["close"] - pv) / pv).shift(1),
+        "close_pos":      ((n["close"] - n["low"]) / (n["high"] - n["low"])).shift(1) - 0.5,
+        "prev_ret":       n["close"].pct_change().shift(1),
+    })
+    CPR_FEATS = list(cprf.columns)
+    X = pd.concat([X, cprf.loc[X.index]], axis=1).dropna()
     hist = hist.loc[X.index]
-    # standardise factor moves so coefficients are comparable; cap outliers at 4 sd
+    # standardise so coefficients are comparable; cap outliers at 4 sd
     mu, sd = X.mean(), X.std()
     Z = ((X - mu) / sd).clip(-4, 4)
-    beta_gap, s_gap = ols(Z.values, hist["gap"].values)
-    beta_c2c, s_c2c = ols(Z.values, hist["c2c"].values)
+    beta_gap, s_gap = ols(Z[factors].values, hist["gap"].values)
+    beta_c2c, s_c2c = ols(Z[factors + CPR_FEATS].values, hist["c2c"].values)
 
     # --- latest factor moves (must have finished before the target session)
     latest = {}
@@ -172,8 +184,18 @@ def main():
         z_now.append(z)
     z_now = np.array(z_now)
 
+    lastbar = n.iloc[-1]; pv_last = (lastbar["high"] + lastbar["low"] + lastbar["close"]) / 3
+    cpr_now_raw = {
+        "cpr_width":      abs((2 * pv_last - (lastbar["high"] + lastbar["low"]) / 2) - (lastbar["high"] + lastbar["low"]) / 2) / pv_last,
+        "close_vs_pivot": (lastbar["close"] - pv_last) / pv_last,
+        "close_pos":      (lastbar["close"] - lastbar["low"]) / (lastbar["high"] - lastbar["low"]) - 0.5,
+        "prev_ret":       float(n["close"].pct_change().iloc[-1]),
+    }
+    z_cpr = np.array([float(np.clip((cpr_now_raw[k] - mu[k]) / sd[k], -4, 4)) for k in CPR_FEATS])
+    cpr_contrib_bp = {k: round(beta_c2c[1 + len(factors) + i] * z_cpr[i] * 1e4, 1) for i, k in enumerate(CPR_FEATS)}
+
     gap_hat = predict(beta_gap, z_now)
-    c2c_hat = predict(beta_c2c, z_now)
+    c2c_hat = predict(beta_c2c, np.concatenate([z_now, z_cpr]))
     p_up = norm_cdf(c2c_hat / s_c2c)
     p_gap_up = norm_cdf(gap_hat / s_gap)
     score = round(p_up * 100)
@@ -212,9 +234,16 @@ def main():
         open_vs_cpr = "below the CPR"
     else:
         open_vs_cpr = "inside the CPR"
+    cpr_read = "UP" if exp_open > tc else "DOWN" if exp_open < bc else "SIDEWAYS"
+    cpr_agrees = (cpr_read == bias) if bias != "SIDEWAYS" else None
     cpr = {"tc": round(tc, 0), "pivot": round(piv, 0), "bc": round(bc, 0),
            "width_pct": round(cpr_width, 3), "width_percentile_1y": round(cpr_pctile, 0),
            "label": cpr_label, "expected_open_vs_cpr": open_vs_cpr,
+           "cpr_read": cpr_read, "agrees_with_bias": cpr_agrees,
+           "push_on_close_bp": {"cpr_width": cpr_contrib_bp["cpr_width"],
+                                "prev_close_vs_pivot": cpr_contrib_bp["close_vs_pivot"],
+                                "prev_close_position": cpr_contrib_bp["close_pos"],
+                                "prev_day_return": cpr_contrib_bp["prev_ret"]},
            "r1": round(r1, 0), "r2": round(r2, 0), "s1": round(s1, 0), "s2": round(s2, 0),
            "prev_high": round(H, 0), "prev_low": round(L, 0)}
 
@@ -251,7 +280,10 @@ def main():
     print(f"  TC {tc:,.0f}   Pivot {piv:,.0f}   BC {bc:,.0f}   width {cpr_width:.3f}% -> {cpr_label.upper()} "
           f"({cpr_pctile:.0f}th percentile of the last year)")
     print(f"  R2 {r2:,.0f}   R1 {r1:,.0f}   S1 {s1:,.0f}   S2 {s2:,.0f}")
-    print(f"  Expected open {exp_open:,.0f} is {open_vs_cpr}.")
+    agree = "agrees with" if cpr_agrees else "disagrees with" if cpr_agrees is False else "cannot confirm"
+    print(f"  Expected open {exp_open:,.0f} is {open_vs_cpr}: CPR reads {cpr_read}, which {agree} the {bias} bias.")
+    tot = sum(cpr_contrib_bp.values())
+    print(f"  CPR-derived inputs (width, prev close vs pivot, prev close position, prev day return) push the close by {tot:+.1f} bp in total.")
     print("  Note: over ten years narrow CPR did not mean a trending day for Nifty; wide CPR days actually")
     print("  ranged more, because CPR width just tracks yesterday's volatility. Use the levels, not the label.")
     print("\nOvernight inputs (previous-session move, and its push on today's close in basis points)")
@@ -292,7 +324,8 @@ table{{border-collapse:collapse;width:100%;margin-top:16px;font-size:.9rem}} td,
 <span>TC / Pivot / BC</span><b>{o['cpr']['tc']:,.0f} / {o['cpr']['pivot']:,.0f} / {o['cpr']['bc']:,.0f}</b>
 <span>R1 / R2</span><b>{o['cpr']['r1']:,.0f} / {o['cpr']['r2']:,.0f}</b>
 <span>S1 / S2</span><b>{o['cpr']['s1']:,.0f} / {o['cpr']['s2']:,.0f}</b>
-<span>Expected open sits</span><b>{o['cpr']['expected_open_vs_cpr']}</b></div>
+<span>Expected open sits</span><b>{o['cpr']['expected_open_vs_cpr']}</b>
+<span>CPR read</span><b>{o['cpr']['cpr_read']} · {'agrees' if o['cpr']['agrees_with_bias'] else 'disagrees' if o['cpr']['agrees_with_bias'] is False else 'n/a'}</b></div>
 <table><tr><th>Input</th><th style='text-align:right'>Move</th><th style='text-align:right'>Push</th><th>As of</th></tr>{rows}</table>
 <p class="sub">Score is the model's probability that Nifty closes up. 43–57 is no edge. Range is expected close ± half the 14-day ATR ({o['atr14']:,.0f} pts).</p>
 </body></html>"""

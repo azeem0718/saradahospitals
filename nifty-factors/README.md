@@ -99,6 +99,30 @@ An open above the CPR closed above the previous close two-thirds of the
 time, but closed above its own open less than half the time. The gap
 carries the information; the intraday leg is still a coin flip.
 
+### Is CPR in the score?
+
+Partly, and only where it helps. Four CPR-derived inputs from the previous
+session (CPR width, close vs pivot, close position within the day's range,
+and the day's return) feed the **close** model. The **gap** model stays on the
+overnight factors only. Tested on the last 30% of sessions (729 days) held
+out from fitting:
+
+| feature set             | close hit % | close corr | gap hit % | gap corr |
+|-------------------------|-------------|------------|-----------|----------|
+| overnight factors only  | 56.4        | 0.219      | 69.4      | 0.443    |
+| + CPR width             | 56.8        | 0.229      | 69.4      | 0.443    |
+| + prev close vs pivot   | 56.4        | 0.217      | 68.2      | 0.428    |
+| + prev close position   | 56.8        | 0.216      | 68.6      | 0.439    |
+| + prev day return       | 55.8        | 0.243      | 68.4      | 0.431    |
+| + all four              | 56.9        | 0.266      | 67.9      | 0.448    |
+| CPR features alone      | 54.6        | 0.123      | 59.3      | 0.130    |
+
+Half a point of hit rate on the close, nothing on the gap. The script also
+prints a **CPR read** (expected open above TC = UP, below BC = DOWN, inside =
+SIDEWAYS) and whether it agrees with the bias. It usually will, because the
+expected open comes from the same overnight factors, so treat agreement as a
+sanity check rather than independent confirmation.
+
 Run it between about 07:00 and 09:15 IST for the cleanest read, after the US
 close and before India opens. Run after 15:45 IST it targets the next session,
 and the US inputs will still be the previous night's until the US closes.

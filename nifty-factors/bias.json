@@ -1,23 +1,23 @@
 {
-  "computed_at_ist": "2026-09-18 11:43",
+  "computed_at_ist": "2026-09-18 11:47",
   "for_session": "2026-09-18",
   "last_completed_session": "2026-09-17",
   "prev_close": 23270.6,
   "bias": "UP",
-  "score": 64,
-  "prob_close_up_pct": 63.8,
+  "score": 62,
+  "prob_close_up_pct": 61.6,
   "prob_gap_up_pct": 79.2,
   "expected_open": 23378.0,
   "expected_gap_pct": 0.46,
-  "expected_close": 23351.0,
-  "expected_move_pct": 0.35,
+  "expected_close": 23337.0,
+  "expected_move_pct": 0.29,
   "range_typical": [
-    23254.0,
-    23449.0
+    23240.0,
+    23435.0
   ],
   "range_1sd": [
-    23124.0,
-    23579.0
+    23112.0,
+    23563.0
   ],
   "atr14": 195.0,
   "cpr": {
@@ -28,6 +28,14 @@
     "width_percentile_1y": 6.0,
     "label": "narrow",
     "expected_open_vs_cpr": "above the CPR",
+    "cpr_read": "UP",
+    "agrees_with_bias": true,
+    "push_on_close_bp": {
+      "cpr_width": -4.2,
+      "prev_close_vs_pivot": 0.7,
+      "prev_close_position": -3.2,
+      "prev_day_return": -2.9
+    },
     "r1": 23358.0,
     "r2": 23446.0,
     "s1": 23188.0,
@@ -48,14 +56,14 @@
       "move_pct": -12.82,
       "as_of": "2026-09-17",
       "already_priced_in": false,
-      "contribution_bp": -2.5
+      "contribution_bp": -0.9
     },
     "dxy": {
       "label": "Dollar index",
       "move_pct": -0.09,
       "as_of": "2026-09-17",
       "already_priced_in": false,
-      "contribution_bp": 1.4
+      "contribution_bp": 1.6
     },
     "crude": {
       "label": "WTI crude",
@@ -76,21 +84,21 @@
       "move_pct": 2.41,
       "as_of": "2026-09-17",
       "already_priced_in": false,
-      "contribution_bp": -1.2
+      "contribution_bp": 0.0
     },
     "nikkei": {
       "label": "Nikkei 225",
       "move_pct": 0.33,
       "as_of": "2026-09-17",
       "already_priced_in": true,
-      "contribution_bp": 0.4
+      "contribution_bp": 1.2
     },
     "usdinr": {
       "label": "USD/INR",
       "move_pct": 0.15,
       "as_of": "2026-09-17",
       "already_priced_in": true,
-      "contribution_bp": 0.5
+      "contribution_bp": 0.0
     }
   },
   "already_priced_in": [
@@ -100,6 +108,6 @@
   "model": {
     "sessions": 2430,
     "gap_error_sd_pct": 0.56,
-    "close_error_sd_pct": 0.98
+    "close_error_sd_pct": 0.97
   }
 }
