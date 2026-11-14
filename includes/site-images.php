@@ -189,8 +189,23 @@ function site_images(bool $reload = false): array
     if ($cache === null || $reload) {
         $cache = [];
         try {
+            // An uploaded picture lives only on the server it was uploaded to.
+            // When the database outlives the file — a move to new hosting, a
+            // restore — show the shipped picture rather than a broken one.
+            $dir   = dirname(__DIR__) . '/assets/img/' . SITE_IMAGE_STORE . '/';
+            $seeds = site_image_seeds();
             foreach (db()->query('SELECT slot, file, alt FROM site_images') as $row) {
-                $cache[$row['slot']] = ['file' => $row['file'], 'alt' => $row['alt']];
+                $file = (string) $row['file'];
+                $alt  = (string) $row['alt'];
+                if (!is_file($dir . $file)) {
+                    $seed = $seeds[$row['slot']] ?? null;
+                    if ($seed === null || !is_file($dir . $seed['file'])) {
+                        continue;
+                    }
+                    $file = $seed['file'];
+                    $alt  = $seed['alt'];
+                }
+                $cache[$row['slot']] = ['file' => $file, 'alt' => $alt];
             }
         } catch (PDOException $e) {
             // The table arrives with a migration. A site that has not run it yet
